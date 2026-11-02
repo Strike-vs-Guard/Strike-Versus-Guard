@@ -55,13 +55,16 @@ break one):
   `localisation`, `drones`, `integration`. These lines put you on the layers of the drone diagram and the connection diagram on the Partners page.
 - Dates are `YYYY-MM-DD`.
 
+Your page is linked from the **Partners** menu in the header and from the Partners page. Your file
+is the only place its text lives, and your page says "Maintained by <you>" with an Edit link.
+
 The site has four pages: Home, Programme, Partners and Flights (plus Updates). The shared files below
 feed them. They are owned by ST Engineering, but anyone may propose changes. Please do not publish
 anything numeric or unpublished from the confidential reports.
 
 | What | File |
 |---|---|
-| Top of the home page, including the `decisions:` list ("What they decide") | `content/programme/overview.md` |
+| Top of the home page: the `decisions:` list ("What they decide"), `video:` (the hero clip, in `public/media/`) and `gameNote:` (one line about the game) | `content/programme/overview.md` |
 | Localisation section and its one-line `status:` | `content/programme/localisation.md` |
 | Two tracks (NUS / UPenn) | `content/programme/tracks.md` |
 | The benchmark game and its four steps | `content/programme/benchmark.md` |
@@ -154,6 +157,7 @@ The three newest updates appear on the home page, and each partner page lists it
   makes smaller, faster copies automatically.
 - Always write a description in the square brackets: `![Two Starling drones crossing paths](./CMU/cross.jpg)`.
   It's read aloud by screen readers.
+- Posters are frames from the flight footage (the bottom half of the clip), not stock images.
 - Video: MP4 (H.264), muted, under ~10 MB, in `public/media/`. Ask ST Engineering if you need help
   compressing a clip.
 - Only publish material you have the right to publish. The test site is public, even before merging.

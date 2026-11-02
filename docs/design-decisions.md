@@ -18,9 +18,16 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 - Four pages plus Updates (restructured 3 Nov 2026): **Home**, **Programme** (`/programme/`),
   **Partners** (`/partners/`, with a page per partner) and **Flights** (`/flights/`). The first
   single long home page had grown too long; each question a visitor asks now has a page.
-- Nav: Programme · Benchmark (a home anchor) · Partners · Flights · Updates.
-- Home page order: hero with a "What they decide" strip → benchmark → drone diagram with five layers
-  → four clips → milestones → latest updates → team photo ("Funded by HTX") last.
+- Nav: Programme · Partners ▾ · Flights · Updates. The Partners menu lists each partner's page.
+- Home page order (round 2, 3 Nov 2026): hero with flight clip and game note → the game and what the
+  drones decide → proof bar and clips → compact drone → updates → team photo and colour logo strip.
+  Home is about 5 screens at 1280, down from 6.5.
+- **UX panel (round 2).** Three reviewers found: the first screen never said what the game is; 36 % of
+  a wide screen was empty; footer logos were grey; partner pages existed but nothing led to them.
+  Borrowed: CMU AirLab (full-width footage, one sentence, two buttons), TRI and RAI Institute (home
+  as a hub of short cards), DeepMind, ETH ASL and UZH RPG (home never repeats a nav page in full).
+  Jeremy chose, from a clickable draft: A compact drone on home (full one on Partners), B no
+  Benchmark nav item, C looping clip in the hero.
 - Five layers: Strategy, Safety, Flight, **Localisation** (ST Engineering leads; CMU provides the
   simulator and technical advice), Drones, plus Integration across all.
 - The reports behind the localisation work are confidential. They are used for context only, and
@@ -62,8 +69,10 @@ editing workflow, and the visual design. The decisions below reconcile their pro
   wordmark, one short rule under the hero title, and the "We are here" milestone marker. It is never
   used for buttons, banners or backgrounds. Buttons are ink-coloured.
 - The two strategy tracks are never coloured blue/red, because those colours mean the game's teams.
-- Partner logos sit in white wells (so they work on black). In the footer they are greyscale until
-  hover, so no single partner's brand colour dominates.
+- Partner logos sit in equal white wells, in colour (Jeremy, 3 Nov 2026; the greyscale rule is
+  withdrawn). The footer groups them "Funded by | Partners".
+- Content width is 1320 px with a fluid gutter, so wide screens are used. Photos and video get a 1 px
+  edge.
 - Signature visual: an animated diagram of the game in four beats (Divide, Share, Adapt, Recover),
   drawn in SVG. Each beat is synced to a clickable caption. It pauses off-screen and does not auto-play
   for visitors who prefer reduced motion. Teams differ by shape (filled vs outlined rotors), not

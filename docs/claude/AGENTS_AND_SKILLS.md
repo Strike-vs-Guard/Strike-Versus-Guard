@@ -36,7 +36,27 @@ Rejected along the way, so don't propose these again without a new reason:
 | `.claude/agents/svg-visual-designer.md` | Visual direction within the site tokens | New visual treatment, signature graphics |
 | `.claude/agents/svg-proposal-designer.md` | Builds ONE self-contained, working HTML draft of a section in a given direction | Exploring several layouts side by side (run 3–4 in parallel, one direction each) |
 | `.claude/agents/svg-design-critic.md` | Critiques a draft or component through one lens (illustration / information design / interaction & a11y) | Before polishing anything visual (run 3 in parallel, one lens each) |
+| `.claude/agents/svg-ux-panel-first-screen.md` | UX panel: the first screen and the gist | Reviewing a page top (run with the other two panel agents) |
+| `.claude/agents/svg-ux-panel-layout.md` | UX panel: page length, width, rhythm, media | Reviewing a page's spacing and length |
+| `.claude/agents/svg-ux-panel-navigation.md` | UX panel: nav, findability, partner paths | Reviewing menus and how pages link |
 | `.claude/agents/svg-implementer.md` | Implements an agreed spec in the Astro repo and verifies it with Playwright; doesn't commit | After a design decision is made |
+
+## UX panel (added 3 Nov 2026)
+
+Three read-only Opus agents review the live test site, each through one lens: **first screen**,
+**layout**, **navigation**. They can fetch reference sites (theairlab.org, asl.ethz.ch,
+rpg.ifi.uzh.ch, tri.global, rai-inst.com, deepmind.google, bostondynamics.com).
+
+How to run:
+1. Start all three in one message so they run in parallel. Give each the preview URL and where the
+   screenshots are.
+2. Each returns a ranked list in plain language, under about 550 words.
+3. The lead reconciles: findings that two agents share come first; conflicts go to Jeremy.
+4. Don't build yet. Show Jeremy a **draft with switches**.
+
+Draft-with-switches pattern: publish one page with `publish_files` that shows the options as toggles
+(here A drone size, B nav item, C hero media), plus a badge showing the page height in screens. Jeremy
+flips the switches, picks, and the choice goes in the spec.
 
 Every agent brief included:
 - the goal

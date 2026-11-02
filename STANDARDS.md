@@ -66,18 +66,24 @@ All tokens live in `src/styles/global.css`. Do not introduce new colours or font
 | `--surface` | #111417 | cards, alternate sections |
 | `--text` | #e6e8eb | text, buttons (ink), selected states |
 | `--muted` | #9ba4af | secondary text, labels |
-| `--border` | #262b31 | rules, card borders |
+| `--border` | #343b44 | rules, card borders, the 1 px edge on every photo and video |
 | `--accent` (ST red) | #ff4d5e | **only** the wordmark, one rule under the hero title and the "We are here" marker |
 | `--guard` (blue) | #6fa3f5 | **only** the Guard team in the game |
 | `--strike` (red) | #f2766a | **only** the Strike team in the game |
 | `--well` | #ffffff | the white background behind every logo |
+| `--max` | 1320px | content width (the full page width, with the gutter) |
+| `--gutter` | clamp(16px, 4vw, 64px) | side padding |
+
+Section padding is `clamp(64px, 8vw, 128px)`. Photos and video run to the content edges. Text
+columns stay about 68ch wide.
 
 - **Fonts:** IBM Plex Sans Condensed 700 for display; IBM Plex Sans 400/600 for body (17px, line
   height 1.6, about 68ch wide); IBM Plex Mono 500 for eyebrows, labels, dates and captions (uppercase,
   0.06em tracking).
 - **Never** colour partners, tracks, buttons or banners blue or red. Red never means "alarm".
 - No crosshairs, HUD styling, radar sweeps or military imagery.
-- Logos always sit in a `--well`. Footer logos are greyscale until hover.
+- Logos always sit in a `--well`, shown **in colour**, in equal white wells. In the footer they are grouped
+  "Funded by | Partners". (The old "greyscale until hover" rule is withdrawn, 3 Nov 2026.)
 - One theme: pure black background. There is no light mode.
 
 ---
@@ -91,7 +97,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | A partner's card, page and `work:` lines | `content/partners/<NAME>.md` + `content/partners/<NAME>/` images | That partner |
 | Funder card | `content/partners/HTX.md` | ST Engineering |
 | Page sections | `content/programme/*.md` (one file per section, `order:` sets position) | ST Engineering (+ co-owners in CODEOWNERS) |
-| Top of the home page, incl. the `decisions:` list ("What they decide") | `content/programme/overview.md` | ST Engineering |
+| Top of the home page, incl. the `decisions:` list ("What they decide"), the hero `video:` and the one-line `gameNote:` | `content/programme/overview.md` | ST Engineering |
 | Localisation section and its one-line `status:` | `content/programme/localisation.md` | ST Engineering (CMU advises) |
 | Layers of the system (drone diagram and connection diagram) | `content/programme/stack.md` (`icon:` is the layer id) | ST Engineering |
 | News | `content/updates/YYYY-MM-DD-slug.md` | Any partner |
@@ -114,28 +120,42 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 
 ## 5. Page structure (current)
 
-Nav: **Programme · Benchmark** (home anchor) **· Partners · Flights · Updates**.
+Nav: **Programme · Partners ▾ · Flights · Updates**. There is no Benchmark item; the game stays on home.
+
+**Partners menu:** "Partners" stays a link. The ▾ button opens a panel on hover (120 ms open, 300 ms
+close grace), click, or Enter/Space. Escape closes it and returns focus; ArrowDown enters the rows;
+it closes on focus-out. Without JS it is just the link. Rows: ST Engineering · NEAR Lab, NUS ·
+MARMot Lab, UPenn · xLab, CMU · AirLab (logo chip, name, contribution line), then "Funded by HTX"
+(→ `/partners/#funder`) and "All partners: who does what →". On phones the panel opens full width
+under the header.
 
 **Home (`src/pages/index.astro`), top to bottom:**
-1. Hero: wordmark, positioning statement, flight-cage photo, and the "What they decide" strip under the photo.
-2. `#benchmark`: animated arena (Divide · Share · Adapt · Recover).
-3. Drone diagram with the five layers (`DroneDiagram`). Clicking the drone lights it locally and links to the Partners page.
-4. The four flight clips.
-5. Milestones (move `current: true` each year).
-6. Latest updates.
-7. Team photo last, with "Funded by HTX".
+1. Hero: eyebrow, title, positioning statement, the `gameNote:` line, two buttons; right, the muted
+   looping flight clip (`video:`) with its still photo as poster. The facts strip is inside the first
+   screen at 1280×900.
+2. The game: the Arena, its four steps, "What they decide", and the no-pilot note.
+3. Proof so far: one-line progress bar from milestones (move `current: true` each year), the four
+   clips 4-across, "All flights →".
+4. How it fits together: the compact drone (0.8 screen at most), linking to `/partners/#who`.
+5. Latest updates.
+6. Team photo with caption, then the colour logo strip: "Funded by" HTX | "Partners" ST Engineering,
+   NUS, UPenn, CMU. No lone HTX block.
 
 **Programme (`/programme/`):** positioning statement, two tracks, localisation (with its `status:` line),
 research directions.
 
-**Partners (`/partners/`):** "Five layers, four partners, one team"; partner cards; the connection
-diagram (`ConnectionDiagram`); proof so far.
+**Partners (`/partners/`):** "Each partner writes and maintains its own page."; fully clickable partner
+cards ("<Short> page →"); the full explain-mode drone above the connection diagram
+(`ConnectionDiagram`); the HTX card (`id="funder"`).
 
 **Partner page (`src/pages/partners/[id].astro`):**
-- Header and meta card.
+- Header and meta card. "Maintained by <Short> · updated <date> · Edit this page" sits in the
+  "At a glance" box; the breadcrumb shows the institution.
 - "In the system": `DroneDiagram` in `partner` mode, with that partner's layers lit.
 - The Markdown body.
 - Their updates.
+
+Page titles are distinct: Programme h1 "How the programme works"; Flights h1 "Flights so far".
 
 **Flights (`/flights/`):** the October 2026 flight day story with the clips, the localisation status
 line, and milestones.

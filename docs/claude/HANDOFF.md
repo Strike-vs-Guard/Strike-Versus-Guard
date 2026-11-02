@@ -1,7 +1,7 @@
 # Claude handoff: Strike vs Guard website
 
 > **How to use this file:** paste it into any Claude conversation (or point Claude Code at the repo,
-> whose `CLAUDE.md` links here) to continue the work with full context. Last updated **3 Nov 2026**.
+> whose `CLAUDE.md` links here) to continue the work with full context. Last updated **3 Nov 2026** (round 2).
 
 ## 1. One-paragraph summary
 This repo (`Strike-vs-Guard/Strike-Versus-Guard`) is the website of **Strike vs Guard**, a research
@@ -47,6 +47,15 @@ programme lead driving the work is Jeremy (ST Engineering).
   `content/programme/localisation.md`.
 - Spec: `docs/superpowers/specs/2026-11-03-site-restructure-design.md`; plan beside it in `plans/`.
 
+**Round 2 (3 Nov 2026, after Jeremy saw the test site), on `development`, PR #6 open:**
+- A three-agent UX panel reviewed the site; Jeremy chose from a draft with switches (compact drone on
+  home, no Benchmark nav item, clip in the hero). Spec: `docs/superpowers/specs/2026-11-03-home-redesign-design.md`.
+- Nav is now Programme · Partners ▾ · Flights · Updates; the Partners menu lists each partner's page.
+- Home is about 5 screens (was 6.5); content width 1320 px; footer logos in colour, grouped
+  "Funded by | Partners"; team photo at the bottom; full drone moved to the Partners page.
+- `overview.md` gains `video:` and `gameNote:`.
+- The panel is saved as `.claude/agents/svg-ux-panel-{first-screen,layout,navigation}.md`.
+
 **Earlier work, already live or on `development`:**
 - Partner pages, Updates, schema/link/size checks, CI, deploy of both branches; Pages source is GitHub Actions.
 - Annotated drone + connection diagram, with `sys:select` shared selection and the polish pass.
@@ -56,6 +65,8 @@ programme lead driving the work is Jeremy (ST Engineering).
 ## 5. Open items / waiting on people
 | Item | Who |
 |---|---|
+| Check the round-2 test site (shorter home, hero clip, Partners menu, colour logos, wider layout), then merge PR #6 (already open, `development` into `main`) | Jeremy |
+| Review your partner page; the Partners menu and cards now lead visitors to it, and "Maintained by" sits in its "At a glance" box | Each partner |
 | Review the new Localisation line in your partner file (`work.localisation`, drafted for ST Engineering and CMU only) | Partners |
 | The home drone's click now lights locally and links to the Partners page; check it reads well on the test site | Jeremy |
 | Delete leftover branches `claude/brave-bell-onicwy`, `gh-pages`, `dependabot/github_actions/actions/checkout-7`, `dependabot/github_actions/actions/setup-node-7`; close PRs #1 and #2 (bot) | Jeremy (Claude's session can't delete branches) |

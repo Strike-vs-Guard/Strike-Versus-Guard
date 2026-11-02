@@ -191,6 +191,26 @@ stays on Home; the "What they decide" line is approved.
 **Outcome:** four pages (Home, Programme, Partners, Flights) plus Updates, five layers, one theme.
 Docs updated to match. Push to `development` and Jeremy's check come next, then the pull request to `main`.
 
+## 11. Round 2: UX panel, wider layout (3 Nov 2026)
+> After seeing the test site: "team photo at the bottom, no lone HTX block"; "home is still too long";
+> "a Partners hover menu listing the universities and ST, with links to their pages"; "each uni edits
+> its own .md" (already true, now visible); "footer logos in colour"; "use the full page width";
+> "a panel of UI/UX experts, with references to top university and corporate labs"; "update code,
+> standards and agent docs".
+
+**What was done:**
+- Three Opus agents (first screen, layout, navigation) reviewed the site and fetched theairlab.org,
+  asl.ethz.ch, rpg.ifi.uzh.ch, tri.global, rai-inst.com, deepmind.google and bostondynamics.com.
+- Jeremy saw a clickable draft with three switches
+  (https://claude.ai/artifact/2WqQ9uFtSXEzsAdcsJhk6j) and chose A compact drone, B no Benchmark nav
+  item, C clip hero ("follow your recommendation").
+- Built per `docs/superpowers/specs/2026-11-03-home-redesign-design.md`: new nav and Partners menu,
+  shorter home, 1320 px width, colour logos, team photo and logo strip last.
+- Panel saved as three agents in `.claude/agents/`; STANDARDS §3, §4, §5, CONTRIBUTING and the other docs updated.
+
+**Outcome:** home about 5 screens (from 6.5). Jeremy checks the test site, merges PR #6, and each partner
+reviews its page.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)

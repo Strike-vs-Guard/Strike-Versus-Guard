@@ -32,8 +32,8 @@ src/                         ← layout, styles, components (ST-owned)
   deploy.yml                   publishes main (live) and development (/preview/) together
 ```
 
-Pages: Home, Programme (`/programme/`), Partners (`/partners/`), Flights (`/flights/`) and Updates.
-One pure-black theme.
+Pages: Home, Programme (`/programme/`), Partners (`/partners/`, also a header menu that lists every partner's page), Flights (`/flights/`) and Updates.
+One pure-black theme. Each partner edits its own Markdown file.
 
 Built with [Astro](https://astro.build) (static output, no server). Hosted on GitHub Pages, deployed by
 GitHub Actions. The repository keeps only two branches: `main` (live) and `development` (edits and test site).

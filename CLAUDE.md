@@ -20,6 +20,7 @@ Website for **Strike vs Guard**, a research programme on decentralised multi-dro
 - **Paths:** copy lives in `content/`, never in templates. Never hard-code the base path; use `url()`.
 - **Before pushing:** `npm run check`. For visual changes, Playwright screenshots at 1280 and 390px,
   with zero overflow and no console errors.
-- **Visual work:** show Jeremy a clickable draft first, then build it into the site.
+- **Visual work:** show Jeremy a clickable draft first, then build it into the site. For page-level
+  changes run the UX panel (`svg-ux-panel-*` agents) first; see `docs/claude/AGENTS_AND_SKILLS.md`.
 
 **Commands:** `npm ci` · `npm run dev` · `npm run check` · `npx astro preview`
