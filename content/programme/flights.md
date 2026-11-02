@@ -10,25 +10,25 @@ note: Formation and avoidance flights so far, not yet full Strike vs Guard games
 items:
   - label: CMU flight cage
     title: Formation change
-    text: The team moves to new positions and keeps its spacing.
+    text: The team moves to new positions. Watch the gaps between the drones as they swap places; they don't close up.
     video: formation-change.mp4
     poster: formation-change.jpg
     partners: [cmu]
   - label: CMU flight cage
     title: Separate goals
-    text: Each drone flies to its own goal; crossing paths resolve themselves.
+    text: "Each drone flies to its own goal. Watch where the paths cross: the drones ease apart, then carry on."
     video: random-goals.mp4
     poster: random-goals.jpg
     partners: [cmu]
   - label: CMU flight cage
     title: Figure-8 with interference
-    text: Two drones fly a figure-8 while a third, flown by hand, cuts across them.
+    text: Two drones fly a figure-8 while a third, flown by hand, cuts across them. Watch the two keep clear of it.
     video: figure8-interference.mp4
     poster: figure8-interference.jpg
     partners: [cmu]
   - label: CMU flight cage
     title: Hand-flown drone
-    text: A drone is flown at the team and toward the boundary; the team adjusts and stays inside.
+    text: A drone is flown at the team and toward the boundary. Watch the team shift away from it and stop short of the boundary.
     video: hand-flown-drone.mp4
     poster: hand-flown-drone.jpg
     partners: [cmu]
@@ -53,6 +53,13 @@ items:
 image: ./images/starlings-cage-floor.jpg
 imageAlt: Three Starling 2 Max drones on the concrete floor of a flight cage, green lights on.
 caption: "Three Starling 2 Max on the floor of CMU's flight cage, lights on, before a run. Photo: CMU AirLab."
+openLabel: What went wrong, and what's still open
+open:
+  - "Before CMU fixed it, drones flying at about 6 m/s overshot the virtual fence by 0.35–0.68 m. They now stop within 0.02 m of it, CMU reports."
+  - "In CMU's runs the closest passes were 0.52 m apart, against the 1.1 m the safety filter is set to keep."
+  - "None of the 7 clips here is a full Strike vs Guard game yet."
 ---
 
-In October 2026, three Starling 2 Max drones flew in CMU's indoor flight cage with no pilot and the safety filter on throughout. They changed formation, flew to separate goals and through goal sequences, flew a figure-8 while a hand-flown drone cut across them, and kept inside the boundary while a hand-flown drone was pushed at it. The NUS team strategy went from simulation to Crazyflies to the three Starlings in the same visit.
+In October 2026 we spent several days in CMU's flight cage in Pittsburgh with three Starlings. Nobody flew them, and the safety filter stayed on the whole time. Then one of us flew a fourth drone by hand straight across the other two to see if they would keep their spacing. They did.
+
+In the same visit, the NUS team strategy moved from Crazyflies to the Starlings for the first time.

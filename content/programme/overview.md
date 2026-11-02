@@ -3,7 +3,7 @@
 eyebrow: Research programme
 pageEyebrow: Programme
 pageTitle: How the programme works
-title: Teams of drones that coordinate, adapt and decide on their own
+title: Teams of drones that coordinate, adapt and decide for themselves
 order: 1
 image: ./images/flight-cage.jpg
 imageAlt: Three Starling drones hovering in the CMU flight cage, labelled Strike and Guard

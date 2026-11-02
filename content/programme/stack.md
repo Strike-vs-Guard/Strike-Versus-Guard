@@ -4,11 +4,11 @@
 # flight, localisation, drones or integration. The cells come from the `work:` lines in each
 # partner's own file (content/partners/*.md), so partners edit their own cells.
 eyebrow: How it fits together
-title: Five layers, four partners, one team
+title: Who builds which part
 order: 4
 image: ./images/team-flight-cage.jpg
 imageAlt: The Strike vs Guard team standing in the CMU flight cage, holding Starling drones
-caption: The team in the CMU flight cage.
+caption: "In CMU's flight cage, October 2026. Left to right: Tanishq Duhan (NUS), Wei Wang (UPenn), Billy Zheng (UPenn), Prof Sebastian Scherer (CMU), Yikuan Fang (CMU), Prof Guillaume Sartoretti (NUS), Jeric Lew (NUS), Jeremy Chia Hwe Huang (ST Engineering), William Teo (ST Engineering), Chen Jiaying (ST Engineering). Not in the photo: Prof Rahul Mangharam (UPenn)."
 items:
   - label: Layer 1
     title: Strategy
@@ -36,9 +36,7 @@ items:
     text: Joins layers 1–5 into one system and tests it on real drones.
 ---
 
-Instead of hand-writing a playbook for each scenario, the team draws on a
-library of skills that adapts to the other side, with a safety layer between
-the team's decisions and the drones, and a localisation layer so each drone knows where it is. Four partners
-work across these layers as one team.
+There are five layers between a team plan and a spinning propeller. Each partner
+owns at least one, and ST Engineering joins them up and flies the result.
 
 Each partner writes and maintains its own page.
