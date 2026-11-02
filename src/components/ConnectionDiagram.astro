@@ -71,7 +71,7 @@ const OPTS = opts;
   /* Numbered layers in order, then Integration below a rule, as on the drone. */
   var NUMBERED = D.layers.filter(function(l){ return l.n != null; }).sort(function(a,b){ return a.n - b.n; });
   var LAYERS = NUMBERED.concat(D.layers.filter(function(l){ return l.n == null; }));
-  var SPANS = 'Spans layers 1–' + (NUMBERED.length ? NUMBERED[NUMBERED.length - 1].n : 4);
+  var SPANS = 'Spans layers 1–' + (NUMBERED.length ? NUMBERED[NUMBERED.length - 1].n : '');
   var layerById = {}; D.layers.forEach(function(l){ layerById[l.id] = l; });
   var partnerById = {}; P.forEach(function(p){ partnerById[p.id] = p; });
   var LINKS = [];
@@ -281,14 +281,14 @@ const OPTS = opts;
   if (narrow.addEventListener) narrow.addEventListener('change', redraw);
   root.querySelectorAll('img').forEach(function(img){ if (!img.complete) img.addEventListener('load', redraw); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
-  apply(false);
 
-  /* #layer-<id> (from the drone's "Who works on it" link) selects that layer.
-     No element carries that id, so the browser does not jump; we scroll once laid out. */
+  /* #layer-<id> (from the drone's "Who works on it" link) selects that layer; an unknown
+     id selects nothing. No element carries that id, so the browser does not jump; we
+     scroll once laid out. */
   var h = /^#layer-([a-z]+)$/.exec(location.hash);
-  if (h && layerById[h[1]]){
-    sel = {t:'l', id:h[1]};
-    apply(false);
+  if (h && layerById[h[1]]) sel = {t:'l', id:h[1]};
+  apply(false);
+  if (sel){
     announce();
     var go = function(){
       var b = root.querySelector('[data-sel="l:' + h[1] + '"]');

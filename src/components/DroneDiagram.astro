@@ -1,7 +1,7 @@
 ---
 /**
  * The annotated drone: a labelled line drawing that explains what each layer
- * of the system is. Drawing on the left, callouts 1-5 in one column on the
+ * of the system is. Drawing on the left, the numbered callouts in one column on the
  * right (top to bottom, like the stack), Integration as a bracket spanning them.
  *
  * mode "explain" (home page): callouts are buttons. Selecting one lights that
@@ -38,8 +38,30 @@ const linkOut = explain && !!partnersHref && !target;
 
 const numbered = data.layers.filter((l) => l.n != null).sort((a, b) => (a.n ?? 0) - (b.n ?? 0));
 const layers = [...numbered, ...data.layers.filter((l) => l.n == null)];
-const lastN = numbered.length ? numbered[numbered.length - 1].n : 4;
+const lastN = numbered.length ? numbered[numbered.length - 1].n : '';
 const spans = `Spans layers 1–${lastN}`;
+/* marker positions in the drawing, keyed by layer id; the numbers come from stack.md */
+const MK: Record<string, [number, number]> = {
+  strategy: [300, 72],
+  safety: [433, 237],
+  flight: [562, 297],
+  localisation: [348, 368],
+  drones: [250, 412],
+};
+/* what the drawing shows for each layer, for the drawing's text alternative */
+const SHOWS: Record<string, string> = {
+  strategy: 'the drone and two teammates are linked peer to peer by dashed lines and share one plan; there is no central controller',
+  safety: 'a dashed ring around the drone, and a third teammate kept a safe distance away',
+  flight: 'dotted waypoints that become a solid flown line arriving just below the drone, labelled AirStack: plan to flight',
+  localisation: "the drone's own camera and a position fix beneath it",
+  drones: 'the Starling 2 Max airframe',
+};
+const intLayer = data.layers.find((l) => l.n == null);
+const illLabel = [
+  'Line drawing of a quadcopter drone and its teammates.',
+  ...numbered.filter((l) => SHOWS[l.id]).map((l) => `${l.n}, ${l.title}: ${SHOWS[l.id]}.`),
+  intLayer ? `Corner marks around the drawing stand for ${intLayer.title}, which spans layers 1 to ${lastN}.` : '',
+].filter(Boolean).join(' ');
 
 const P = data.partners_in_display_order;
 const pt = !explain ? P.find((p) => p.id === partner) : undefined;
@@ -56,6 +78,8 @@ const OPTS = {
   scrollTo: scrollTo ?? null,
   partnersHref: partnersHref ?? null,
   lit,
+  /* the numbered layers in stack order, for the leader lines */
+  num: numbered.map((l) => l.id),
   /* which layers each partner works on, for selections made in the connection diagram */
   pw: Object.fromEntries(P.map((p) => [p.id, Object.keys(p.work)])),
 };
@@ -70,7 +94,7 @@ const label = explain
     <svg class="pd-lines" aria-hidden="true" focusable="false"></svg>
 
     <figure class="pd-fig">
-      <svg class="pd-ill" viewBox="0 0 600 440" role="img" aria-label="Line drawing of a quadcopter drone and its teammates. 1, Strategy: the drone and two teammates are linked peer to peer by dashed lines and share one plan; there is no central controller. 2, Safety: a dashed ring around the drone, and a third teammate kept a safe distance away. 3, Flight: dotted waypoints that become a solid flown line arriving just below the drone, labelled AirStack: plan to flight. 4, Localisation: the drone's own camera and a position fix beneath it. 5, Drones: the Starling 2 Max airframe. Corner marks around the drawing stand for Integration, which spans layers 1 to 5.">
+      <svg class="pd-ill" viewBox="0 0 600 440" role="img" aria-label={illLabel}>
         <defs>
           <marker id={id('arr')} viewBox="0 0 10 10" refX="7.5" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
             <path class="pd-arrow" d="M2 1.5L7.5 5 2 8.5" />
@@ -114,13 +138,13 @@ const label = explain
           <path class="pd-crop" d="M4 28V4h24M572 4h24v24M596 412v24h-24M28 436H4v-24" />
         </g>
 
-        <!-- 2 Safety, back half of the ring (behind the drone) -->
+        <!-- Safety, back half of the ring (behind the drone) -->
         <g class={`pd-g${on('safety')}`} data-layer="safety">
           <ellipse class="pd-ringfill" cx="300" cy="276" rx="164" ry="66" />
           <path class="pd-ring" pathLength="380" d="M136 276A164 66 0 0 1 464 276" />
         </g>
 
-        <!-- 1 Strategy: three peers linked to each other, sharing one plan -->
+        <!-- Strategy: three peers linked to each other, sharing one plan -->
         <g class={`pd-g${on('strategy')}`} data-layer="strategy">
           <path class="pd-link" d="M216 118H384M188 136L288 240M412 136L312 240" />
           <g class="pd-plan">
@@ -132,14 +156,14 @@ const label = explain
           <use class="pd-mate" href={`#${id('air')}`} transform="translate(430 120) scale(.32)" />
         </g>
 
-        <!-- 2 Safety: a teammate kept outside the ring -->
+        <!-- Safety: a teammate kept outside the ring -->
         <g class={`pd-g${on('safety')}`} data-layer="safety">
           <use class="pd-mate" href={`#${id('air')}`} transform="translate(62 300) scale(.32)" />
           <path class="pd-dim" d="M105 292V258M162 290V258M105 266H162M101 270l8-8M158 270l8-8" />
           <text class="pd-lbl pd-lbl-sm" x="134" y="252" text-anchor="middle">safe distance</text>
         </g>
 
-        <!-- 5 Drones: the airframe -->
+        <!-- Drones: the airframe -->
         <g class={`pd-g pd-air${on('drones')}`} data-layer="drones">
           <ellipse class="pd-shadow" cx="300" cy="362" rx="44" ry="17.6" />
           <use class="pd-main" href={`#${id('air')}`} transform="translate(300 270)" />
@@ -148,7 +172,7 @@ const label = explain
           <text class="pd-lbl pd-lbl-air" x="232" y="416" text-anchor="end">Starling 2 Max</text>
         </g>
 
-        <!-- 4 Localisation: the drone's own camera looking forward-down, and the position fix it gives -->
+        <!-- Localisation: the drone's own camera looking forward-down, and the position fix it gives -->
         <g class={`pd-g${on('localisation')}`} data-layer="localisation">
           <path class="pd-link" d="M300 297L266 362M300 297L334 362" />
           <path class="pd-link" d="M266 362Q300 371 334 362" />
@@ -157,7 +181,7 @@ const label = explain
           <text class="pd-lbl pd-lbl-sm" x="300" y="402" text-anchor="middle">own camera</text>
         </g>
 
-        <!-- 3 Flight: dotted waypoints smoothing into a flown line -->
+        <!-- Flight: dotted waypoints smoothing into a flown line -->
         <g class={`pd-g${on('flight')}`} data-layer="flight">
           <path class="pd-wp" d="M592 282C556 296 528 340 474 348" />
           <path class="pd-flown" d="M474 348C420 356 372 352 340 332" marker-end={`url(#${id('arr')})`} />
@@ -165,7 +189,7 @@ const label = explain
           <text class="pd-lbl pd-lbl-path" dy="-7"><textPath href={`#${id('fp')}`} startOffset="14%">AirStack: plan → flight</textPath></text>
         </g>
 
-        <!-- 2 Safety, front half of the ring (over the drone) -->
+        <!-- Safety, front half of the ring (over the drone) -->
         <g class={`pd-g${on('safety')}`} data-layer="safety">
           <path class="pd-ring" pathLength="380" d="M464 276A164 66 0 0 1 136 276" />
         </g>
@@ -177,17 +201,16 @@ const label = explain
             <rect class="pd-hit" data-layer="safety" x="12" y="250" width="160" height="70" />
             <path class="pd-hit pd-hit-path" data-layer="flight" d="M592 282C556 296 528 340 474 348C420 356 372 352 340 332" />
             <rect class="pd-hit" data-layer="drones" x="176" y="218" width="248" height="100" />
-            <rect class="pd-hit" data-layer="localisation" x="258" y="320" width="84" height="88" />
+            <!-- after drones so it sits on top: covers the whole camera wedge, which starts inside the drones rect -->
+            <path class="pd-hit" data-layer="localisation" d="M300 293L260 365V408H340V365Z" />
             <path class="pd-hit" data-layer="integration" d="M0 0h40v40H0ZM560 0h40v40h-40ZM560 400h40v40h-40ZM0 400h40v40H0Z" />
           </g>
         )}
 
-        <!-- numbered markers: leader-line anchors, top to bottom -->
-        <g class={`pd-mk${on('strategy')}`} data-layer="strategy"><circle cx="300" cy="72" r="11" /><text x="300" y="72.5">1</text></g>
-        <g class={`pd-mk${on('safety')}`} data-layer="safety"><circle cx="433" cy="237" r="11" /><text x="433" y="237.5">2</text></g>
-        <g class={`pd-mk${on('flight')}`} data-layer="flight"><circle cx="562" cy="297" r="11" /><text x="562" y="297.5">3</text></g>
-        <g class={`pd-mk${on('localisation')}`} data-layer="localisation"><circle cx="348" cy="368" r="11" /><text x="348" y="368.5">4</text></g>
-        <g class={`pd-mk${on('drones')}`} data-layer="drones"><circle cx="250" cy="412" r="11" /><text x="250" y="412.5">5</text></g>
+        <!-- numbered markers: leader-line anchors; numbers from stack.md, positions by layer id -->
+        {numbered.filter((l) => MK[l.id]).map((l) => (
+          <g class={`pd-mk${on(l.id)}`} data-layer={l.id}><circle cx={MK[l.id][0]} cy={MK[l.id][1]} r="11" /><text x={MK[l.id][0]} y={MK[l.id][1] + 0.5}>{l.n}</text></g>
+        ))}
       </svg>
     </figure>
 
@@ -253,7 +276,7 @@ const label = explain
     var explain = OPTS.mode !== 'partner';
     var stage = root.querySelector('.pd-stage');
     var lines = root.querySelector('.pd-lines');
-    var NUM = ['strategy', 'safety', 'flight', 'localisation', 'drones'];
+    var NUM = OPTS.num || [];
     var ALL = NUM.concat('integration');
     var state = { layer: null, partner: null };
     var hoverPeek = null, focusPeek = null;
@@ -302,7 +325,7 @@ const label = explain
         lines.appendChild(el('path', { 'class': cls(id, 'pd-ld'), d: 'M' + (mx + dx / d * r) + ' ' + (my + dy / d * r) + 'L' + kx + ' ' + sy + 'H' + (sx - 4) }));
         lines.appendChild(el('circle', { 'class': cls(id, 'pd-ldot'), cx: sx - 4, cy: sy, r: 2.5 }));
       });
-      var c1 = co('strategy'), c5 = co('drones'), ci = co('integration');
+      var c1 = NUM.length && co(NUM[0]), c5 = NUM.length && co(NUM[NUM.length - 1]), ci = co('integration');
       if (c1 && c5 && ci) {
         var a = c1.getBoundingClientRect(), z = c5.getBoundingClientRect(), g = ci.getBoundingClientRect();
         var xr = a.right - sr.left, x = xr + 14, t = a.top - sr.top + 8, e = z.bottom - sr.top - 8, im = g.top + g.height / 2 - sr.top;

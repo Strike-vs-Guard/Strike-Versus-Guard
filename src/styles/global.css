@@ -164,6 +164,16 @@ p {
 .section__head .prose {
   margin-top: 0.75rem;
 }
+.section__head--row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.section__head--row h2 {
+  margin: 0;
+}
 .section__note {
   font-family: var(--font-mono);
   font-size: var(--step--1);

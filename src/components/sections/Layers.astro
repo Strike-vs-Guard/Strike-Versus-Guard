@@ -24,23 +24,13 @@ const system = await getSystemData();
         <h2>{stack.title}</h2>
         <p class="sys-hint">What each layer does, top to bottom. Select a layer to light it on the drone.</p>
       </div>
-      <a class="btn btn--ghost" href={partnersHref}>Who works on each layer →</a>
+      <a class="btn btn--ghost" href={`${partnersHref}#who`}>Who works on each layer →</a>
     </header>
     <DroneDiagram data={system} mode="explain" partnersHref={partnersHref} />
   </div>
 </section>
 
 <style>
-  .section__head--row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  .section__head--row h2 {
-    margin: 0;
-  }
   .sys-hint {
     margin: 0.5rem 0 0;
     color: var(--muted);

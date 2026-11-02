@@ -39,4 +39,4 @@ items:
 Instead of hand-writing a playbook for each scenario, the team draws on a
 library of skills that adapts to the other side, with a safety layer between
 the team's decisions and the drones, and a localisation layer so each drone knows where it is. Four partners
-work across these layers as one team. Select a partner to see their work.
+work across these layers as one team.

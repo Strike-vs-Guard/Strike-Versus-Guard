@@ -52,7 +52,7 @@ npm run check                # astro build + scripts/check-links.mjs (links + si
   ```bash
   npx astro preview --port 4322 &      # serves dist/ under the base path
   # then a Playwright script: goto http://localhost:4322/Strike-Versus-Guard/<page>,
-  # screenshot at 1280 light, 1280 dark (colorScheme:'dark'), 390 phone,
+  # screenshot at 1280 and 390 (one theme),
   # record pageerror/console errors and document.documentElement.scrollWidth - innerWidth
   ```
   Look at the screenshots. Test interactions with **mouse and keyboard** (`click()` vs `press('Enter')`).

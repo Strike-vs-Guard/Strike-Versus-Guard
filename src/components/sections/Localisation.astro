@@ -2,22 +2,21 @@
 /**
  * Localisation (content/programme/localisation.md).
  * Default: the full section (Programme page). `statusOnly`: just the one-sentence `status:` line
- * (Flights page). Renders nothing if the file is missing.
+ * (Flights page). A missing file fails the build, as for every other section.
  */
-import { getEntry, render } from 'astro:content';
 import { url } from '../../lib/url';
+import { section } from './content';
 
 interface Props {
   statusOnly?: boolean;
 }
 const { statusOnly = false } = Astro.props;
-const entry = await getEntry('programme', 'localisation');
-const Content = entry ? (await render(entry)).Content : null;
-const d = entry?.data;
+const d = await section('localisation');
+const { Content } = d;
 ---
 
 {
-  d && Content && !statusOnly && (
+  !statusOnly && (
     <section id="localisation" class="section">
       <div class="wrap">
         <header class="section__head">
@@ -30,7 +29,7 @@ const d = entry?.data;
   )
 }
 {
-  d && statusOnly && d.status && (
+  statusOnly && d.status && (
     <section class="section section--alt">
       <div class="wrap">
         <header class="section__head">

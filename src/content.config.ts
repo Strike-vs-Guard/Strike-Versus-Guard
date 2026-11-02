@@ -14,7 +14,7 @@ import { defineCollection } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-/** The four layers of the system, used to tag partners and the stack section. */
+/** The layers of the system, used to tag partners and the stack section. */
 const LAYERS = ['strategy', 'safety', 'flight', 'localisation', 'drones', 'integration'] as const;
 
 /** Partner ids. Must match the partner file names, lower-cased. */
