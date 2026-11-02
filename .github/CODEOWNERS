@@ -1,0 +1,26 @@
+# Who must review changes to which files. The LAST matching rule wins.
+# Replace the team names below with the real GitHub teams (or usernames) once
+# they exist in the Strike-vs-Guard organisation. Teams need write access.
+
+# Default: everything (layout, styles, workflows, shared programme text) → ST Engineering
+*                                   @Strike-vs-Guard/st-web
+
+# Each partner owns their own page and its images
+/content/partners/NUS.md            @Strike-vs-Guard/nus
+/content/partners/NUS/              @Strike-vs-Guard/nus
+/content/partners/UPenn.md          @Strike-vs-Guard/upenn
+/content/partners/UPenn/            @Strike-vs-Guard/upenn
+/content/partners/CMU.md            @Strike-vs-Guard/cmu
+/content/partners/CMU/              @Strike-vs-Guard/cmu
+/content/partners/ST.md             @Strike-vs-Guard/st-web
+/content/partners/ST/               @Strike-vs-Guard/st-web
+/content/partners/HTX.md            @Strike-vs-Guard/st-web
+/content/partners/HTX/              @Strike-vs-Guard/st-web
+
+# Shared sections co-owned with the partner who leads that work
+/content/programme/tracks.md        @Strike-vs-Guard/st-web @Strike-vs-Guard/nus @Strike-vs-Guard/upenn
+/content/programme/flights.md       @Strike-vs-Guard/st-web @Strike-vs-Guard/cmu
+
+# Site machinery stays with ST Engineering
+/.github/                           @Strike-vs-Guard/st-web
+/src/                               @Strike-vs-Guard/st-web

@@ -1,0 +1,50 @@
+# Builds a preview of every pull request and publishes it to
+#   https://strike-vs-guard.github.io/Strike-Versus-Guard/pr-preview/pr-<N>/
+# A bot comment on the pull request links to it. The preview is removed when
+# the pull request is closed or merged.
+#
+# Requires: Settings → Pages → Source = "Deploy from a branch", branch gh-pages, folder / (root).
+# Previews are not built for pull requests opened from forks (no write token).
+name: PR preview
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        if: github.event.action != 'closed'
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Build preview
+        if: github.event.action != 'closed'
+        run: |
+          npm ci
+          npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.number }}/
+          PREVIEW: '1'
+          PREVIEW_PR: ${{ github.event.number }}
+
+      - name: Publish or remove preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./dist/
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview

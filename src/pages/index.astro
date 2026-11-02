@@ -1,0 +1,786 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Wordmark from '../components/Wordmark.astro';
+import Arena from '../components/Arena.astro';
+import PartnerChips from '../components/PartnerChips.astro';
+import Clip from '../components/Clip.astro';
+import Icon from '../components/Icon.astro';
+import { url } from '../lib/url';
+
+const section = async (id: string) => {
+  const entry = await getEntry('programme', id);
+  if (!entry) throw new Error(`Missing content/programme/${id}.md`);
+  const { Content } = await render(entry);
+  return { ...entry.data, Content };
+};
+
+const overview = await section('overview');
+const tracks = await section('tracks');
+const benchmark = await section('benchmark');
+const stack = await section('stack');
+const flights = await section('flights');
+const progress = await section('progress');
+const milestones = await section('milestones');
+const directions = await section('directions');
+const team = await section('partners');
+
+const partners = (await getCollection('partners')).sort((a, b) => a.data.order - b.data.order);
+const updates = (await getCollection('updates', (u) => !u.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.short ?? id;
+---
+
+<Base>
+  <!-- ───────────────────────── Hero ───────────────────────── -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__text">
+        <p class="eyebrow">{overview.eyebrow} · Decentralised multi-drone autonomy</p>
+        <Wordmark as="h1" />
+        <span class="hero__rule" aria-hidden="true"></span>
+        <p class="hero__title">{overview.title}</p>
+        <div class="prose hero__body"><overview.Content /></div>
+        <div class="hero__actions">
+          <a class="btn" href="#programme">How it works</a>
+          <a class="btn btn--ghost" href="#partners">Meet the partners</a>
+        </div>
+      </div>
+      {
+        overview.image && (
+          <figure class="hero__figure">
+            <Image
+              src={overview.image}
+              alt={overview.imageAlt ?? ''}
+              widths={[560, 900, 1400]}
+              sizes="(min-width: 960px) 560px, 100vw"
+              loading="eager"
+              fetchpriority="high"
+            />
+            {overview.caption && <figcaption>{overview.caption}</figcaption>}
+          </figure>
+        )
+      }
+    </div>
+    <div class="wrap">
+      <dl class="facts">
+        <div><dt>Funded by</dt><dd>HTX</dd></div>
+        <div><dt>Led by</dt><dd>ST Engineering AI.R.STC</dd></div>
+        <div><dt>With</dt><dd>CMU · UPenn · NUS</dd></div>
+        <div><dt>Hardware</dt><dd>Starling 2 Max · AirStack</dd></div>
+        <div><dt>Timeline</dt><dd>2026 to 2029</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ─────────────────── Two tracks, one stack ─────────────────── -->
+  <section id="programme" class="section section--alt">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">{tracks.eyebrow}</p>
+        <h2>{tracks.title}</h2>
+        <div class="prose"><tracks.Content /></div>
+      </header>
+      <div class="tracks">
+        {
+          tracks.items.map((t) => (
+            <article class="card track">
+              <p class="eyebrow">{t.label}</p>
+              <h3>{t.title}</h3>
+              <PartnerChips ids={t.partners} />
+              <p class="track__text">{t.text}</p>
+              {t.image && (
+                <div class="track__fig">
+                  <Image src={t.image} alt={t.alt ?? ''} widths={[480, 800]} sizes="(min-width: 900px) 520px, 100vw" />
+                </div>
+              )}
+              <ul class="track__pm">
+                {t.plus && (
+                  <li>
+                    <span aria-hidden="true">+</span>
+                    <span class="visually-hidden">Strength: </span>
+                    {t.plus}
+                  </li>
+                )}
+                {t.minus && (
+                  <li>
+                    <span aria-hidden="true">–</span>
+                    <span class="visually-hidden">Trade-off: </span>
+                    {t.minus}
+                  </li>
+                )}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+      {
+        tracks.note && (
+          <p class="shared-stack">
+            <Icon name="drones" size={22} />
+            <span>{tracks.note}</span>
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- ─────────────────────── Benchmark ─────────────────────── -->
+  <section id="benchmark" class="section">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">{benchmark.eyebrow}</p>
+        <h2>{benchmark.title}</h2>
+        <div class="prose"><benchmark.Content /></div>
+      </header>
+      <Arena steps={benchmark.items} />
+      {benchmark.note && <p class="section__note">{benchmark.note}</p>}
+    </div>
+  </section>
+
+  <!-- ─────────────────────── Four layers ─────────────────────── -->
+  <section id="stack" class="section section--alt">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">{stack.eyebrow}</p>
+        <h2>{stack.title}</h2>
+        <div class="prose"><stack.Content /></div>
+      </header>
+      <ol class="layers">
+        {
+          stack.items.map((l) => (
+            <li class="card layer">
+              <div class="layer__icon">
+                <Icon name={l.icon ?? 'drones'} />
+              </div>
+              <div>
+                <p class="eyebrow">Layer {l.label}</p>
+                <h3>{l.title}</h3>
+                <p>{l.text}</p>
+                <PartnerChips ids={l.partners} />
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+      {stack.note && <p class="section__note">{stack.note}</p>}
+    </div>
+  </section>
+
+  <!-- ─────────────────────── Flights ─────────────────────── -->
+  <section id="flights" class="section">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">{flights.eyebrow}</p>
+        <h2>{flights.title}</h2>
+        <div class="prose"><flights.Content /></div>
+      </header>
+      <div class="clips">
+        {
+          flights.items.map((c) => (
+            <figure class="clip-card">
+              {c.video && <Clip video={c.video} poster={c.poster} title={c.title} />}
+              <figcaption>
+                <strong>{c.title}</strong>
+                <span>{c.text}</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+      {flights.note && <p class="section__note">{flights.note}</p>}
+
+      <header class="section__head section__head--sub">
+        <p class="eyebrow">{progress.eyebrow}</p>
+        <h2 class="h2--sub">{progress.title}</h2>
+        <div class="prose"><progress.Content /></div>
+      </header>
+      <ol class="progress">
+        {
+          progress.items.map((c) => (
+            <li class="progress__step">
+              {c.video && <Clip video={c.video} poster={c.poster} title={c.title} />}
+              <p class="eyebrow">{c.label}</p>
+              <h3>{c.title}</h3>
+              <p class="muted">{c.text}</p>
+              <PartnerChips ids={c.partners} />
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ─────────────────────── Milestones ─────────────────────── -->
+  <section id="milestones" class="section section--alt">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">{milestones.eyebrow}</p>
+        <h2>{milestones.title}</h2>
+        <div class="prose"><milestones.Content /></div>
+      </header>
+      <ol class="timeline">
+        {
+          milestones.items.map((m) => (
+            <li class:list={['timeline__item', { 'is-current': m.current }]}>
+              <span class="timeline__dot" aria-hidden="true" />
+              <p class="eyebrow">
+                {m.label} · {m.when}
+                {m.current && <span class="timeline__now">We are here</span>}
+              </p>
+              <h3>{m.title}</h3>
+              <p class="muted">{m.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ─────────────────────── Directions ─────────────────────── -->
+  <section id="directions" class="section">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">{directions.eyebrow}</p>
+        <h2>{directions.title}</h2>
+      </header>
+      <ul class="directions">
+        {
+          directions.items.map((d) => (
+            <li>
+              <Icon name={d.icon ?? 'drones'} />
+              <h3>{d.title}</h3>
+              <p class="muted">{d.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+      {
+        directions.tags.length > 0 && (
+          <div class="tags">
+            <p class="eyebrow">{directions.tagsLabel}</p>
+            <ul>
+              {directions.tags.map((t) => (
+                <li class="chip">{t}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- ─────────────────────── Partners ─────────────────────── -->
+  <section id="partners" class="section section--alt">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">{team.eyebrow}</p>
+        <h2>{team.title}</h2>
+        <div class="prose"><team.Content /></div>
+      </header>
+      <ul class="partners">
+        {
+          partners.map((p) => (
+            <li class="card partner">
+              <div class="logo-well partner__logo">
+                <Image src={p.data.logo} alt={p.data.logoAlt ?? p.data.institution} height={96} densities={[1, 2]} />
+              </div>
+              <p class="eyebrow">{p.data.role}</p>
+              <h3>
+                {p.data.page ? (
+                  <a href={url(`partners/${p.id}/`)} class="partner__link">
+                    {p.data.lab ? `${p.data.short} ${p.data.lab}` : p.data.short}
+                  </a>
+                ) : (
+                  p.data.short
+                )}
+              </h3>
+              {p.data.lead && <p class="partner__lead">{p.data.lead}</p>}
+              <p class="muted partner__contrib">{p.data.contribution}</p>
+            </li>
+          ))
+        }
+      </ul>
+      {
+        team.image && (
+          <figure class="team-photo">
+            <Image src={team.image} alt={team.imageAlt ?? ''} widths={[600, 1000, 1400]} sizes="(min-width: 1160px) 1100px, 100vw" />
+            {team.caption && <figcaption>{team.caption}</figcaption>}
+          </figure>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- ─────────────────────── Updates ─────────────────────── -->
+  {
+    updates.length > 0 && (
+      <section id="updates" class="section">
+        <div class="wrap">
+          <header class="section__head section__head--row">
+            <div>
+              <p class="eyebrow">Updates</p>
+              <h2>Latest from the programme</h2>
+            </div>
+            <a class="btn btn--ghost" href={url('updates/')}>All updates</a>
+          </header>
+          <ul class="updates">
+            {updates.map((u) => (
+              <li class="card update">
+                <p class="eyebrow">
+                  <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmt(u.data.date)}</time> ·{' '}
+                  {partnerName(u.data.partner)}
+                </p>
+                <h3>
+                  <a href={url(`updates/${u.id}/`)}>{u.data.title}</a>
+                </h3>
+                <p class="muted">{u.data.summary}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  /* Hero */
+  .hero {
+    padding-block: clamp(40px, 7vw, 88px) clamp(32px, 5vw, 56px);
+  }
+  .hero__grid {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 56px;
+    }
+  }
+  .hero__text :global(.wordmark) {
+    margin-top: 4px;
+  }
+  .hero__rule {
+    display: block;
+    width: 32px;
+    height: 3px;
+    background: var(--accent);
+    margin: 22px 0 20px;
+  }
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step-4);
+    line-height: 1.15;
+    max-width: 22ch;
+    margin-bottom: 18px;
+  }
+  .hero__body :global(p) {
+    color: var(--muted);
+  }
+  .hero__body :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .hero__figure :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  @media (max-width: 420px) {
+    .hero :global(.wordmark--lg) {
+      font-size: 2.35rem;
+    }
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    margin: clamp(32px, 5vw, 56px) 0 0;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .facts div {
+    background: var(--surface);
+    padding: 14px 16px;
+  }
+  @media (max-width: 719px) {
+    .facts div:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+  .facts dt {
+    font: 500 var(--step--1) var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .facts dd {
+    margin: 4px 0 0;
+    font-weight: 600;
+    font-size: var(--step-0);
+  }
+
+  /* Tracks */
+  .tracks {
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 900px) {
+    .tracks {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto auto 1fr auto;
+    }
+    .track {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 6;
+    }
+  }
+  .track {
+    padding: clamp(20px, 3vw, 32px);
+    gap: 12px;
+  }
+  .track h3 {
+    font-size: var(--step-3);
+    margin: 0;
+  }
+  .track .eyebrow {
+    margin: 0;
+  }
+  .track__text {
+    margin: 0;
+  }
+  .track__fig {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    align-self: start;
+  }
+  .track__pm {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+    display: grid;
+    gap: 4px;
+    font-size: var(--step-0);
+  }
+  .track__pm li {
+    display: flex;
+    gap: 10px;
+  }
+  .track__pm li > span:first-child {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    width: 1ch;
+  }
+  .shared-stack {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    margin: 20px 0 0;
+    padding: 16px 20px;
+    border: 1px dashed var(--muted);
+    border-radius: var(--radius);
+    font-weight: 600;
+  }
+  .shared-stack :global(svg) {
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+
+  /* Layers */
+  .layers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .layer {
+    padding: 24px;
+    display: grid;
+    gap: 16px;
+    align-content: start;
+  }
+  .layer__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .layer .eyebrow {
+    margin-bottom: 4px;
+  }
+  .layer h3 {
+    font-size: var(--step-3);
+    font-family: var(--font-display);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  /* Flights */
+  .clips {
+    display: grid;
+    gap: 20px 14px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr));
+  }
+  .clip-card figcaption {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    letter-spacing: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .clip-card figcaption strong {
+    color: var(--text);
+  }
+  .section__head--sub {
+    margin-top: clamp(48px, 8vw, 88px);
+  }
+  .h2--sub {
+    font-size: var(--step-4);
+  }
+  .progress {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 28px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    counter-reset: step;
+  }
+  .progress__step :global(.clip) {
+    margin-bottom: 14px;
+  }
+  .progress__step :global(video) {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .progress__step .eyebrow {
+    margin-bottom: 4px;
+  }
+  .progress__step h3 {
+    margin-bottom: 4px;
+  }
+  .progress__step p.muted {
+    margin-bottom: 10px;
+  }
+
+  /* Timeline */
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    position: relative;
+  }
+  .timeline__item {
+    position: relative;
+    padding: 0 0 32px 32px;
+    border-left: 2px solid var(--border);
+    margin-left: 7px;
+  }
+  .timeline__item:last-child {
+    padding-bottom: 0;
+  }
+  .timeline__dot {
+    position: absolute;
+    left: -9px;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--muted);
+  }
+  .is-current .timeline__dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .timeline__now {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+  .timeline h3 {
+    margin-bottom: 4px;
+  }
+  @media (min-width: 860px) {
+    .timeline {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .timeline__item {
+      border-left: 0;
+      margin-left: 0;
+      padding: 36px 0 0;
+      border-top: 2px solid var(--border);
+    }
+    .timeline__item:last-child {
+      padding-bottom: 0;
+    }
+    .timeline__dot {
+      left: 0;
+      top: -9px;
+    }
+  }
+
+  /* Directions */
+  .directions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 32px 28px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+  .directions li {
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+  .directions :global(svg) {
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .directions h3 {
+    margin-bottom: 4px;
+  }
+  .tags {
+    margin-top: 40px;
+  }
+  .tags ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tags .chip {
+    font-size: var(--step--1);
+    padding: 4px 12px;
+    color: var(--text);
+  }
+
+  /* Partners */
+  .partners {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  .partner {
+    padding: 16px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .partner__logo {
+    height: 88px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+  }
+  .partner__logo :global(img) {
+    max-height: 56px;
+    max-width: 100%;
+  }
+  .partner .eyebrow {
+    margin-bottom: 4px;
+  }
+  .partner h3 {
+    margin-bottom: 4px;
+  }
+  .partner__link {
+    text-decoration: none;
+  }
+  .partner__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+  .partner:has(.partner__link):hover {
+    border-color: var(--text);
+  }
+  .partner__lead {
+    font-size: var(--step-0);
+    margin-bottom: 6px;
+  }
+  .partner__contrib {
+    font-size: var(--step-0);
+    margin: 0;
+  }
+  .team-photo {
+    margin-top: 32px;
+  }
+  .team-photo :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+    aspect-ratio: 21 / 9;
+    object-fit: cover;
+    object-position: center 60%;
+  }
+
+  /* Updates */
+  .section__head--row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .section__head--row h2 {
+    margin: 0;
+  }
+  .updates {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .update {
+    padding: 22px;
+  }
+  .update h3 a {
+    text-decoration: none;
+  }
+  .update h3 a:hover {
+    text-decoration: underline;
+  }
+  .update p:last-child {
+    margin: 0;
+  }
+</style>

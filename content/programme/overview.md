@@ -1,0 +1,16 @@
+---
+# The top of the home page. Owned by ST Engineering; all partners review changes.
+eyebrow: Research programme
+title: Teams of drones that coordinate, adapt and decide on their own
+order: 1
+image: ./images/flight-cage.jpg
+imageAlt: Three Starling drones hovering in the CMU flight cage, labelled Strike and Guard
+caption: One Strike drone, two Guard drones, nobody on the sticks. CMU flight cage.
+---
+
+This is a research programme, funded by HTX and carried out by ST Engineering in
+collaboration with Carnegie Mellon University, the University of Pennsylvania,
+and the National University of Singapore, working toward **decentralised
+multi-drone autonomy**: teams of drones that coordinate, adapt, and make
+decisions on their own in changing environments, with no pilot and no central
+controller.

@@ -1,0 +1,37 @@
+# Publishes the live site whenever main changes (i.e. when a pull request is merged).
+# Live site: https://strike-vs-guard.github.io/Strike-Versus-Guard/
+name: Deploy live site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Build site and check links
+        run: npm run check
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+      - name: Publish to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          # Keep the PR previews that live alongside the site on gh-pages.
+          clean-exclude: pr-preview/

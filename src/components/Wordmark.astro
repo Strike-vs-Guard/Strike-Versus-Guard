@@ -1,0 +1,46 @@
+---
+interface Props {
+  size?: 'sm' | 'lg';
+  as?: 'span' | 'h1';
+}
+const { size = 'lg', as: Tag = 'span' } = Astro.props;
+---
+
+<Tag class:list={['wordmark', `wordmark--${size}`]}>
+  <span class="wordmark__strike">Strike</span>
+  <span class="wordmark__vs">vs</span>
+  <span class="wordmark__guard">Guard</span>
+</Tag>
+
+<style>
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.22em;
+    margin: 0;
+    white-space: nowrap;
+  }
+  .wordmark--sm {
+    font-size: 1.25rem;
+  }
+  .wordmark--lg {
+    font-size: var(--step-hero);
+  }
+  .wordmark__strike {
+    color: var(--strike);
+  }
+  .wordmark__guard {
+    color: var(--guard);
+  }
+  .wordmark__vs {
+    font-weight: 400;
+    text-transform: lowercase;
+    color: var(--muted);
+    font-size: 0.55em;
+  }
+</style>

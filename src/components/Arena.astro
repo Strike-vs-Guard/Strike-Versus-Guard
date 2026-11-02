@@ -1,0 +1,527 @@
+---
+/**
+ * Animated diagram of the benchmark game in four beats: Divide, Share, Adapt, Recover.
+ * The step titles and text come from content/programme/benchmark.md.
+ * Respects prefers-reduced-motion (no auto-play; steps jump instead of animating)
+ * and pauses when scrolled out of view.
+ */
+interface Props {
+  steps: { title: string; text?: string }[];
+}
+const { steps } = Astro.props;
+const rotor = [
+  [-6.5, -6.5],
+  [6.5, -6.5],
+  [-6.5, 6.5],
+  [6.5, 6.5],
+];
+const guards = ['g1', 'g2', 'g3'];
+const strikes = ['s1', 's2'];
+---
+
+<div class="arena" data-arena>
+  <figure class="arena__figure">
+    <svg viewBox="0 0 480 480" role="img" aria-labelledby="arena-title arena-desc">
+      <title id="arena-title">The Strike vs Guard game in four beats</title>
+      <desc id="arena-desc">
+        Three Guard drones, drawn in blue with filled rotors, hold a circular zone. Two Strike drones, drawn in
+        red with outlined rotors, try to reach it. Divide: the Guard drones spread around the zone. Share: they
+        exchange what they see. Adapt: one Strike drone changes direction and the Guard drones follow. Recover:
+        one Guard drone drops out and the other two re-space to cover the zone.
+      </desc>
+      <defs>
+        <pattern id="arena-dots" width="24" height="24" patternUnits="userSpaceOnUse">
+          <circle cx="12" cy="12" r="1.1" class="arena__dot"></circle>
+        </pattern>
+      </defs>
+
+      <rect width="480" height="480" fill="url(#arena-dots)"></rect>
+
+      <g class="arena__zone">
+        <circle cx="240" cy="240" r="96"></circle>
+        <text x="240" y="245" text-anchor="middle">Zone</text>
+      </g>
+
+      <!-- Strike intent lines -->
+      {strikes.map((s) => <line class="arena__intent" data-intent={s} x1="0" y1="0" x2="0" y2="0" />)}
+
+      <!-- Share: links between Guard drones -->
+      <g class="arena__links">
+        <line data-link="g1-g2"></line>
+        <line data-link="g2-g3"></line>
+        <line data-link="g3-g1"></line>
+      </g>
+
+      {
+        guards.map((g) => (
+          <g class="arena__drone arena__drone--guard" data-drone={g}>
+            <circle class="arena__ping" r="20" />
+            <g class="arena__glyph" transform="scale(1.45)">
+              <line x1="-6.5" y1="-6.5" x2="6.5" y2="6.5" class="arena__arm" />
+              <line x1="6.5" y1="-6.5" x2="-6.5" y2="6.5" class="arena__arm" />
+              {rotor.map(([x, y]) => (
+                <circle cx={x} cy={y} r="4.6" class="arena__rotor" />
+              ))}
+              <circle r="2.6" class="arena__hub" />
+            </g>
+          </g>
+        ))
+      }
+      {
+        strikes.map((s) => (
+          <g class="arena__drone arena__drone--strike" data-drone={s}>
+            <g class="arena__glyph" transform="scale(1.45)">
+              <line x1="-6.5" y1="-6.5" x2="6.5" y2="6.5" class="arena__arm" />
+              <line x1="6.5" y1="-6.5" x2="-6.5" y2="6.5" class="arena__arm" />
+              {rotor.map(([x, y]) => (
+                <circle cx={x} cy={y} r="4.6" class="arena__rotor" />
+              ))}
+              <circle r="2.6" class="arena__hub" />
+            </g>
+          </g>
+        ))
+      }
+      <text class="arena__offline" data-offline x="0" y="0" text-anchor="middle">offline</text>
+    </svg>
+    <figcaption class="arena__legend">
+      <span><i class="key key--guard" aria-hidden="true"></i>Guard team</span>
+      <span><i class="key key--strike" aria-hidden="true"></i>Strike team</span>
+      <button type="button" class="arena__toggle" data-toggle aria-pressed="false">Pause</button>
+    </figcaption>
+  </figure>
+
+  <ol class="arena__steps">
+    {
+      steps.map((s, i) => (
+        <li>
+          <button type="button" class="arena__step" data-step={i} aria-pressed={i === 0 ? 'true' : 'false'}>
+            <span class="arena__num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="arena__step-body">
+              <strong>{s.title}</strong>
+              {s.text && <span>{s.text}</span>}
+            </span>
+            <span class="arena__bar" aria-hidden="true">
+              <span />
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<script>
+  type P = [number, number];
+  type State = {
+    pos: Record<string, P>;
+    aim: Record<string, P>;
+    links: number; // 0..1 opacity of share links
+    offline: number; // 0..1 how far g3 has dropped out
+  };
+
+  // Positions per beat on a 480x480 board. Zone centre (240,240), radius 96.
+  const STATES: State[] = [
+    {
+      // Divide: guards spread to 120 degrees around the zone
+      pos: { g1: [240, 112], g2: [351, 304], g3: [129, 304], s1: [432, 70], s2: [440, 418] },
+      aim: { s1: [318, 170], s2: [322, 300] },
+      links: 0,
+      offline: 0,
+    },
+    {
+      // Share: strikes close in from the right, guards exchange what they see
+      pos: { g1: [300, 126], g2: [360, 286], g3: [150, 330], s1: [398, 104], s2: [404, 384] },
+      aim: { s1: [318, 170], s2: [322, 300] },
+      links: 1,
+      offline: 0,
+    },
+    {
+      // Adapt: s1 switches to the left side, guards rotate to follow
+      pos: { g1: [150, 150], g2: [352, 318], g3: [156, 338], s1: [92, 92], s2: [392, 392] },
+      aim: { s1: [172, 172], s2: [312, 312] },
+      links: 0.55,
+      offline: 0,
+    },
+    {
+      // Recover: g3 drops out, g1 and g2 re-space to cover
+      pos: { g1: [126, 214], g2: [348, 324], g3: [176, 386], s1: [58, 196], s2: [396, 396] },
+      aim: { s1: [146, 226], s2: [312, 312] },
+      links: 0.55,
+      offline: 1,
+    },
+  ];
+
+  const BEAT_MS = 4200;
+  const MOVE_MS = 1600;
+
+  function lerp(a: number, b: number, t: number) {
+    return a + (b - a) * t;
+  }
+  function ease(t: number) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+  function mix(a: State, b: State, t: number): State {
+    const pos: Record<string, P> = {};
+    const aim: Record<string, P> = {};
+    for (const k in a.pos) pos[k] = [lerp(a.pos[k][0], b.pos[k][0], t), lerp(a.pos[k][1], b.pos[k][1], t)];
+    for (const k in a.aim) aim[k] = [lerp(a.aim[k][0], b.aim[k][0], t), lerp(a.aim[k][1], b.aim[k][1], t)];
+    return { pos, aim, links: lerp(a.links, b.links, t), offline: lerp(a.offline, b.offline, t) };
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-arena]')) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const drones = Object.fromEntries(
+      [...root.querySelectorAll<SVGGElement>('[data-drone]')].map((el) => [el.dataset.drone!, el]),
+    );
+    const intents = Object.fromEntries(
+      [...root.querySelectorAll<SVGLineElement>('[data-intent]')].map((el) => [el.dataset.intent!, el]),
+    );
+    const links = [...root.querySelectorAll<SVGLineElement>('[data-link]')];
+    const offlineLabel = root.querySelector<SVGTextElement>('[data-offline]')!;
+    const stepButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-step]')];
+    const toggle = root.querySelector<HTMLButtonElement>('[data-toggle]')!;
+
+    let beat = 0;
+    let from = STATES[0];
+    let current = STATES[0];
+    let beatStart = performance.now();
+    let playing = !reduce;
+    let visible = true;
+    let raf = 0;
+
+    function draw(s: State) {
+      for (const k in s.pos) {
+        const [x, y] = s.pos[k];
+        drones[k]?.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+      }
+      for (const k in s.aim) {
+        const el = intents[k];
+        if (!el) continue;
+        el.setAttribute('x1', s.pos[k][0].toFixed(1));
+        el.setAttribute('y1', s.pos[k][1].toFixed(1));
+        el.setAttribute('x2', s.aim[k][0].toFixed(1));
+        el.setAttribute('y2', s.aim[k][1].toFixed(1));
+      }
+      for (const l of links) {
+        const [a, b] = l.dataset.link!.split('-');
+        const pa = s.pos[a];
+        const pb = s.pos[b];
+        l.setAttribute('x1', pa[0].toFixed(1));
+        l.setAttribute('y1', pa[1].toFixed(1));
+        l.setAttribute('x2', pb[0].toFixed(1));
+        l.setAttribute('y2', pb[1].toFixed(1));
+        const touchesG3 = a === 'g3' || b === 'g3';
+        l.style.opacity = String(s.links * (touchesG3 ? 1 - s.offline : 1) * 0.75);
+      }
+      const g3 = drones.g3;
+      g3.style.setProperty('--offline', String(s.offline));
+      g3.classList.toggle('is-offline', s.offline > 0.5);
+      offlineLabel.setAttribute('x', s.pos.g3[0].toFixed(1));
+      offlineLabel.setAttribute('y', (s.pos.g3[1] + 38).toFixed(1));
+      offlineLabel.style.opacity = String(s.offline);
+      root.style.setProperty('--share', String(beat === 1 ? 1 : 0));
+    }
+
+    function setBeat(i: number, animate: boolean) {
+      from = current;
+      beat = i;
+      beatStart = performance.now();
+      stepButtons.forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
+      root.dataset.beat = String(i);
+      if (!animate) {
+        current = STATES[i];
+        draw(current);
+      }
+    }
+
+    function frame(now: number) {
+      raf = 0;
+      const elapsed = now - beatStart;
+      const t = Math.min(1, elapsed / MOVE_MS);
+      current = mix(from, STATES[beat], ease(t));
+      draw(current);
+      root.style.setProperty('--progress', String(playing ? Math.min(1, elapsed / BEAT_MS) : 1));
+      if (playing && elapsed >= BEAT_MS) {
+        setBeat((beat + 1) % STATES.length, true);
+      }
+      if ((playing || t < 1) && visible) raf = requestAnimationFrame(frame);
+    }
+
+    function kick() {
+      if (!raf && visible) raf = requestAnimationFrame(frame);
+    }
+
+    function setPlaying(p: boolean) {
+      playing = p;
+      toggle.textContent = p ? 'Pause' : 'Play';
+      toggle.setAttribute('aria-pressed', String(!p));
+      root.classList.toggle('is-paused', !p);
+      if (p) beatStart = performance.now();
+      kick();
+    }
+
+    stepButtons.forEach((b, i) =>
+      b.addEventListener('click', () => {
+        setPlaying(false);
+        setBeat(i, !reduce);
+        kick();
+      }),
+    );
+    toggle.addEventListener('click', () => setPlaying(!playing));
+
+    new IntersectionObserver((entries) => {
+      visible = entries[0].isIntersecting;
+      if (visible) {
+        beatStart = performance.now() - (playing ? 0 : BEAT_MS);
+        kick();
+      }
+    }).observe(root);
+
+    draw(current);
+    setBeat(0, false);
+    setPlaying(playing);
+  }
+</script>
+
+<style>
+  .arena {
+    display: grid;
+    gap: 24px;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .arena {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 48px;
+    }
+  }
+  .arena__figure {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    box-shadow: var(--shadow);
+  }
+  svg {
+    width: 100%;
+    aspect-ratio: 1;
+  }
+  .arena__dot {
+    fill: var(--grid);
+  }
+  .arena__zone circle {
+    fill: var(--zone);
+    stroke: var(--muted);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 6;
+  }
+  .arena__zone text {
+    font: 500 12px var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--muted);
+  }
+  .arena__intent {
+    stroke: var(--strike);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 5;
+    opacity: 0.7;
+    stroke-linecap: round;
+  }
+  .arena__links line {
+    stroke: var(--guard);
+    stroke-width: 1.25;
+    stroke-dasharray: 1 5;
+    stroke-linecap: round;
+    opacity: 0;
+  }
+  .arena__arm {
+    stroke-width: 1.6;
+  }
+  .arena__drone--guard .arena__arm {
+    stroke: var(--guard);
+  }
+  .arena__drone--guard .arena__rotor {
+    fill: var(--guard);
+    stroke: var(--guard);
+    stroke-width: 1.4;
+  }
+  .arena__drone--guard .arena__hub {
+    fill: var(--guard);
+  }
+  .arena__drone--strike .arena__arm {
+    stroke: var(--strike);
+  }
+  .arena__drone--strike .arena__rotor {
+    fill: var(--surface);
+    stroke: var(--strike);
+    stroke-width: 1.8;
+  }
+  .arena__drone--strike .arena__hub {
+    fill: var(--strike);
+  }
+  .arena__drone .arena__glyph {
+    transition:
+      opacity 0.6s ease,
+      filter 0.6s ease;
+  }
+  .arena__drone.is-offline .arena__rotor {
+    fill: var(--surface);
+    stroke: var(--muted);
+    stroke-dasharray: 2 2;
+  }
+  .arena__drone.is-offline .arena__arm,
+  .arena__drone.is-offline .arena__hub {
+    stroke: var(--muted);
+    fill: var(--muted);
+  }
+  .arena__drone.is-offline .arena__glyph {
+    opacity: 0.6;
+  }
+  .arena__offline {
+    font: 500 11px var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    fill: var(--muted);
+    opacity: 0;
+  }
+  .arena__ping {
+    fill: none;
+    stroke: var(--guard);
+    stroke-width: 1;
+    opacity: 0;
+  }
+  .arena[data-beat='1'] .arena__drone--guard .arena__ping {
+    animation: ping 1.6s ease-out infinite;
+  }
+  .arena[data-beat='1'] [data-drone='g2'] .arena__ping {
+    animation-delay: 0.5s;
+  }
+  .arena[data-beat='1'] [data-drone='g3'] .arena__ping {
+    animation-delay: 1s;
+  }
+  @keyframes ping {
+    from {
+      transform: scale(0.8);
+      opacity: 0.6;
+    }
+    to {
+      transform: scale(2.4);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .arena[data-beat='1'] .arena__drone--guard .arena__ping {
+      animation: none;
+      opacity: 0.35;
+      transform: scale(1.6);
+    }
+  }
+
+  .arena__legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 18px;
+    padding: 4px 6px 2px;
+    margin: 0;
+  }
+  .key {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: -1px;
+  }
+  .key--guard {
+    background: var(--guard);
+  }
+  .key--strike {
+    border: 2px solid var(--strike);
+  }
+  .arena__toggle {
+    margin-left: auto;
+    font: inherit;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 12px;
+    min-height: 32px;
+    cursor: pointer;
+  }
+  .arena__toggle:hover {
+    color: var(--text);
+    border-color: var(--text);
+  }
+
+  .arena__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .arena__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    padding: 14px 16px 16px;
+    cursor: pointer;
+    overflow: hidden;
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease;
+  }
+  .arena__step:hover {
+    color: var(--text);
+  }
+  .arena__step[aria-pressed='true'] {
+    color: var(--text);
+    background: var(--surface);
+    border-color: var(--border);
+  }
+  .arena__num {
+    font: 500 var(--step--1) var(--font-mono);
+    padding-top: 4px;
+    color: var(--muted);
+  }
+  .arena__step-body {
+    display: grid;
+    gap: 2px;
+  }
+  .arena__step-body strong {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1.1;
+  }
+  .arena__bar {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 2px;
+    background: transparent;
+  }
+  .arena__step[aria-pressed='true'] .arena__bar span {
+    display: block;
+    height: 100%;
+    background: var(--guard);
+    transform-origin: left;
+    transform: scaleX(var(--progress, 0));
+  }
+  .arena.is-paused .arena__step[aria-pressed='true'] .arena__bar span {
+    transform: scaleX(1);
+    opacity: 0.4;
+  }
+</style>

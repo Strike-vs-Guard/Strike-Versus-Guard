@@ -1,0 +1,41 @@
+---
+/**
+ * A short flight clip. Shows the poster image with a play button; the video only
+ * loads when someone clicks it. Muted, looping, no autoplay.
+ */
+import { url } from '../lib/url';
+interface Props {
+  video: string;
+  poster?: string;
+  title: string;
+}
+const { video, poster, title } = Astro.props;
+---
+
+<div class="clip">
+  <video
+    src={url(`media/${video}`)}
+    poster={poster ? url(`media/${poster}`) : undefined}
+    preload="none"
+    muted
+    loop
+    playsinline
+    controls
+    aria-label={`Flight clip: ${title}`}></video>
+</div>
+
+<style>
+  .clip {
+    position: relative;
+    background: #0e1114;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  video {
+    width: 100%;
+    aspect-ratio: 960 / 1080;
+    object-fit: contain;
+    background: #0e1114;
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import { url } from '../lib/url';
+interface Props {
+  ids: string[];
+}
+const { ids } = Astro.props;
+const all = await getCollection('partners');
+const chips = ids
+  .map((id) => all.find((p) => p.id === id))
+  .filter((p): p is NonNullable<typeof p> => !!p);
+---
+
+{
+  chips.length > 0 && (
+    <span class="chips">
+      {chips.map((p) =>
+        p.data.page ? (
+          <a class="chip" href={url(`partners/${p.id}/`)}>
+            {p.data.short}
+          </a>
+        ) : (
+          <span class="chip">{p.data.short}</span>
+        ),
+      )}
+    </span>
+  )
+}
+
+<style>
+  .chips {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+</style>

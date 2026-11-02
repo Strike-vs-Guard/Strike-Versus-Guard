@@ -1,0 +1,52 @@
+---
+# ─────────────────────────────────────────────────────────────────────────────
+# ST Engineering's partner file. Edit the fields below and the text under the
+# second "---". See CONTRIBUTING.md for how to preview before publishing.
+# ─────────────────────────────────────────────────────────────────────────────
+short: ST Engineering
+institution: ST Engineering
+lab: AI.R.STC · NEAR Lab
+labFull: AI and Robotics Strategic Technology Centre, NEAR Lab
+role: Programme lead
+contribution: Programme lead, integration and the Singapore flight lab
+summary: >-
+  ST Engineering's AI and Robotics Strategic Technology Centre leads the
+  programme, integrates every layer of the system and runs the Singapore flight lab.
+layers: [integration, drones]
+logo: ./ST/st-engineering.png
+labLogo: ./ST/near-lab.png
+logoAlt: ST Engineering
+website: https://www.stengg.com
+order: 2
+updated: 2026-11-02
+---
+
+## Our role in Strike vs Guard
+
+The NEAR Lab in ST Engineering's AI and Robotics Strategic Technology Centre
+(AI.R.STC) leads the programme. We bring the partners' work together into one
+system, from team strategy and safety down to flight software and hardware, and
+we run the Singapore flight lab where the drone teams are tested.
+
+## What we are working on
+
+- **Integration.** Making sure the strategy policies from NUS and UPenn, the
+  safety filter, and CMU's AirStack run together as one stack on Starling 2 Max
+  drones.
+- **The Singapore flight lab.** An indoor flight space at ST Engineering for
+  testing multi-drone teams locally, alongside CMU's flight cage.
+- **The benchmark.** Running Strike vs Guard games so that the learning-based
+  and formal approaches can be compared on the same hardware.
+
+## Results so far
+
+The first Starling 2 Max flights have taken place in the Singapore lab, with
+more drones on the way.
+
+![Starling drones in the ST Engineering flight lab in Singapore](./ST/singapore-flight-lab.jpg)
+
+## People
+
+<!-- Add names and roles here, one per line, e.g. "- Jane Tan, Research Engineer" -->
+
+- NEAR Lab, AI.R.STC, ST Engineering

@@ -1,0 +1,218 @@
+---
+/**
+ * One page per partner, built from content/partners/<PARTNER>.md.
+ * The layout is shared; each partner only edits their own Markdown file.
+ */
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { url } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const partners = await getCollection('partners', (p) => p.data.page);
+  return partners.map((p) => ({ params: { id: p.id }, props: { partner: p } }));
+}
+
+const { partner } = Astro.props;
+const d = partner.data;
+const { Content } = await render(partner);
+const all = (await getCollection('partners', (p) => p.data.page)).sort((a, b) => a.data.order - b.data.order);
+const updates = (await getCollection('updates', (u) => !u.data.draft && u.data.partner === partner.id)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const repo = 'https://github.com/Strike-vs-Guard/Strike-Versus-Guard';
+const fileName = partner.filePath?.split('/').pop();
+const fmt = (x: Date) => x.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+const layerNames: Record<string, string> = {
+  strategy: 'Strategy',
+  safety: 'Safety',
+  flight: 'Flight',
+  drones: 'Drones',
+  integration: 'Integration',
+};
+---
+
+<Base title={`${d.short}${d.lab ? ' ' + d.lab : ''}`} description={d.summary}>
+  <article class="partner-page">
+    <header class="pp-head">
+      <div class="wrap pp-head__grid">
+        <div>
+          <p class="eyebrow"><a href={url('#partners')}>Partners</a> / {d.role}</p>
+          <h1>{d.lab ? `${d.short} ${d.lab}` : d.short}</h1>
+          <p class="pp-inst">{d.labFull ? `${d.labFull}, ${d.institution}` : d.institution}</p>
+          <p class="lede">{d.summary}</p>
+        </div>
+        <aside class="card pp-meta" aria-label="At a glance">
+          <div class="pp-logos">
+            <div class="logo-well"><Image src={d.logo} alt={d.logoAlt ?? d.institution} height={96} densities={[1, 2]} /></div>
+            {
+              d.labLogo && (
+                <div class="logo-well">
+                  <Image src={d.labLogo} alt={d.lab ?? ''} height={96} densities={[1, 2]} />
+                </div>
+              )
+            }
+          </div>
+          <dl>
+            {d.lead && (<div><dt>Lead</dt><dd>{d.lead}</dd></div>)}
+            <div><dt>Contribution</dt><dd>{d.contribution}</dd></div>
+            {
+              d.layers.length > 0 && (
+                <div>
+                  <dt>Layers</dt>
+                  <dd>{d.layers.map((l) => layerNames[l]).join(' · ')}</dd>
+                </div>
+              )
+            }
+            {d.website && (<div><dt>Website</dt><dd><a href={d.website}>{new URL(d.website).hostname.replace(/^www\./, '')}</a></dd></div>)}
+            {d.contact && (<div><dt>Contact</dt><dd><a href={`mailto:${d.contact}`}>{d.contact}</a></dd></div>)}
+          </dl>
+        </aside>
+      </div>
+    </header>
+
+    <div class="wrap pp-body">
+      <div class="md prose"><Content /></div>
+
+      {
+        updates.length > 0 && (
+          <section class="pp-updates">
+            <h2>Updates from {d.short}</h2>
+            <ul>
+              {updates.map((u) => (
+                <li>
+                  <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmt(u.data.date)}</time>
+                  <a href={url(`updates/${u.id}/`)}>{u.data.title}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <footer class="pp-foot">
+        <p class="muted">
+          Last updated {fmt(d.updated)}. This page is maintained by {d.short}.{" "}
+          <a href={`${repo}/edit/main/content/partners/${fileName}`}>Suggest an edit</a>
+        </p>
+        <nav aria-label="Other partners" class="pp-others">
+          {
+            all
+              .filter((p) => p.id !== partner.id)
+              .map((p) => (
+                <a class="chip" href={url(`partners/${p.id}/`)}>
+                  {p.data.short}
+                </a>
+              ))
+          }
+        </nav>
+      </footer>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .pp-head {
+    padding-block: clamp(40px, 6vw, 72px);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .pp-head__grid {
+    display: grid;
+    gap: 32px;
+  }
+  @media (min-width: 900px) {
+    .pp-head__grid {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 56px;
+      align-items: start;
+    }
+  }
+  .pp-head h1 {
+    font-family: var(--font-display);
+    font-size: var(--step-hero);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .pp-inst {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .eyebrow a {
+    text-decoration: none;
+  }
+  .pp-meta {
+    padding: 20px;
+    background: var(--bg);
+    box-shadow: none;
+  }
+  .pp-logos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .pp-logos .logo-well {
+    height: 84px;
+    border: 1px solid var(--border);
+  }
+  .pp-meta dl {
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .pp-meta dt {
+    font: 500 var(--step--1) var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .pp-meta dd {
+    margin: 2px 0 0;
+    font-size: var(--step-0);
+  }
+  .pp-body {
+    padding-block: clamp(40px, 6vw, 72px);
+  }
+  .pp-updates {
+    margin-top: 48px;
+    max-width: 68ch;
+  }
+  .pp-updates h2 {
+    font-size: var(--step-4);
+  }
+  .pp-updates ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .pp-updates li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .pp-updates time {
+    font: 500 var(--step--1) var(--font-mono);
+    color: var(--muted);
+    min-width: 12ch;
+    padding-top: 3px;
+  }
+  .pp-foot {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 16px;
+    font-size: var(--step-0);
+  }
+  .pp-others {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>

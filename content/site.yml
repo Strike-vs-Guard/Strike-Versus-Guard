@@ -1,0 +1,14 @@
+# Site-wide settings. Owned by ST Engineering.
+main:
+  title: Strike vs Guard
+  tagline: Decentralised multi-drone autonomy
+  description: >-
+    A research programme funded by HTX and carried out by ST Engineering with
+    Carnegie Mellon University, the University of Pennsylvania and the National
+    University of Singapore, working toward teams of drones that coordinate,
+    adapt and make decisions on their own.
+  repository: https://github.com/Strike-vs-Guard/Strike-Versus-Guard
+  footerNote: >-
+    Strike vs Guard is a research programme funded by HTX and carried out by
+    ST Engineering in collaboration with Carnegie Mellon University, the
+    University of Pennsylvania and the National University of Singapore.

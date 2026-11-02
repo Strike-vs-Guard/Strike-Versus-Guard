@@ -1,0 +1,24 @@
+# Runs on every pull request. Fails if a content file is missing a required
+# field, points at an image that doesn't exist, or the site has broken links.
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Build site and check links
+        run: npm run check

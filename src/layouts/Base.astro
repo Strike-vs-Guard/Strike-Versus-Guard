@@ -1,0 +1,277 @@
+---
+import '../styles/global.css';
+import { getEntry, getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { url, isPreview, previewPr } from '../lib/url';
+import Wordmark from '../components/Wordmark.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const site = (await getEntry('site', 'main'))!.data;
+const partners = (await getCollection('partners')).sort((a, b) => a.data.order - b.data.order);
+const { title, description = site.description } = Astro.props;
+const pageTitle = title ? `${title} · ${site.title}` : `${site.title}: ${site.tagline}`;
+const path = Astro.url.pathname;
+const nav = [
+  { href: url('#programme'), label: 'Programme' },
+  { href: url('#benchmark'), label: 'Benchmark' },
+  { href: url('#flights'), label: 'Flights' },
+  { href: url('#partners'), label: 'Partners' },
+  { href: url('updates/'), label: 'Updates' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {isPreview && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+    <link rel="canonical" href={new URL(path, Astro.site)} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+Condensed:wght@400;700&family=IBM+Plex+Sans:wght@400;600&display=swap"
+    />
+  </head>
+  <body>
+    {
+      isPreview && (
+        <div class="preview-banner" role="note">
+          <strong>Preview{previewPr ? ` of pull request #${previewPr}` : ''}.</strong> This is not the live
+          site. Changes appear on the live site only after the pull request is approved and merged.
+        </div>
+      )
+    }
+    <a class="skip visually-hidden" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap site-header__inner">
+        <a href={url()} class="site-header__brand" aria-label={`${site.title}, home`}>
+          <Wordmark size="sm" />
+        </a>
+        <nav aria-label="Main">
+          <ul class="site-nav">
+            {
+              nav.map((n) => (
+                <li>
+                  <a href={n.href} aria-current={path === n.href ? 'page' : undefined}>
+                    {n.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <ul class="logo-strip" aria-label="Programme partners">
+          {
+            partners.map((p) => (
+              <li>
+                <a
+                  href={p.data.page ? url(`partners/${p.id}/`) : p.data.website}
+                  title={p.data.institution}
+                  class="logo-strip__item"
+                >
+                  <Image
+                    src={p.data.logo}
+                    alt={p.data.logoAlt ?? p.data.institution}
+                    height={56}
+                    densities={[1, 2]}
+                  />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="site-footer__cols">
+          <p class="site-footer__note">{site.footerNote}</p>
+          <ul class="site-footer__links">
+            {
+              partners
+                .filter((p) => p.data.page)
+                .map((p) => (
+                  <li>
+                    <a href={url(`partners/${p.id}/`)}>{p.data.short}</a>
+                  </li>
+                ))
+            }
+            <li><a href={url('updates/')}>Updates</a></li>
+            <li><a href={`${site.repository}/blob/main/CONTRIBUTING.md`}>Edit this site</a></li>
+          </ul>
+        </div>
+        <p class="site-footer__small">© {new Date().getFullYear()} Strike vs Guard programme partners.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .preview-banner {
+    background: #fff6d6;
+    color: #3d3000;
+    border-bottom: 1px solid #e9d27a;
+    font-size: var(--step-0);
+    padding: 10px var(--gutter);
+    text-align: center;
+  }
+  .skip:focus {
+    position: fixed !important;
+    top: 8px;
+    left: 8px;
+    width: auto;
+    height: auto;
+    clip: auto;
+    padding: 8px 12px;
+    background: var(--surface);
+    z-index: 100;
+  }
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px);
+    -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 60px;
+  }
+  .site-header__brand {
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .site-nav {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .site-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 10px;
+    font-size: var(--step-0);
+    text-decoration: none;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .site-nav a:hover,
+  .site-nav a[aria-current='page'] {
+    color: var(--text);
+  }
+  @media (max-width: 720px) {
+    .site-header__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding-top: 10px;
+    }
+    .site-nav {
+      margin-inline: -10px;
+    }
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    padding-block: 48px 32px;
+    font-size: var(--step-0);
+  }
+  .logo-strip {
+    list-style: none;
+    margin: 0 0 40px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  @media (max-width: 560px) {
+    .logo-strip__item {
+      width: calc(50% - 6px);
+    }
+  }
+  .logo-strip__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 168px;
+    height: 76px;
+    padding: 10px 16px;
+    background: var(--well);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .logo-strip__item :global(img) {
+    max-height: 52px;
+    max-width: 132px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: 0.7;
+    transition:
+      filter 0.2s ease,
+      opacity 0.2s ease;
+  }
+  .logo-strip__item:hover :global(img),
+  .logo-strip__item:focus-visible :global(img) {
+    filter: none;
+    opacity: 1;
+  }
+  .site-footer__cols {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 800px) {
+    .site-footer__cols {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+  .site-footer__note {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+  .site-footer__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    align-content: flex-start;
+  }
+  .site-footer__small {
+    color: var(--muted);
+    font-size: var(--step--1);
+    margin: 32px 0 0;
+  }
+</style>

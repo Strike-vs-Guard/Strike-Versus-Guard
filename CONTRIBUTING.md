@@ -1,0 +1,178 @@
+# Editing the Strike vs Guard website
+
+Each partner owns one Markdown file. You edit that file, check a **preview** of
+the site with your change, and only when it looks right does it go to the
+**live site**.
+
+```
+ edit your .md file  →  open a pull request  →  preview link appears  →  partner approves  →  merged  →  live site updates
+      (you)                  (you)               (automatic, ~2 min)        (code owner)                  (automatic, ~2 min)
+```
+
+| | Address |
+|---|---|
+| Live site | https://strike-vs-guard.github.io/Strike-Versus-Guard/ |
+| Your preview | https://strike-vs-guard.github.io/Strike-Versus-Guard/pr-preview/pr-NUMBER/ (posted on your pull request) |
+
+Nobody can change the live site directly. Every change goes through a pull
+request, is built and checked automatically, and needs approval from the
+file's owner (see [`.github/CODEOWNERS`](.github/CODEOWNERS)).
+
+---
+
+## 1. Which file is mine?
+
+| Partner | Your page text | Your images |
+|---|---|---|
+| NUS | `content/partners/NUS.md` | `content/partners/NUS/` |
+| UPenn | `content/partners/UPenn.md` | `content/partners/UPenn/` |
+| CMU | `content/partners/CMU.md` | `content/partners/CMU/` |
+| ST Engineering | `content/partners/ST.md` | `content/partners/ST/` |
+
+Each file has two parts:
+
+```markdown
+---
+short: NUS                         ← "front matter": short fields that feed
+lab: MARMot Lab                      the partner card on the home page
+lead: Prof Guillaume Sartoretti
+summary: >-
+  One or two sentences for the card.
+updated: 2026-11-02
+---
+
+## Our role in Strike vs Guard      ← "body": normal Markdown that becomes
+                                      your partner page, /partners/nus/
+Free text, lists, images, links…
+```
+
+Edit both parts as you like. A few rules apply to the front matter (the build will tell you if you
+break one):
+
+- `contribution` must be 70 characters or fewer; `summary` 320 or fewer.
+- `logo:` / `labLogo:` must point at an image that exists, written relative to the file,
+  e.g. `./NUS/nus.png`.
+- `layers:` can only contain `strategy`, `safety`, `flight`, `drones`, `integration`.
+- Dates are `YYYY-MM-DD`.
+
+Other shared files (owned by ST Engineering, but anyone may propose changes):
+
+| What | File |
+|---|---|
+| Top of the home page | `content/programme/overview.md` |
+| Two tracks (NUS / UPenn) | `content/programme/tracks.md` |
+| The benchmark game and its four steps | `content/programme/benchmark.md` |
+| Four layers | `content/programme/stack.md` |
+| Flight clips | `content/programme/flights.md`, `content/programme/progress.md` (videos in `public/media/`) |
+| Milestones (move `current: true` each year) | `content/programme/milestones.md` |
+| Research directions | `content/programme/directions.md` |
+| News posts | `content/updates/YYYY-MM-DD-short-title.md` |
+| Site title and footer | `content/site.yml` |
+
+---
+
+## 2a. Edit in the browser (no install needed)
+
+1. On GitHub, open your file, e.g. `content/partners/NUS.md`, and click the **pencil** icon.
+2. Make your changes. Use the **Preview** tab to check the Markdown formatting.
+3. Click **Commit changes…** → choose **Create a new branch for this commit and start a pull request** →
+   give the branch a name like `nus/october-results` → **Propose changes** → **Create pull request**.
+4. **Adding images:** on the pull request's branch, go to your images folder
+   (e.g. `content/partners/NUS/`), click **Add file → Upload files**, and commit to the same branch.
+   Then reference the image from your file as `![Description of the photo](./NUS/my-photo.jpg)`.
+5. Wait about two minutes. Two things appear on the pull request:
+   - a **CI** check: green means the site built and all links work. If it's red, click **Details**;
+     the error names the file and field to fix (e.g. `partners → nus … summary: Too big`).
+   - a bot comment with your **preview link**. Open it and check your page.
+6. Need another change? Edit the file again **on the same branch**. The preview updates each time.
+7. When you're happy, ask your partner's code owner to **approve**. ST Engineering then merges it,
+   the live site updates within a few minutes, and the preview is removed.
+
+## 2b. Edit on your own computer (live preview while you type)
+
+You need [Git](https://git-scm.com/) and [Node.js 22](https://nodejs.org/) (LTS; check with `node -v`).
+
+```bash
+git clone https://github.com/Strike-vs-Guard/Strike-Versus-Guard.git
+cd Strike-Versus-Guard
+npm ci                      # first time only
+git switch -c nus/october-results
+npm run dev                 # open http://localhost:4321/Strike-Versus-Guard/
+```
+
+The page reloads as you save. When you're done:
+
+```bash
+npm run check               # builds the whole site and checks every link, same as CI
+git add content/partners/NUS.md content/partners/NUS/
+git commit -m "NUS: add October results"
+git push -u origin nus/october-results
+```
+
+Then open a pull request on GitHub and continue from step 5 above.
+
+> **No Node.js?** Click **Code → Codespaces → Create codespace** on GitHub. It opens an editor in the
+> browser with everything installed and the preview running.
+
+---
+
+## 3. Adding a news update
+
+Create `content/updates/2026-11-15-first-outdoor-test.md`:
+
+```markdown
+---
+title: First outdoor test
+date: 2026-11-15
+partner: nus            # one of: htx, st, cmu, upenn, nus
+author: Jane Tan        # optional
+summary: One or two sentences shown on the home page.
+image: ./images/outdoor.jpg     # optional, relative to this file
+imageAlt: Three drones over a field
+draft: false            # true keeps it off the live site
+---
+
+The full post in Markdown.
+```
+
+The three newest updates appear on the home page, and each partner page lists its own updates.
+
+---
+
+## 4. Images and video
+
+- Use JPG for photos and PNG for diagrams. Keep each under ~1 MB, about 2000 px wide at most. The site
+  makes smaller, faster copies automatically.
+- Always write a description in the square brackets: `![Two Starling drones crossing paths](./CMU/cross.jpg)`.
+  It's read aloud by screen readers.
+- Video: MP4 (H.264), muted, under ~10 MB, in `public/media/`. Ask ST Engineering if you need help
+  compressing a clip.
+- Only publish material you have the right to publish. Preview links are public, even before merging.
+
+## 5. Writing style
+
+This is a research programme on **decentralised multi-drone autonomy**. *Strike vs Guard* is the name
+of the benchmark game, not the purpose of the programme. Please keep the tone of a lab website:
+
+| Avoid | Use instead |
+|---|---|
+| intruder, threat, enemy, hostile | Strike team, opposing team, other side |
+| defend, protect | hold the zone, Guard team |
+| neutralise, intercept, engage, kill | tag, reach, score |
+| counter-UAS, counter-drone | decentralised multi-drone autonomy |
+| target(s) | goal, zone |
+| swarm | drone team, team of drones |
+
+Plain present tense and short sentences work best. Use British spelling (behaviour, decentralised).
+
+## 6. If something goes wrong
+
+| You see | It means |
+|---|---|
+| `… data does not match collection schema. summary: Too big` | The field is too long; shorten it. |
+| `… logo: … could not be found` / `Could not find requested image` | The image path is wrong, or the file isn't uploaded to the same branch. Paths are case-sensitive. |
+| `broken link "/Strike-Versus-Guard/…"` | A link points at a page that doesn't exist. For links within the site, copy the address from the live site. |
+| No preview comment | The pull request came from a fork. Ask ST Engineering to add you to your partner team, then make the branch in this repository. |
+| `YAMLException` | Usually a `:` inside a front-matter value. Wrap the value in quotes. |
+
+Questions: open an issue in this repository, or contact the ST Engineering NEAR Lab team.
