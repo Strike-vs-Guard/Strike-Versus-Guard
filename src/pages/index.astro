@@ -24,9 +24,22 @@ const flights = await section('flights');
 const progress = await section('progress');
 const milestones = await section('milestones');
 const directions = await section('directions');
-const team = await section('partners');
 
 const partners = (await getCollection('partners')).sort((a, b) => a.data.order - b.data.order);
+const sponsors = partners.filter((p) => p.data.role === 'Funding sponsor');
+const members = partners.filter((p) => p.data.role !== 'Funding sponsor');
+
+// Columns of the "who does what" grid, ordered by the first layer each partner works on,
+// so the filled cells run roughly diagonally from strategy down to integration.
+const LAYER_ORDER = ['strategy', 'safety', 'flight', 'drones', 'integration'] as const;
+type LayerKey = (typeof LAYER_ORDER)[number];
+const firstLayer = (p: (typeof members)[number]) =>
+  Math.min(...LAYER_ORDER.map((k, i) => (p.data.work[k] ? i : 99)));
+const cols = [...members].sort((a, b) => firstLayer(a) - firstLayer(b) || a.data.order - b.data.order);
+// Hovering anywhere in a partner's column highlights the whole column.
+const hoverCss = cols
+  .map((p) => `.mx:has([data-col="${p.id}"]:hover) [data-col="${p.id}"]{background:var(--hot)}`)
+  .join('');
 const updates = (await getCollection('updates', (u) => !u.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -68,8 +81,7 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     <div class="wrap">
       <dl class="facts">
         <div><dt>Funded by</dt><dd>HTX</dd></div>
-        <div><dt>Led by</dt><dd>ST Engineering AI.R.STC</dd></div>
-        <div><dt>With</dt><dd>CMU · UPenn · NUS</dd></div>
+        <div><dt>Partners</dt><dd>ST Engineering · CMU · UPenn · NUS</dd></div>
         <div><dt>Hardware</dt><dd>Starling 2 Max · AirStack</dd></div>
         <div><dt>Timeline</dt><dd>2026 to 2029</dd></div>
       </dl>
@@ -141,32 +153,89 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     </div>
   </section>
 
-  <!-- ─────────────────────── Four layers ─────────────────────── -->
-  <section id="stack" class="section section--alt">
+  <!-- ──────────────── Who does what: layers × partners ──────────────── -->
+  <section id="partners" class="section section--alt">
     <div class="wrap">
       <header class="section__head">
         <p class="eyebrow">{stack.eyebrow}</p>
         <h2>{stack.title}</h2>
         <div class="prose"><stack.Content /></div>
       </header>
-      <ol class="layers">
+
+      <Fragment set:html={`<style>${hoverCss}</style>`} />
+      <div class="mx" style={`--cols:${cols.length}`} role="table" aria-label="Which partner works on which layer">
+        <div class="mx__row mx__head" role="row">
+          <div class="mx__corner" role="columnheader"><span class="visually-hidden">Layer</span></div>
+          {
+            cols.map((p) => (
+              <a role="columnheader" class="mx__partner" data-col={p.id} href={url(`partners/${p.id}/`)}>
+                <span class="logo-well mx__logo">
+                  <Image src={p.data.logo} alt="" height={96} densities={[1, 2]} />
+                </span>
+                <span class="eyebrow">{p.data.role}</span>
+                <strong class="mx__name">{p.data.lab ? `${p.data.short} ${p.data.lab}` : p.data.short}</strong>
+                {p.data.lead && <span class="mx__lead">{p.data.lead}</span>}
+                <span class="mx__more">
+                  See their work <span aria-hidden="true">→</span>
+                </span>
+              </a>
+            ))
+          }
+        </div>
         {
-          stack.items.map((l) => (
-            <li class="card layer">
-              <div class="layer__icon">
-                <Icon name={l.icon ?? 'drones'} />
+          stack.items.map((r) => {
+            const key = (r.icon ?? '') as LayerKey;
+            return (
+              <div class:list={['mx__row', { 'mx__row--all': key === 'integration' }]} role="row">
+                <div class="mx__layer" role="rowheader">
+                  <span class="mx__icon">
+                    <Icon name={r.icon ?? 'drones'} size={24} />
+                  </span>
+                  <span>
+                    <span class="eyebrow">{r.label}</span>
+                    <strong class="mx__title">{r.title}</strong>
+                    <span class="mx__text">{r.text}</span>
+                  </span>
+                </div>
+                {cols.map((p) => {
+                  const t = p.data.work[key];
+                  return t ? (
+                    <a role="cell" class="mx__cell" data-col={p.id} href={url(`partners/${p.id}/`)}>
+                      <span class="mx__who">{p.data.short}</span>
+                      <span>{t}</span>
+                    </a>
+                  ) : (
+                    <div role="cell" class="mx__cell mx__cell--empty" data-col={p.id}>
+                      <span class="visually-hidden">Not involved</span>
+                    </div>
+                  );
+                })}
               </div>
-              <div>
-                <p class="eyebrow">Layer {l.label}</p>
-                <h3>{l.title}</h3>
-                <p>{l.text}</p>
-                <PartnerChips ids={l.partners} />
-              </div>
-            </li>
-          ))
+            );
+          })
         }
-      </ol>
-      {stack.note && <p class="section__note">{stack.note}</p>}
+      </div>
+
+      {
+        sponsors.length > 0 && (
+          <div class="sponsor">
+            <p class="eyebrow">Funded by</p>
+            {sponsors.map((s) => (
+              <a class="logo-well sponsor__logo" href={s.data.website} title={s.data.institution}>
+                <Image src={s.data.logo} alt={s.data.logoAlt ?? s.data.institution} height={96} densities={[1, 2]} />
+              </a>
+            ))}
+          </div>
+        )
+      }
+      {
+        stack.image && (
+          <figure class="team-photo">
+            <Image src={stack.image} alt={stack.imageAlt ?? ''} widths={[600, 1000, 1400]} sizes="(min-width: 1160px) 1100px, 100vw" />
+            {stack.caption && <figcaption>{stack.caption}</figcaption>}
+          </figure>
+        )
+      }
     </div>
   </section>
 
@@ -268,48 +337,6 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
               ))}
             </ul>
           </div>
-        )
-      }
-    </div>
-  </section>
-
-  <!-- ─────────────────────── Partners ─────────────────────── -->
-  <section id="partners" class="section section--alt">
-    <div class="wrap">
-      <header class="section__head">
-        <p class="eyebrow">{team.eyebrow}</p>
-        <h2>{team.title}</h2>
-        <div class="prose"><team.Content /></div>
-      </header>
-      <ul class="partners">
-        {
-          partners.map((p) => (
-            <li class="card partner">
-              <div class="logo-well partner__logo">
-                <Image src={p.data.logo} alt={p.data.logoAlt ?? p.data.institution} height={96} densities={[1, 2]} />
-              </div>
-              <p class="eyebrow">{p.data.role}</p>
-              <h3>
-                {p.data.page ? (
-                  <a href={url(`partners/${p.id}/`)} class="partner__link">
-                    {p.data.lab ? `${p.data.short} ${p.data.lab}` : p.data.short}
-                  </a>
-                ) : (
-                  p.data.short
-                )}
-              </h3>
-              {p.data.lead && <p class="partner__lead">{p.data.lead}</p>}
-              <p class="muted partner__contrib">{p.data.contribution}</p>
-            </li>
-          ))
-        }
-      </ul>
-      {
-        team.image && (
-          <figure class="team-photo">
-            <Image src={team.image} alt={team.imageAlt ?? ''} widths={[600, 1000, 1400]} sizes="(min-width: 1160px) 1100px, 100vw" />
-            {team.caption && <figcaption>{team.caption}</figcaption>}
-          </figure>
         )
       }
     </div>
@@ -508,40 +535,6 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     color: var(--muted);
   }
 
-  /* Layers */
-  .layers {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  }
-  .layer {
-    padding: 24px;
-    display: grid;
-    gap: 16px;
-    align-content: start;
-  }
-  .layer__icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--border);
-    background: var(--surface);
-  }
-  .layer .eyebrow {
-    margin-bottom: 4px;
-  }
-  .layer h3 {
-    font-size: var(--step-3);
-    font-family: var(--font-display);
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
   /* Flights */
   .clips {
     display: grid;
@@ -691,55 +684,215 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     color: var(--text);
   }
 
-  /* Partners */
-  .partners {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  /* Who does what */
+  .mx {
+    --hot: color-mix(in srgb, var(--text) 5%, transparent);
     display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: minmax(260px, 1.6fr) repeat(var(--cols, 4), minmax(0, 1fr));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    overflow: hidden;
   }
-  .partner {
-    padding: 16px 16px 20px;
+  .mx__row {
+    display: contents;
+  }
+  .mx__corner {
+    border-bottom: 1px solid var(--border);
+  }
+  .mx__partner {
     display: flex;
     flex-direction: column;
-    position: relative;
+    gap: 2px;
+    padding: 16px 14px 14px;
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: background 0.15s ease;
   }
-  .partner__logo {
-    height: 88px;
-    margin-bottom: 16px;
+  .mx__logo {
+    height: 76px;
+    margin-bottom: 12px;
     border: 1px solid var(--border);
   }
-  .partner__logo :global(img) {
-    max-height: 56px;
+  .mx__logo :global(img) {
+    max-height: 48px;
     max-width: 100%;
   }
-  .partner .eyebrow {
+  .mx__partner .eyebrow {
+    margin: 0;
+  }
+  .mx__name {
+    font-size: var(--step-1);
+    line-height: 1.25;
+  }
+  .mx__lead {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .mx__more {
+    margin-top: auto;
+    padding-top: 10px;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .mx__partner:hover .mx__more,
+  .mx__partner:focus-visible .mx__more {
+    color: var(--text);
+  }
+  .mx__layer {
+    display: flex;
+    gap: 14px;
+    padding: 18px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .mx__head + .mx__row .mx__layer,
+  .mx__head + .mx__row .mx__cell {
+    border-top: 0;
+  }
+  .mx__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .mx__layer .eyebrow {
+    display: block;
+    margin: 0 0 2px;
+  }
+  .mx__title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1.1;
     margin-bottom: 4px;
   }
-  .partner h3 {
-    margin-bottom: 4px;
+  .mx__text {
+    display: block;
+    font-size: var(--step-0);
+    color: var(--muted);
+    line-height: 1.5;
   }
-  .partner__link {
+  .mx__cell {
+    position: relative;
+    padding: 18px 14px;
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    font-size: var(--step-0);
+    line-height: 1.5;
     text-decoration: none;
+    transition: background 0.15s ease;
   }
-  .partner__link::after {
+  a.mx__cell::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text);
+    margin-bottom: 10px;
+  }
+  a.mx__cell:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--muted);
+  }
+  .mx__cell--empty::after {
     content: '';
     position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--border);
   }
-  .partner:has(.partner__link):hover {
-    border-color: var(--text);
+  .mx__who {
+    display: none;
   }
-  .partner__lead {
-    font-size: var(--step-0);
-    margin-bottom: 6px;
+  .mx__row--all .mx__layer,
+  .mx__row--all .mx__cell {
+    border-top: 1px dashed var(--muted);
   }
-  .partner__contrib {
-    font-size: var(--step-0);
+
+  @media (max-width: 899px) {
+    .mx {
+      display: block;
+      border: 0;
+      background: none;
+      overflow: visible;
+    }
+    .mx__head {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .mx__corner {
+      display: none;
+    }
+    .mx__partner {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+    }
+    .mx__row:not(.mx__head) {
+      display: block;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .mx__layer,
+    .mx__cell,
+    .mx__row--all .mx__layer,
+    .mx__row--all .mx__cell {
+      border: 0;
+    }
+    .mx__cell {
+      display: block;
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+    }
+    .mx__head + .mx__row .mx__cell {
+      border-top: 1px solid var(--border);
+    }
+    a.mx__cell::before {
+      display: none;
+    }
+    .mx__cell--empty {
+      display: none;
+    }
+    .mx__who {
+      display: block;
+      font: 500 var(--step--1) var(--font-mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+  }
+
+  .sponsor {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .sponsor .eyebrow {
     margin: 0;
+  }
+  .sponsor__logo {
+    height: 64px;
+    border: 1px solid var(--border);
+  }
+  .sponsor__logo :global(img) {
+    max-height: 40px;
   }
   .team-photo {
     margin-top: 32px;

@@ -1,32 +1,38 @@
 ---
-# The four layers of the system. Owned by ST Engineering with CMU.
+# "Who does what": the layers of the system (rows) against the partners (columns).
+# Owned by ST Engineering. Each row's `icon` is also its key: strategy, safety,
+# flight, drones or integration. The cells come from the `work:` lines in each
+# partner's own file (content/partners/*.md), so partners edit their own cells.
 eyebrow: How it fits together
-title: Four layers, one team of drones
+title: Four layers, four partners, one team
 order: 4
-note: ST Engineering's AI.R.STC integrates every layer and runs the Singapore flight lab.
+image: ./images/team-flight-cage.jpg
+imageAlt: The Strike vs Guard team standing in the CMU flight cage, holding Starling drones
+caption: The team in the CMU flight cage.
 items:
-  - label: "1"
+  - label: Layer 1
     title: Strategy
     icon: strategy
-    text: Learn team skills and strategies, by practice or from written rules.
-    partners: [nus, upenn]
-  - label: "2"
+    text: Decide what each drone does, with team skills learned by practice or written as rules.
+  - label: Layer 2
     title: Safety
     icon: safety
     text: A safety filter checks every command so that drones never collide, whatever the strategy picks.
-    partners: [cmu, upenn]
-  - label: "3"
+  - label: Layer 3
     title: Flight
     icon: flight
     text: Turn team plans into flight on real drones through AirStack.
-    partners: [cmu]
-  - label: "4"
+  - label: Layer 4
     title: Drones
     icon: drones
-    text: Starling 2 Max drones, flown at CMU and in Singapore.
-    partners: [cmu, st, nus]
+    text: Starling 2 Max drones, flown in Pittsburgh and Singapore.
+  - label: Across all layers
+    title: Integration
+    icon: integration
+    text: Bring every layer together into one system and test it as a team.
 ---
 
 Instead of hand-writing a playbook for each scenario, the team draws on a
-library of skills that adapts to the other side. A separate safety layer
-underneath holds, whatever the strategy picks.
+library of skills that adapts to the other side, with a separate safety layer
+underneath. Four partners work across these layers as one team. Select a partner
+to see their work.

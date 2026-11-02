@@ -7,12 +7,16 @@ short: ST Engineering
 institution: ST Engineering
 lab: AI.R.STC · NEAR Lab
 labFull: AI and Robotics Strategic Technology Centre, NEAR Lab
-role: Programme lead
-contribution: Programme lead, integration and the Singapore flight lab
+role: Lead partner
+contribution: Coordination, system integration and the Singapore flight lab
 summary: >-
-  ST Engineering's AI and Robotics Strategic Technology Centre leads the
+  ST Engineering's AI and Robotics Strategic Technology Centre coordinates the
   programme, integrates every layer of the system and runs the Singapore flight lab.
-layers: [integration, drones]
+# What you do on each layer (one line each, max 90 characters). Shown in the
+# "who does what" grid on the home page. Layers: strategy, safety, flight, drones, integration.
+work:
+  drones: "Runs the Singapore flight lab."
+  integration: "Coordinates the programme and brings every layer together on Starling 2 Max."
 logo: ./ST/st-engineering.png
 labLogo: ./ST/near-lab.png
 logoAlt: ST Engineering
@@ -24,8 +28,8 @@ updated: 2026-11-02
 ## Our role in Strike vs Guard
 
 The NEAR Lab in ST Engineering's AI and Robotics Strategic Technology Centre
-(AI.R.STC) leads the programme. We bring the partners' work together into one
-system, from team strategy and safety down to flight software and hardware, and
+(AI.R.STC) is the lead partner. We coordinate the programme and bring the
+partners' work together into one system, from team strategy and safety down to flight software and hardware, and
 we run the Singapore flight lab where the drone teams are tested.
 
 ## What we are working on

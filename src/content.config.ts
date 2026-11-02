@@ -47,13 +47,25 @@ const partners = defineCollection({
         /** Principal investigator or lead, e.g. "Prof Guillaume Sartoretti". */
         lead: z.string().optional(),
         /** Role in the programme, shown as a small label on the card. */
-        role: z.enum(['Funding sponsor', 'Programme lead', 'Research partner']),
+        role: z.enum(['Funding sponsor', 'Lead partner', 'Partner']),
         /** What this partner contributes, in a few words (shown on the card). */
         contribution: z.string().max(70),
         /** One or two sentences for the home page card. Keep it under ~40 words. */
         summary: z.string().max(320),
-        /** Which layers of the system this partner works on. */
-        layers: z.array(z.enum(LAYERS)).default([]),
+        /**
+         * What this partner does on each layer, one short line each (max 90 characters).
+         * Shown in the "who does what" grid on the home page. Leave out layers you don't work on.
+         */
+        work: z
+          .object({
+            strategy: z.string().max(90).optional(),
+            safety: z.string().max(90).optional(),
+            flight: z.string().max(90).optional(),
+            drones: z.string().max(90).optional(),
+            integration: z.string().max(90).optional(),
+          })
+          .strict()
+          .default({}),
         /** Institution logo, relative to this file, e.g. ./NUS/nus.png */
         logo: image(),
         /** Optional lab logo, shown on the partner page. */

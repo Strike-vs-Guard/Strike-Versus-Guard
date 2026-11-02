@@ -57,10 +57,18 @@ const layerNames: Record<string, string> = {
             {d.lead && (<div><dt>Lead</dt><dd>{d.lead}</dd></div>)}
             <div><dt>Contribution</dt><dd>{d.contribution}</dd></div>
             {
-              d.layers.length > 0 && (
+              Object.keys(d.work).length > 0 && (
                 <div>
-                  <dt>Layers</dt>
-                  <dd>{d.layers.map((l) => layerNames[l]).join(' · ')}</dd>
+                  <dt>Works on</dt>
+                  <dd>
+                    <ul class="pp-work">
+                      {Object.entries(d.work).map(([k, v]) => (
+                        <li>
+                          <strong>{layerNames[k]}:</strong> {v}
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
                 </div>
               )
             }
@@ -173,6 +181,13 @@ const layerNames: Record<string, string> = {
   .pp-meta dd {
     margin: 2px 0 0;
     font-size: var(--step-0);
+  }
+  .pp-work {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 4px;
   }
   .pp-body {
     padding-block: clamp(40px, 6vw, 72px);

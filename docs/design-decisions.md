@@ -17,8 +17,8 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 
 - One scrolling home page, one page per partner, and an Updates page. A single page can't hold
   four partners' detail; a large site goes stale.
-- Home page order: hero → two tracks → benchmark → four layers → flights → proof so far → milestones
-  → research directions → partners → latest updates.
+- Home page order: hero → two tracks → benchmark → who does what (layers × partners) → flights → proof so far → milestones
+  → research directions → latest updates.
 - **One Markdown file per partner** (`content/partners/NUS.md`, `UPenn.md`, `CMU.md`, `ST.md`).
   Front matter feeds the card on the home page; the body becomes the partner page.
 - HTX has a small file that drives its sponsor card. It has no separate page, because a sponsor page

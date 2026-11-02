@@ -8,13 +8,17 @@ institution: National University of Singapore
 lab: MARMot Lab
 labFull: Multi-Agent Robotic Motion Lab
 lead: Prof Guillaume Sartoretti
-role: Research partner
+role: Partner
 contribution: Learning-based strategy track
 summary: >-
   The NUS MARMot Lab leads the learning-based approach: agents discover their
   own skills and team behaviours through experience, and a planner picks the
   play that best fits the situation.
-layers: [strategy, drones]
+# What you do on each layer (one line each, max 90 characters). Shown in the
+# "who does what" grid on the home page. Layers: strategy, safety, flight, drones, integration.
+work:
+  strategy: "Leads the learning-based track: drones discover their own skills and team plays."
+  drones: "First flew the team strategy on palm-sized Crazyflie drones."
 logo: ./NUS/nus.png
 labLogo: ./NUS/marmot-lab.png
 logoAlt: National University of Singapore

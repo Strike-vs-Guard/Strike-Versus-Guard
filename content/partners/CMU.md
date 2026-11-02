@@ -7,13 +7,18 @@ short: CMU
 institution: Carnegie Mellon University
 lab: AirLab
 lead: Prof Sebastian Scherer
-role: Research partner
+role: Partner
 contribution: AirStack flight software, safety filter and flight testing
 summary: >-
   CMU's AirLab provides AirStack, the shared flight software that both strategy
   tracks run on, co-develops the safety filter, and flies the drone teams in its
   indoor flight cage.
-layers: [safety, flight, drones]
+# What you do on each layer (one line each, max 90 characters). Shown in the
+# "who does what" grid on the home page. Layers: strategy, safety, flight, drones, integration.
+work:
+  safety: "Co-develops the safety filter with UPenn."
+  flight: "Provides AirStack, the shared flight software for both tracks."
+  drones: "Flies the drone team in its indoor flight cage in Pittsburgh."
 logo: ./CMU/cmu.png
 labLogo: ./CMU/airlab.png
 logoAlt: Carnegie Mellon University
