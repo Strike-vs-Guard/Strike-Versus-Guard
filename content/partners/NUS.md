@@ -15,7 +15,7 @@ summary: >-
   own skills and team behaviours through experience, and a planner picks the
   play that best fits the situation.
 # What you do on each layer (one line each, max 90 characters). Shown in the
-# "who does what" grid on the home page. Layers: strategy, safety, flight, drones, integration.
+# "who does what" grid on the home page. Layers: strategy, safety, flight, localisation, drones, integration.
 work:
   strategy: "Leads the learning-based track: drones discover their own skills and team plays."
   drones: "First flew the team strategy on palm-sized Crazyflie drones."

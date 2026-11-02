@@ -14,10 +14,11 @@ summary: >-
   tracks run on, co-develops the safety filter, and flies the drone teams in its
   indoor flight cage.
 # What you do on each layer (one line each, max 90 characters). Shown in the
-# "who does what" grid on the home page. Layers: strategy, safety, flight, drones, integration.
+# "who does what" grid on the home page. Layers: strategy, safety, flight, localisation, drones, integration.
 work:
   safety: "Co-develops the safety filter with UPenn."
   flight: "Provides AirStack, the shared flight software for both tracks."
+  localisation: "Provides the AirStack simulator and technical advice from its flight experience."
   drones: "Flies the drone team in its indoor flight cage in Pittsburgh."
 logo: ./CMU/cmu.png
 labLogo: ./CMU/airlab.png

@@ -15,7 +15,7 @@ import { glob, file } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 /** The four layers of the system, used to tag partners and the stack section. */
-const LAYERS = ['strategy', 'safety', 'flight', 'drones', 'integration'] as const;
+const LAYERS = ['strategy', 'safety', 'flight', 'localisation', 'drones', 'integration'] as const;
 
 /** Partner ids. Must match the partner file names, lower-cased. */
 const PARTNER_IDS = ['htx', 'st', 'cmu', 'upenn', 'nus'] as const;
@@ -61,6 +61,7 @@ const partners = defineCollection({
             strategy: z.string().max(90).optional(),
             safety: z.string().max(90).optional(),
             flight: z.string().max(90).optional(),
+            localisation: z.string().max(90).optional(),
             drones: z.string().max(90).optional(),
             integration: z.string().max(90).optional(),
           })
@@ -140,6 +141,11 @@ const programme = defineCollection({
         /** Optional secondary list, e.g. use cases. */
         tags: z.array(z.string()).default([]),
         tagsLabel: z.string().optional(),
+        /** Optional short list of plain statements, e.g. what the drones decide (home-page hero). */
+        decisionsLabel: z.string().optional(),
+        decisions: z.array(z.string()).default([]),
+        /** Optional one-sentence status line, reused by other pages. */
+        status: z.string().optional(),
       })
       .strict(),
 });
