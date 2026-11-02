@@ -25,7 +25,7 @@ items:
   - label: Layer 4
     title: Localisation
     icon: localisation
-    text: Each drone works out where it is and where its teammates are, with its own camera and no motion capture or GPS. Proven in simulation first, then on real drones.
+    text: Each drone works out where it is and where its teammates are, with its own camera and no motion capture or GPS. Being proven in simulation first, then on real drones.
   - label: Layer 5
     title: Drones
     icon: drones

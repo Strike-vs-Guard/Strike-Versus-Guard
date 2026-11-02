@@ -245,6 +245,7 @@ const label = explain
             >
               {head}
               <span class="pd-co-desc" id={id('d-' + l.id)}>{l.desc}</span>
+              <span class="pd-co-who">{P.filter((p) => p.work[l.id]).map((p) => p.short).join(' · ')}</span>
             </button>
             {linkOut && (
               <a class="pd-cue pd-cue-link" href={`${partnersHref}#layer-${l.id}`} data-layer={l.id} aria-label={`Who works on ${l.title}`}>
@@ -539,6 +540,8 @@ const label = explain
 .pd .pd-co-title{font:700 20px/1.1 var(--font-display);letter-spacing:.005em}
 .pd .pd-co-tag{font:500 11.5px/1.2 var(--font-mono);letter-spacing:.02em;color:var(--muted)}
 .pd .pd-co-desc{font-size:14px;line-height:1.45;color:var(--muted)}
+.pd .pd-co-who{font:500 11px/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.pd .pd-co.is-on .pd-co-who{color:var(--text)}
 .pd .pd-co-work{font-size:15px;line-height:1.45;color:var(--text)}
 .pd .pd-co-desc--sm{font-size:13px;line-height:1.4}
 

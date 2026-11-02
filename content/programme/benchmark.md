@@ -20,7 +20,7 @@ items:
     text: One drone drops out; the others cover for it.
 ---
 
-Strike vs Guard is the benchmark we use to test them. It's a two-team game that
+Strike vs Guard is the benchmark we use to test these drone teams. It's a two-team game that
 forces the drones to plan, communicate, and recover from failures in real time,
 which makes it a hard, honest test of how well a team can operate without anyone
 in the loop.

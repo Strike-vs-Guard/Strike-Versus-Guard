@@ -4,7 +4,7 @@
 eyebrow: Flights so far
 title: A team that flies itself
 order: 5
-note: Each clip shows the team's ground station running live (top) and the flight (bottom).
+note: Formation and avoidance flights so far, not yet full Strike vs Guard games. Each clip shows the team's ground station running live (top) and the flight (bottom).
 items:
   - label: CMU flight cage
     title: Formation change
