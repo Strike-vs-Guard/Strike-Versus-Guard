@@ -163,6 +163,7 @@ The three newest updates appear on the home page, and each partner page lists it
 - Posters are frames from the flight footage (the bottom half of the clip), not stock images.
 - Video: MP4 (H.264), muted, under ~10 MB, in `public/media/`. Ask ST Engineering if you need help
   compressing a clip.
+- Partner-supplied clips carry a "Video: <lab>" credit in the caption.
 - Only publish material you have the right to publish. The test site is public, even before merging.
 
 ### Adding a simulation clip to your partner page
