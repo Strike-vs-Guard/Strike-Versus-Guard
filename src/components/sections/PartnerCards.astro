@@ -47,8 +47,8 @@ const funders = all.filter((p) => p.data.role === 'Funding sponsor');
                 </div>
               </dl>
               {href && (
-                <a class="pcard__more" href={href} aria-label={`See more about ${d.short}`}>
-                  See more →
+                <a class="pcard__more" href={href}>
+                  {d.short} page →
                 </a>
               )}
             </li>
@@ -58,7 +58,7 @@ const funders = all.filter((p) => p.data.role === 'Funding sponsor');
     </ul>
     {
       funders.map((f) => (
-        <div class="card fcard">
+        <div class="card fcard" id="funder">
           <a class="logo-well fcard__logo" href={f.data.website} title={f.data.institution}>
             <Image src={f.data.logo} alt={f.data.logoAlt ?? f.data.institution} height={96} densities={[1, 2]} />
           </a>
@@ -83,6 +83,7 @@ const funders = all.filter((p) => p.data.role === 'Funding sponsor');
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   }
   .pcard {
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: 20px;
@@ -129,6 +130,14 @@ const funders = all.filter((p) => p.data.role === 'Funding sponsor');
   }
   .pcard__meta dd {
     margin: 2px 0 0;
+  }
+  .pcard__more::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .pcard:hover {
+    border-color: var(--muted);
   }
   .pcard__more {
     margin-top: auto;

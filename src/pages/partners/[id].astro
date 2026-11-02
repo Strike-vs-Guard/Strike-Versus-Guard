@@ -43,7 +43,7 @@ const layerNames: Record<string, string> = {
     <header class="pp-head">
       <div class="wrap pp-head__grid">
         <div>
-          <p class="eyebrow"><a href={url('partners/')}>Partners</a> / {d.role}</p>
+          <p class="eyebrow"><a href={url('partners/')}>Partners</a> / {d.institution}</p>
           <h1>{d.lab ? `${d.short} ${d.lab}` : d.short}</h1>
           <p class="pp-inst">{d.labFull ? `${d.labFull}, ${d.institution}` : d.institution}</p>
           <p class="lede">{d.summary}</p>
@@ -80,6 +80,13 @@ const layerNames: Record<string, string> = {
             }
             {d.website && (<div><dt>Website</dt><dd><a href={d.website}>{new URL(d.website).hostname.replace(/^www\./, '')}</a></dd></div>)}
             {d.contact && (<div><dt>Contact</dt><dd><a href={`mailto:${d.contact}`}>{d.contact}</a></dd></div>)}
+            <div>
+              <dt>Page</dt>
+              <dd>
+                Maintained by {d.short} · updated {fmt(d.updated)} ·{' '}
+                <a href={`${repo}/edit/development/content/partners/${fileName}`}>Edit this page</a>
+              </dd>
+            </div>
           </dl>
         </aside>
       </div>
@@ -120,10 +127,6 @@ const layerNames: Record<string, string> = {
       }
 
       <footer class="pp-foot">
-        <p class="muted">
-          Last updated {fmt(d.updated)}. This page is maintained by {d.short}.{" "}
-          <a href={`${repo}/edit/development/content/partners/${fileName}`}>Suggest an edit</a>
-        </p>
         <nav aria-label="Other partners" class="pp-others">
           {
             all

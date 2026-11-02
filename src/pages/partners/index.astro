@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/sections/PageHead.astro';
 import PartnerCards from '../../components/sections/PartnerCards.astro';
 import Progress from '../../components/sections/Progress.astro';
+import DroneDiagram from '../../components/DroneDiagram.astro';
 import ConnectionDiagram from '../../components/ConnectionDiagram.astro';
 import { getSystemData } from '../../lib/system';
 import { section } from '../../components/sections/content';
@@ -15,11 +16,17 @@ const system = await getSystemData();
 <Base title="Partners" description="ST Engineering, NUS, UPenn and CMU work across the five layers of one system, funded by HTX.">
   <PageHead eyebrow="Partners" title="Who does what">
     <stack.Content />
+    <p>Each partner writes and maintains its own page.</p>
   </PageHead>
   <PartnerCards />
   <section class="section section--alt">
     <div class="wrap">
-      <div class="sys-part" id="who">
+      <div class="sys-part sys-part--layers">
+        <h2 class="sys-part__h">What each layer does</h2>
+        <p class="sys-part__hint">Select a layer to see who works on it.</p>
+      </div>
+      <DroneDiagram data={system} mode="explain" target="#who-links" scrollTo="#who" />
+      <div class="sys-part sys-part--who" id="who">
         <h2 class="sys-part__h">Who works on each layer</h2>
         <p class="sys-part__hint">Select a partner or a layer to trace the links.</p>
       </div>
@@ -36,6 +43,9 @@ const system = await getSystemData();
     align-items: baseline;
     gap: 4px 14px;
     margin: 0 0 18px;
+  }
+  .sys-part--who {
+    margin-top: clamp(40px, 6vw, 72px);
   }
   .sys-part__h {
     font-size: var(--step-3);
