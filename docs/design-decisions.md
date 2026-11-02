@@ -37,12 +37,15 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 - Pinned to **Astro 7.4.4** because `npm audit` reports advisories for all earlier releases. It
   requires Node.js ≥ 22.23.4, so `.nvmrc` pins Node 22 LTS, and a Codespaces dev container covers
   partners who can't install it.
-- **GitHub Pages** from the `gh-pages` branch. No third-party hosting accounts.
-- **PR previews** via `rossjrw/pr-preview-action`, published under `/pr-preview/pr-N/`, with a
-  "Preview" banner and `noindex`. The live deploy uses `clean-exclude: pr-preview/` so it doesn't
-  wipe the previews. Both workflows share a `gh-pages` concurrency group so they never race.
-- **CODEOWNERS** plus a protected `main`: each partner approves changes to their own files; ST
-  Engineering owns layout, workflows and shared text.
+- **Two branches only:** `main` is the live site and `development` is where edits happen. Each deploy
+  builds both branches and publishes them together through GitHub Pages' Actions deployment: `main` at
+  the root and `development` at `/preview/`, with a "Test site" banner and `noindex`.
+  - This replaced an earlier design with a `gh-pages` branch and per-pull-request previews.
+  - Previews per pull request would need a branch per change, and the programme wants at most two branches.
+  - There is no Dependabot for the same reason.
+- No third-party hosting accounts.
+- **CODEOWNERS** plus a protected `main`: on the `development` → `main` pull request, each partner
+  approves changes to their own files; ST Engineering owns layout, workflows and shared text.
 - A dependency-free link checker (`scripts/check-links.mjs`) runs in CI. External links are not
   fetched, to keep CI reliable.
 
@@ -80,5 +83,6 @@ This site links to CMU's from the CMU partner page. Ideas adopted from it:
 - a size budget in `npm run check`
 - poster frames with `preload="none"` video
 - deriving the base path from the repository name in the workflows
+- deploying with GitHub Pages' Actions source
 
 Both sites deploy to GitHub Pages from separate repositories, so their Pages settings don't interfere.

@@ -1,37 +1,87 @@
-# Publishes the live site whenever main changes (i.e. when a pull request is merged).
-# Live site: https://strike-vs-guard.github.io/Strike-Versus-Guard/
-name: Deploy live site
+# Builds and publishes the website whenever `main` or `development` changes.
+#
+#   main         →  https://strike-vs-guard.github.io/Strike-Versus-Guard/          (live site)
+#   development  →  https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/  (test site)
+#
+# Both are built in every run and published together, so the repository only
+# ever needs these two branches. No gh-pages branch is used.
+#
+# Requires: Settings → Pages → Build and deployment → Source = "GitHub Actions".
+name: Deploy site
 
 on:
   push:
-    branches: [main]
+    branches: [main, development]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: gh-pages
+  group: pages
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    env:
+      REPO_PATH: /${{ github.event.repository.name }}/
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out main (live site)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: live
+
+      - name: Check out development (test site)
+        id: dev
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: development
+          path: preview
+
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - name: Build site and check links
-        run: npm run check
+          node-version-file: live/.nvmrc
+
+      - name: Build live site from main
+        working-directory: live
         env:
-          BASE_PATH: /${{ github.event.repository.name }}/
-      - name: Publish to gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4
+          BASE_PATH: ${{ env.REPO_PATH }}
+        run: |
+          npm ci
+          npm run check
+
+      - name: Build test site from development
+        if: steps.dev.outcome == 'success'
+        working-directory: preview
+        env:
+          BASE_PATH: ${{ env.REPO_PATH }}preview/
+          PREVIEW: '1'
+        run: |
+          npm ci
+          npm run check
+
+      - name: Combine
+        run: |
+          mkdir -p _site
+          cp -r live/dist/. _site/
+          if [ -d preview/dist ]; then mkdir -p _site/preview && cp -r preview/dist/. _site/preview/; fi
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
         with:
-          folder: dist
-          branch: gh-pages
-          # Keep the PR previews that live alongside the site on gh-pages.
-          clean-exclude: pr-preview/
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

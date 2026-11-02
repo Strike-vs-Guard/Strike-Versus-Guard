@@ -4,7 +4,8 @@ Source for the website of **Strike vs Guard**, a research programme funded by HT
 ST Engineering with Carnegie Mellon University, the University of Pennsylvania and the National
 University of Singapore, working toward decentralised multi-drone autonomy.
 
-- **Live site:** https://strike-vs-guard.github.io/Strike-Versus-Guard/
+- **Live site** (branch `main`): https://strike-vs-guard.github.io/Strike-Versus-Guard/
+- **Test site** (branch `development`): https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
 - **Partners editing their page:** read [CONTRIBUTING.md](CONTRIBUTING.md).
 - **Repo admins, first-time setup:** read [docs/admin-setup.md](docs/admin-setup.md).
 - **Why it's built this way:** [docs/design-decisions.md](docs/design-decisions.md).
@@ -25,13 +26,12 @@ public/media/                ← flight clips (MP4) and their poster frames
 src/                         ← layout, styles, components (ST-owned)
   content.config.ts            the rules every content file is checked against
 .github/workflows/
-  ci.yml                       build + link check on every pull request
-  preview.yml                  publishes each pull request to /pr-preview/pr-N/
-  deploy.yml                   publishes main to the live site
+  ci.yml                       build + link check on pull requests and development
+  deploy.yml                   publishes main (live) and development (/preview/) together
 ```
 
-Built with [Astro](https://astro.build) (static output, no server). Hosted on GitHub Pages from the
-`gh-pages` branch.
+Built with [Astro](https://astro.build) (static output, no server). Hosted on GitHub Pages, deployed by
+GitHub Actions. The repository keeps only two branches: `main` (live) and `development` (edits and test site).
 
 ## Commands
 

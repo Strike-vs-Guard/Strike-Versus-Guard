@@ -1,9 +1,12 @@
-# Runs on every pull request. Fails if a content file is missing a required
-# field, points at an image that doesn't exist, or the site has broken links.
+# Checks every pull request, and every push to development, before it can go live.
+# Fails if a content file is missing a required field, points at an image that
+# doesn't exist, has an oversized file, or the site has broken links.
 name: CI
 
 on:
   pull_request:
+  push:
+    branches: [development]
   workflow_dispatch:
 
 permissions:

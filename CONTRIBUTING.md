@@ -1,22 +1,21 @@
 # Editing the Strike vs Guard website
 
-Each partner owns one Markdown file. You edit that file, check a **preview** of
-the site with your change, and only when it looks right does it go to the
-**live site**.
+Each partner owns one Markdown file. You edit that file on the **`development`**
+branch, check the **test site**, and only when it looks right is it merged
+into **`main`**, which is the **live site**.
 
 ```
- edit your .md file  →  open a pull request  →  preview link appears  →  partner approves  →  merged  →  live site updates
-      (you)                  (you)               (automatic, ~2 min)        (code owner)                  (automatic, ~2 min)
+ edit your .md file on development  →  test site updates (~2 min)  →  check it  →  merge development into main  →  live site updates (~2 min)
+            (you)                            (automatic)                (you)          (ST Engineering, via PR)          (automatic)
 ```
 
-| | Address |
-|---|---|
-| Live site | https://strike-vs-guard.github.io/Strike-Versus-Guard/ |
-| Your preview | https://strike-vs-guard.github.io/Strike-Versus-Guard/pr-preview/pr-NUMBER/ (posted on your pull request) |
+| Branch | Site | Address |
+|---|---|---|
+| `development` | Test site | https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/ |
+| `main` | Live site | https://strike-vs-guard.github.io/Strike-Versus-Guard/ |
 
-Nobody can change the live site directly. Every change goes through a pull
-request, is built and checked automatically, and needs approval from the
-file's owner (see [`.github/CODEOWNERS`](.github/CODEOWNERS)).
+The repository only has these two branches. Never edit `main` directly; every change goes through
+`development` first. The test site shows a yellow "Test site" banner and is hidden from search engines.
 
 ---
 
@@ -73,20 +72,23 @@ Other shared files (owned by ST Engineering, but anyone may propose changes):
 
 ## 2a. Edit in the browser (no install needed)
 
-1. On GitHub, open your file, e.g. `content/partners/NUS.md`, and click the **pencil** icon.
-2. Make your changes. Use the **Preview** tab to check the Markdown formatting.
-3. Click **Commit changes…** → choose **Create a new branch for this commit and start a pull request** →
-   give the branch a name like `nus/october-results` → **Propose changes** → **Create pull request**.
-4. **Adding images:** on the pull request's branch, go to your images folder
-   (e.g. `content/partners/NUS/`), click **Add file → Upload files**, and commit to the same branch.
-   Then reference the image from your file as `![Description of the photo](./NUS/my-photo.jpg)`.
-5. Wait about two minutes. Two things appear on the pull request:
-   - a **CI** check: green means the site built and all links work. If it's red, click **Details**;
-     the error names the file and field to fix (e.g. `partners → nus … summary: Too big`).
-   - a bot comment with your **preview link**. Open it and check your page.
-6. Need another change? Edit the file again **on the same branch**. The preview updates each time.
-7. When you're happy, ask your partner's code owner to **approve**. ST Engineering then merges it,
-   the live site updates within a few minutes, and the preview is removed.
+1. On GitHub, use the branch menu (top left, it says `main`) to switch to **`development`**.
+2. Open your file, e.g. `content/partners/NUS.md`, and click the **pencil** icon.
+3. Make your changes. Use the **Preview** tab to check the Markdown formatting.
+4. Click **Commit changes…** → keep **Commit directly to the `development` branch** → **Commit changes**.
+5. **Adding images:** still on `development`, go to your images folder (e.g. `content/partners/NUS/`),
+   click **Add file → Upload files** and commit. Reference the image from your file as
+   `![Description of the photo](./NUS/my-photo.jpg)`.
+6. Wait about two minutes, then check:
+   - the **Actions** tab: a green tick on *CI* and *Deploy site* means the site built and all links work.
+     A red cross: click it. The error names the file and field to fix
+     (e.g. `partners → nus … summary: Too big`). Fix it on `development` the same way.
+   - the **test site** at https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/.
+7. When it looks right, tell ST Engineering. They open a pull request from `development` into `main`,
+   your partner's code owner approves, and it's merged. The live site updates within a few minutes.
+
+> If the build is red, the test site keeps showing the last version that built, and the live site is
+> never affected.
 
 ## 2b. Edit on your own computer (live preview while you type)
 
@@ -96,7 +98,8 @@ You need [Git](https://git-scm.com/) and [Node.js 22](https://nodejs.org/) (LTS;
 git clone https://github.com/Strike-vs-Guard/Strike-Versus-Guard.git
 cd Strike-Versus-Guard
 npm ci                      # first time only
-git switch -c nus/october-results
+git switch development
+git pull
 npm run dev                 # open http://localhost:4321/Strike-Versus-Guard/
 ```
 
@@ -106,10 +109,12 @@ The page reloads as you save. When you're done:
 npm run check               # builds the whole site and checks every link, same as CI
 git add content/partners/NUS.md content/partners/NUS/
 git commit -m "NUS: add October results"
-git push -u origin nus/october-results
+git pull --rebase           # pick up other partners' edits first
+git push
 ```
 
-Then open a pull request on GitHub and continue from step 5 above.
+Then continue from step 6 above. Please don't create other branches; the repository keeps only
+`main` and `development`.
 
 > **No Node.js?** Click **Code → Codespaces → Create codespace** on GitHub. It opens an editor in the
 > browser with everything installed and the preview running.
@@ -147,7 +152,7 @@ The three newest updates appear on the home page, and each partner page lists it
   It's read aloud by screen readers.
 - Video: MP4 (H.264), muted, under ~10 MB, in `public/media/`. Ask ST Engineering if you need help
   compressing a clip.
-- Only publish material you have the right to publish. Preview links are public, even before merging.
+- Only publish material you have the right to publish. The test site is public, even before merging.
 
 ## 5. Writing style
 
@@ -172,7 +177,8 @@ Plain present tense and short sentences work best. Use British spelling (behavio
 | `… data does not match collection schema. summary: Too big` | The field is too long; shorten it. |
 | `… logo: … could not be found` / `Could not find requested image` | The image path is wrong, or the file isn't uploaded to the same branch. Paths are case-sensitive. |
 | `broken link "/Strike-Versus-Guard/…"` | A link points at a page that doesn't exist. For links within the site, copy the address from the live site. |
-| No preview comment | The pull request came from a fork. Ask ST Engineering to add you to your partner team, then make the branch in this repository. |
+| Test site didn't change | The *Deploy site* run in the Actions tab is red or still running. Open it to see why. |
+| "You can't commit to development" | You need write access. Ask ST Engineering to add you to your partner team. |
 | `YAMLException` | Usually a `:` inside a front-matter value. Wrap the value in quotes. |
 
 Questions: open an issue in this repository, or contact the ST Engineering NEAR Lab team.

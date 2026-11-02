@@ -48,8 +48,8 @@ const nav = [
     {
       isPreview && (
         <div class="preview-banner" role="note">
-          <strong>Preview{previewPr ? ` of pull request #${previewPr}` : ''}.</strong> This is not the live
-          site. Changes appear on the live site only after the pull request is approved and merged.
+          <strong>Test site{previewPr ? ` (pull request #${previewPr})` : ', built from the development branch'}.</strong>{' '}
+          This is not the live site. Changes go live only when development is merged into main.
         </div>
       )
     }

@@ -1,36 +1,58 @@
 # One-time setup for repository admins
 
 These settings can only be changed by an admin of the `Strike-vs-Guard` organisation / repository.
-Until they are done, the workflows run but nothing is published.
 
-1. **Merge this branch to `main`.** The first push to `main` runs *Deploy live site*, which creates
-   the `gh-pages` branch.
-2. **Turn on GitHub Pages:** Settings → Pages → *Build and deployment* → Source:
-   **Deploy from a branch** → Branch: **`gh-pages`**, folder **`/ (root)`** → Save.
-   (Do not choose "GitHub Actions" as the source; PR previews need the branch method.)
-3. **Allow the workflows to write:** Settings → Actions → General → *Workflow permissions* →
-   **Read and write permissions**. If the organisation restricts which actions may run, allow
-   `actions/*`, `rossjrw/pr-preview-action` and `JamesIves/github-pages-deploy-action`.
-4. **Create partner teams** (Organisation → Teams): `st-web`, `nus`, `upenn`, `cmu`. Add each
-   partner's editors, and give every team **Write** access to this repository. CODEOWNERS
-   rules are ignored for teams without write access. If you'd rather use individual usernames,
-   edit [`.github/CODEOWNERS`](../.github/CODEOWNERS).
-5. **Protect `main`:** Settings → Rules → Rulesets → New branch ruleset, targeting `main`:
+## Branches
+
+The repository keeps exactly two branches:
+
+| Branch | Purpose | Published at |
+|---|---|---|
+| `main` | Live site | https://strike-vs-guard.github.io/Strike-Versus-Guard/ |
+| `development` | Where all edits happen; test site | https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/ |
+
+A push to either branch runs *Deploy site* (`.github/workflows/deploy.yml`), which builds **both**
+branches and publishes them together. No `gh-pages` branch is used.
+
+## Settings
+
+1. **GitHub Pages source:** Settings → Pages → *Build and deployment* → Source: **GitHub Actions**.
+   (Not "Deploy from a branch".)
+2. **Pages environment:** Settings → Environments → `github-pages` → *Deployment branches and tags* →
+   allow **`main`** and **`development`**. By default only the default branch may deploy, which would
+   make pushes to `development` fail at the deploy step.
+3. **Workflow permissions:** Settings → Actions → General → leave *Read repository contents* as the
+   default; the workflows request what they need. If the organisation restricts actions, allow `actions/*`.
+4. **Auto-delete branches:** Settings → General → tick **Automatically delete head branches**, so that
+   any branch someone does create is removed when its pull request is merged.
+5. **Partner teams:** Organisation → Teams: `st-web`, `nus`, `upenn`, `cmu`. Add each partner's
+   editors and give every team **Write** access. CODEOWNERS rules are ignored for teams without write
+   access. Or replace the team names in [`.github/CODEOWNERS`](../.github/CODEOWNERS) with usernames.
+6. **Protect `main`:** Settings → Rules → Rulesets → New branch ruleset, targeting `main`:
    - Require a pull request before merging, with 1 approval
-   - Require review from Code Owners
+   - Require review from Code Owners (the owners of every partner file changed must approve)
    - Require status check **Build and check** (from the CI workflow)
    - Block force pushes and deletions
-6. **Private repository?** GitHub Pages on a private repo needs a paid plan, and the site itself is
-   still public. Preview URLs are public too.
+7. **Protect `development` lightly:** a second ruleset targeting `development` that only blocks
+   force pushes and deletion, so partners can still commit to it directly.
+8. **Private repository?** GitHub Pages on a private repo needs a paid plan, and the published site,
+   including the test site, is public either way.
+
+## Going live
+
+Open a pull request from `development` into `main` (Pull requests → New → base `main`, compare
+`development`). Once approved and merged, the live site updates in a few minutes. Keep the pull
+request open while you collect changes if you like: it updates itself as `development` changes.
 
 ## Custom domain later
 
 Add the domain under Settings → Pages, then change the default in `astro.config.mjs` from
-`'/Strike-Versus-Guard/'` to `'/'`, and `SITE_URL` to the new domain. In `.github/workflows/*.yml`,
-set `BASE_PATH` to `/` (deploy) and `/pr-preview/pr-N/` (preview).
+`'/Strike-Versus-Guard/'` to `'/'`, and `REPO_PATH` in `deploy.yml` to `/`.
 
 ## Housekeeping
 
-- Dependabot opens a monthly pull request to update Astro and the actions. Merge it once CI is green.
-- Large videos: GitHub rejects files over 100 MB and Pages doesn't serve Git LFS. Keep clips small,
-  or host them elsewhere and link them.
+- There is no automatic dependency bot (it would create extra branches). Every few months, on
+  `development`, run `npm outdated` and `npm audit`, update Astro if needed (`npm install astro@latest`),
+  and check the test site.
+- Large videos: GitHub rejects files over 100 MB and Pages doesn't serve Git LFS. `npm run check`
+  fails on clips over 15 MB.
