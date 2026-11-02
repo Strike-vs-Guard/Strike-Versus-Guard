@@ -146,6 +146,10 @@ const programme = defineCollection({
         decisions: z.array(z.string()).default([]),
         /** Optional one-sentence status line, reused by other pages. */
         status: z.string().optional(),
+        /** Optional one-line note shown in the hero under the statement (home page). */
+        gameNote: z.string().optional(),
+        /** Optional hero clip in public/media (muted loop); `image` is its poster. */
+        video: z.string().regex(/^[\w.-]+\.mp4$/).optional(),
       })
       .strict(),
 });

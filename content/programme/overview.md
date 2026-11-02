@@ -12,6 +12,8 @@ decisions:
   - How the rest cover for a drone that is lost.
   - A safety layer checks every command before it reaches a drone.
 caption: One Strike drone, two Guard drones, nobody on the sticks. CMU flight cage.
+video: formation-change.mp4
+gameNote: "Strike vs Guard is the game we test with: the Guard team holds a zone, the Strike team tries to reach it."
 ---
 
 This is a research programme, funded by HTX and carried out by ST Engineering in
