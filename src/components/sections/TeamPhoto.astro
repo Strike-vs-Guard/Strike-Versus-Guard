@@ -1,33 +1,23 @@
 ---
-/** The team photo from content/programme/stack.md, with the "Funded by" well (HTX) above it. */
-import { getCollection } from 'astro:content';
+/** The team photo from content/programme/stack.md, at the content width. */
 import { Image } from 'astro:assets';
 import { section } from './content';
 
 const stack = await section('stack');
-const sponsors = (await getCollection('partners'))
-  .filter((p) => p.data.role === 'Funding sponsor')
-  .sort((a, b) => a.data.order - b.data.order);
 ---
 
 <section class="section section--team">
   <div class="wrap">
     {
-      sponsors.length > 0 && (
-        <div class="sponsor">
-          <p class="eyebrow">Funded by</p>
-          {sponsors.map((s) => (
-            <a class="logo-well sponsor__logo" href={s.data.website} title={s.data.institution}>
-              <Image src={s.data.logo} alt={s.data.logoAlt ?? s.data.institution} height={96} densities={[1, 2]} />
-            </a>
-          ))}
-        </div>
-      )
-    }
-    {
       stack.image && (
         <figure class="team-photo">
-          <Image src={stack.image} alt={stack.imageAlt ?? ''} widths={[600, 1000, 1400]} sizes="(min-width: 1160px) 1100px, 100vw" />
+          <Image
+            class="media-edge"
+            src={stack.image}
+            alt={stack.imageAlt ?? ''}
+            widths={[600, 1000, 1400, 1800]}
+            sizes="(min-width: 1320px) 1320px, 100vw"
+          />
           {stack.caption && <figcaption>{stack.caption}</figcaption>}
         </figure>
       )
@@ -36,25 +26,8 @@ const sponsors = (await getCollection('partners'))
 </section>
 
 <style>
-  .sponsor {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .sponsor .eyebrow {
-    margin: 0;
-  }
-  .sponsor__logo {
-    height: 64px;
-    border: 1px solid var(--border);
-  }
-  .sponsor__logo :global(img) {
-    max-height: 40px;
-  }
-  .team-photo {
-    margin-top: 20px;
-  }
   .team-photo :global(img) {
+    display: block;
     width: 100%;
     border-radius: var(--radius);
     aspect-ratio: 21 / 9;

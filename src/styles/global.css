@@ -8,7 +8,7 @@
   --surface: #111417;
   --text: #e6e8eb;
   --muted: #9ba4af;
-  --border: #262b31;
+  --border: #343b44;
   --grid: #1f252b;
   --accent: #ff4d5e;
   --guard: #6fa3f5;
@@ -32,8 +32,8 @@
   --step-hero: clamp(2.6875rem, 6vw, 4.25rem); /* 68 */
 
   --radius: 10px;
-  --gutter: 16px;
-  --max: 1160px;
+  --gutter: clamp(16px, 4vw, 64px);
+  --max: 1320px;
   color-scheme: dark;
 }
 
@@ -118,11 +118,6 @@ p {
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-@media (min-width: 720px) {
-  :root {
-    --gutter: 32px;
-  }
-}
 
 .eyebrow {
   font-family: var(--font-mono);
@@ -152,7 +147,7 @@ p {
 }
 
 .section {
-  padding-block: clamp(56px, 9vw, 96px);
+  padding-block: clamp(64px, 8vw, 128px);
 }
 .section--alt {
   background: var(--surface);
@@ -253,6 +248,14 @@ a.chip:hover {
 
 figure {
   margin: 0;
+}
+/* Photos and video get a hairline edge; logo wells and inline SVG stay untouched. */
+figure > img,
+figure > video,
+.media-edge,
+.media-edge img,
+.media-edge video {
+  border: 1px solid var(--border);
 }
 figcaption {
   font-family: var(--font-mono);
