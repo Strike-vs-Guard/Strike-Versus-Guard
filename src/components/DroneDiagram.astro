@@ -12,6 +12,8 @@
  *   "Who works on it" link to `${partnersHref}#layer-<id>`.
  * mode "partner" (partner pages): static. The partner's layers are lit and the
  *   callouts show the partner's own `work:` line for each.
+ * mode "compact" (home page): static and short. The drawing (no dot grid, no leader
+ *   lines) beside six plain rows: number, layer title and the partners on it.
  *
  * Content comes from content/programme/stack.md (layers) and each partner's
  * `work:` lines in content/partners/*.md. Styles are prefixed and global.
@@ -19,7 +21,7 @@
 import type { SystemData } from '../lib/system';
 interface Props {
   data: SystemData;
-  mode?: 'explain' | 'partner';
+  mode?: 'explain' | 'partner' | 'compact';
   /** explain mode: CSS selector of the connection diagram to drive */
   target?: string;
   /** explain mode: element to scroll to after a callout is selected (desktop) */
@@ -32,7 +34,8 @@ interface Props {
 const { data, mode = 'explain', target, scrollTo, partnersHref, partner } = Astro.props;
 const uid = 'pd' + Math.random().toString(36).slice(2, 8);
 const id = (s: string) => `${uid}-${s}`;
-const explain = mode !== 'partner';
+const explain = mode === 'explain';
+const compact = mode === 'compact';
 /* the "Who works on it" link replaces the in-button cue when the diagram is on another page */
 const linkOut = explain && !!partnersHref && !target;
 
@@ -40,6 +43,7 @@ const numbered = data.layers.filter((l) => l.n != null).sort((a, b) => (a.n ?? 0
 const layers = [...numbered, ...data.layers.filter((l) => l.n == null)];
 const lastN = numbered.length ? numbered[numbered.length - 1].n : '';
 const spans = `Spans layers 1–${lastN}`;
+const range = `${numbered.length ? numbered[0].n : 1}–${lastN}`;
 /* marker positions in the drawing, keyed by layer id; the numbers come from stack.md */
 const MK: Record<string, [number, number]> = {
   strategy: [300, 72],
@@ -64,7 +68,8 @@ const illLabel = [
 ].filter(Boolean).join(' ');
 
 const P = data.partners_in_display_order;
-const pt = !explain ? P.find((p) => p.id === partner) : undefined;
+const pt = mode === 'partner' ? P.find((p) => p.id === partner) : undefined;
+const whoOn = (layer: string) => P.filter((p) => p.work[layer]).map((p) => p.short).join(' · ');
 const work = (pt?.work ?? {}) as Record<string, string | undefined>;
 const lit = layers.filter((l) => !!work[l.id]).map((l) => l.id);
 const listWords = (a: string[]) => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
@@ -85,13 +90,15 @@ const OPTS = {
 };
 const label = explain
   ? 'Annotated drone: what each layer of the system does'
-  : `Annotated drone: the layers ${pt?.short ?? ''} works on`;
+  : compact
+    ? 'Annotated drone: the layers of the system and who works on each'
+    : `Annotated drone: the layers ${pt?.short ?? ''} works on`;
 ---
 
 <div class={rootClass} role="group" aria-label={label}>
   {pt && <p class="pd-sr">{pt.short} works on {listWords(layers.filter((l) => work[l.id]).map((l) => l.title))}.</p>}
   <div class="pd-stage">
-    <svg class="pd-lines" aria-hidden="true" focusable="false"></svg>
+    {!compact && <svg class="pd-lines" aria-hidden="true" focusable="false"></svg>}
 
     <figure class="pd-fig">
       <svg class="pd-ill" viewBox="0 0 600 440" role="img" aria-label={illLabel}>
@@ -214,6 +221,23 @@ const label = explain
       </svg>
     </figure>
 
+    {compact ? (
+    <ol class="pd-rows">
+      {layers.map((l) => {
+        const span = l.n == null;
+        return (
+          <li class={`pd-row${span ? ' pd-row--span' : ''}`}>
+            <span class="pd-num" aria-hidden="true">{span ? range : l.n}</span>
+            <span class="pd-row-title">
+              {l.title}
+              {span && <span class="pd-row-tag">spans {range}</span>}
+            </span>
+            <span class="pd-row-who">{whoOn(l.id)}</span>
+          </li>
+        );
+      })}
+    </ol>
+    ) : (
     <ol class="pd-cos">
       {layers.map((l) => {
         const span = l.n == null;
@@ -245,7 +269,7 @@ const label = explain
             >
               {head}
               <span class="pd-co-desc" id={id('d-' + l.id)}>{l.desc}</span>
-              <span class="pd-co-who">{P.filter((p) => p.work[l.id]).map((p) => p.short).join(' · ')}</span>
+              <span class="pd-co-who">{whoOn(l.id)}</span>
             </button>
             {linkOut && (
               <a class="pd-cue pd-cue-link" href={`${partnersHref}#layer-${l.id}`} data-layer={l.id} aria-label={`Who works on ${l.title}`}>
@@ -268,12 +292,13 @@ const label = explain
         );
       })}
     </ol>
+    )}
   </div>
 
   <script is:inline define:vars={{ OPTS }}>
   (function () {
     var root = document.currentScript && document.currentScript.closest('.pd');
-    if (!root) return;
+    if (!root || OPTS.mode === 'compact') return;
     var explain = OPTS.mode !== 'partner';
     var stage = root.querySelector('.pd-stage');
     var lines = root.querySelector('.pd-lines');
@@ -611,6 +636,27 @@ const label = explain
   .pd .pd-ill .pd-lbl{font-size:15px}
   .pd .pd-ill .pd-lbl-sm,.pd .pd-ill .pd-lbl-path{display:none}
   .pd .pd-ill .pd-lbl-air{transform:translateX(-14px)}
+}
+/* compact mode (home): no dot grid, drawing left, six static rows right */
+.pd--compact .pd-stage{grid-template-columns:minmax(0,460px) minmax(0,1fr);column-gap:clamp(16px,2.5vw,36px);align-items:center;
+  padding:18px clamp(16px,2.5vw,32px) 18px 18px;background-image:none}
+.pd .pd-rows{margin:0;padding:0;list-style:none}
+.pd .pd-row{display:grid;grid-template-columns:30px minmax(110px,.8fr) minmax(0,1.6fr);align-items:baseline;gap:4px 14px;padding:10px 0;border-bottom:1px solid var(--border)}
+.pd .pd-row:first-child{border-top:1px solid var(--border)}
+.pd .pd-row .pd-num{align-self:center;width:24px;height:24px;font-size:12px}
+.pd .pd-row-title{font:700 20px/1.2 var(--font-display)}
+.pd .pd-row-tag{margin-left:8px;font:500 11px/1.2 var(--font-mono);letter-spacing:.04em;color:var(--muted)}
+.pd .pd-row-who{font:500 12px/1.4 var(--font-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.pd .pd-row--span{border-bottom:0;border-top:1px dashed var(--muted);margin-top:8px}
+.pd .pd-row--span .pd-num{border-style:dashed;font-size:9.5px;letter-spacing:-.02em}
+@media (max-width:899px){
+  .pd--compact .pd-stage{padding:12px 16px 8px}
+  .pd--compact .pd-fig{max-width:460px}
+}
+@media (max-width:639px){
+  .pd .pd-row{grid-template-columns:30px minmax(0,1fr);row-gap:2px}
+  .pd .pd-row-who{grid-column:2}
+  .pd .pd-row-title{font-size:18px}
 }
 @media (prefers-reduced-motion:reduce){
   .pd *,.pd *::before,.pd *::after{transition:none!important;animation:none!important}

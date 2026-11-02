@@ -1,0 +1,289 @@
+---
+/**
+ * "Proof so far" (home page): a one-line year bar from content/programme/milestones.md (the
+ * `current: true` item), the four flight clips from content/programme/flights.md 4-across with
+ * titles and one-liners, the note and "All flights →". Clips show the flight half of each video
+ * (the ground station half is shown on the Flights page). A clip loads only when played.
+ */
+import { url } from '../../lib/url';
+import { section } from './content';
+
+const flights = await section('flights');
+const milestones = await section('milestones');
+const items = milestones.items;
+const cur = Math.max(
+  0,
+  items.findIndex((m) => m.current),
+);
+const now = items[cur];
+/* The home view is cropped to the flight, so only the note's first sentence applies here. */
+const note = flights.note ? flights.note.split(/(?<=\.)\s+/)[0] : '';
+---
+
+<section class="section proof" aria-labelledby="proof-title">
+  <div class="wrap">
+    <header class="section__head">
+      <p class="eyebrow">Flights</p>
+      <h2 id="proof-title">Proof so far</h2>
+    </header>
+
+    {
+      now && (
+        <div class="yearbar">
+          <p class="yearbar__text">
+            <span>
+              {now.label} of {items.length} · {now.when} ·
+            </span>
+            <span class="yearbar__here">We are here</span>
+            <span class="yearbar__goal">{now.title}</span>
+          </p>
+          <div class="yearbar__line" aria-hidden="true">
+            {items.map((_, i) => (
+              <span class:list={{ 'is-past': i < cur, 'is-now': i === cur }} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    <div class="pclips">
+      {
+        flights.items.map((c) => (
+          <figure class="pclip">
+            {c.video && (
+              <div class="pclip__media" data-pclip>
+                <video
+                  src={url(`media/${c.video}`)}
+                  poster={c.poster ? url(`media/${c.poster}`) : undefined}
+                  preload="none"
+                  muted
+                  loop
+                  playsinline
+                  aria-label={`Flight clip: ${c.title}`}
+                />
+                <button type="button" class="pclip__btn" aria-pressed="false" aria-label={`Play: ${c.title}`} data-title={c.title}>
+                  <span class="pclip__icon" aria-hidden="true">
+                    <svg class="pclip__play" width="18" height="18" viewBox="0 0 18 18">
+                      <path d="M5 3l10 6-10 6z" fill="currentColor" />
+                    </svg>
+                    <svg class="pclip__pause" width="18" height="18" viewBox="0 0 18 18">
+                      <path d="M5 3h3v12H5zM10 3h3v12h-3z" fill="currentColor" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            )}
+            <figcaption>
+              <h3>{c.title}</h3>
+              {c.text && <p>{c.text}</p>}
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <div class="proof__foot">
+      {note && <p class="section__note">{note}</p>}
+      <a class="arrow-link" href={url('flights/')}>All flights →</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* Play/pause toggles: one clip plays at a time. */
+  const boxes = [...document.querySelectorAll<HTMLElement>('[data-pclip]')];
+  const parts = boxes.map((box) => ({
+    box,
+    v: box.querySelector('video')!,
+    b: box.querySelector<HTMLButtonElement>('.pclip__btn')!,
+  }));
+  const set = (p: (typeof parts)[number], on: boolean) => {
+    p.box.classList.toggle('is-playing', on);
+    p.b.setAttribute('aria-pressed', String(on));
+    p.b.setAttribute('aria-label', `${on ? 'Pause' : 'Play'}: ${p.b.dataset.title}`);
+  };
+  for (const p of parts) {
+    p.b.addEventListener('click', () => {
+      if (p.v.paused) {
+        for (const o of parts) if (o !== p && !o.v.paused) o.v.pause();
+        p.v.play().catch(() => set(p, false));
+      } else {
+        p.v.pause();
+      }
+    });
+    p.v.addEventListener('play', () => set(p, true));
+    p.v.addEventListener('pause', () => set(p, false));
+  }
+</script>
+
+<style>
+  .yearbar {
+    margin-bottom: 28px;
+  }
+  .yearbar__text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin: 0;
+    font: 500 var(--step--1) var(--font-mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .yearbar__here {
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 1px 8px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+  }
+  .yearbar__goal {
+    color: var(--text);
+    text-transform: none;
+    letter-spacing: 0;
+    font: 600 var(--step-0) var(--font-body);
+  }
+  .yearbar__line {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 10px;
+    max-width: 520px;
+  }
+  .yearbar__line span {
+    height: 3px;
+    border-radius: 2px;
+    background: var(--border);
+  }
+  .yearbar__line .is-past {
+    background: var(--muted);
+  }
+  .yearbar__line .is-now {
+    background: var(--accent);
+  }
+
+  .pclips {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(16px, 1.6vw, 24px);
+  }
+  .pclip__media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .pclip__media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* each clip stacks the ground station (top) over the flight (bottom): show the flight */
+    object-position: 50% 100%;
+  }
+  .pclip__btn {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pclip__btn:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: -4px;
+    border-radius: var(--radius);
+  }
+  .pclip__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--text) 70%, transparent);
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.15s ease;
+  }
+  .pclip__btn:hover .pclip__icon {
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+  }
+  .pclip__pause {
+    display: none;
+  }
+  .is-playing .pclip__play {
+    display: none;
+  }
+  .is-playing .pclip__pause {
+    display: block;
+  }
+  /* while playing, the pause icon shows only on hover or keyboard focus */
+  .is-playing .pclip__icon {
+    opacity: 0;
+  }
+  .is-playing .pclip__btn:hover .pclip__icon,
+  .is-playing .pclip__btn:focus-visible .pclip__icon {
+    opacity: 1;
+  }
+  .pclip figcaption {
+    margin: 0;
+    font-family: var(--font-body);
+    letter-spacing: 0;
+    color: var(--text);
+  }
+  .pclip h3 {
+    font-size: var(--step-1);
+    margin: 12px 0 4px;
+  }
+  .pclip p {
+    font-size: var(--step-0);
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .proof__foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px 24px;
+    margin-top: 28px;
+  }
+  .proof__foot .section__note {
+    margin: 0;
+  }
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+    font-size: var(--step-0);
+    white-space: nowrap;
+  }
+  @media (max-width: 1100px) {
+    .pclips {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 640px) {
+    .pclips {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pclip__icon {
+      transition: none;
+    }
+  }
+</style>

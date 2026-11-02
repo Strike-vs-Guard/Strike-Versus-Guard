@@ -1,66 +1,82 @@
 ---
-/** Home page: hero, benchmark, the five layers, the clips, milestones, updates, team photo. */
-import { Image } from 'astro:assets';
+/** Home page: clip hero and facts, the game, proof so far, the compact drone, updates, team photo. */
+import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Wordmark from '../components/Wordmark.astro';
 import { url } from '../lib/url';
 import { section } from '../components/sections/content';
 import Benchmark from '../components/sections/Benchmark.astro';
+import Proof from '../components/sections/Proof.astro';
 import Layers from '../components/sections/Layers.astro';
-import Clips from '../components/sections/Clips.astro';
-import Milestones from '../components/sections/Milestones.astro';
 import UpdatesTeaser from '../components/sections/UpdatesTeaser.astro';
 import TeamPhoto from '../components/sections/TeamPhoto.astro';
 
 const overview = await section('overview');
+const flights = await section('flights');
+/* the still photo: the clip's poster, and what reduced-motion visitors see instead of the clip */
+const still = overview.image ? await getImage({ src: overview.image, width: 1280, format: 'webp' }) : undefined;
+const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?? overview.caption ?? '';
 ---
 
 <Base>
   <!-- ───────────────────────── Hero ───────────────────────── -->
-  <section class="hero">
-    <div class="wrap hero__grid">
-      <div class="hero__text">
-        <p class="eyebrow">{overview.eyebrow} · Decentralised multi-drone autonomy</p>
-        <Wordmark as="h1" />
-        <span class="hero__rule" aria-hidden="true"></span>
-        <p class="hero__title">{overview.title}</p>
-        <div class="prose hero__body"><overview.Content /></div>
-        <div class="hero__actions">
-          <a class="btn" href={url('programme/')}>How it works</a>
-          <a class="btn btn--ghost" href={url('partners/')}>Meet the partners</a>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero__grid">
+        <div class="hero__text">
+          <p class="eyebrow">{overview.eyebrow} · Decentralised multi&#8209;drone autonomy</p>
+          <h1 id="hero-title">{overview.title}</h1>
+          <span class="hero__rule" aria-hidden="true"></span>
+          <div class="hero__lede"><overview.Content /></div>
+          {overview.gameNote && <p class="hero__game">{overview.gameNote}</p>}
+          <div class="hero__actions">
+            <a class="btn" href={url('programme/')}>How it works</a>
+            <a class="btn btn--ghost" href={url('partners/')}>Meet the partners</a>
+          </div>
         </div>
-      </div>
-      <div class="hero__side">
         {
-          overview.image && (
-            <figure class="hero__figure">
-              <Image
-                src={overview.image}
-                alt={overview.imageAlt ?? ''}
-                widths={[560, 900, 1400]}
-                sizes="(min-width: 960px) 560px, 100vw"
-                loading="eager"
-                fetchpriority="high"
-              />
+          (overview.video || still) && (
+            <figure class="hero__media">
+              <div class:list={['hero__frame', { 'has-video': !!overview.video }]} data-hero-clip>
+                {overview.video && (
+                  <video
+                    class="hero__video"
+                    src={url(`media/${overview.video}`)}
+                    poster={still?.src}
+                    muted
+                    autoplay
+                    loop
+                    playsinline
+                    preload="metadata"
+                    aria-label={`Flight clip: ${clipTitle}`}
+                  />
+                )}
+                {still && (
+                  <img
+                    class="hero__still"
+                    src={still.src}
+                    alt={overview.imageAlt ?? ''}
+                    width={still.attributes.width}
+                    height={still.attributes.height}
+                    loading="eager"
+                    decoding="async"
+                  />
+                )}
+                {overview.video && (
+                  <button type="button" class="hero__toggle" aria-label="Pause the flight clip" hidden>
+                    <svg class="hero__i-play" width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
+                      <path d="M5 3l10 6-10 6z" fill="currentColor" />
+                    </svg>
+                    <svg class="hero__i-pause" width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
+                      <path d="M5 3h3v12H5zM10 3h3v12h-3z" fill="currentColor" />
+                    </svg>
+                  </button>
+                )}
+              </div>
               {overview.caption && <figcaption>{overview.caption}</figcaption>}
             </figure>
           )
         }
-        {
-          overview.decisions.length > 0 && (
-            <div class="hero__decide">
-              <p class="eyebrow">{overview.decisionsLabel}</p>
-              <ul>
-                {overview.decisions.map((d) => (
-                  <li>{d}</li>
-                ))}
-              </ul>
-            </div>
-          )
-        }
       </div>
-    </div>
-    <div class="wrap">
       <dl class="facts">
         <div><dt>Funded by</dt><dd>HTX</dd></div>
         <div><dt>Partners</dt><dd>ST Engineering · NUS · UPenn · CMU</dd></div>
@@ -72,129 +88,227 @@ const overview = await section('overview');
 
   <div class="home">
     <Benchmark />
-    <Layers partnersHref={url('partners/')} />
-    <Clips size="compact" />
-    <Milestones />
+    <Proof />
+    <Layers />
     <UpdatesTeaser limit={3} />
     <TeamPhoto />
   </div>
 </Base>
 
+<script>
+  /* Hero clip: autoplays muted; reduced-motion visitors get the still photo and a play button. */
+  for (const frame of document.querySelectorAll<HTMLElement>('[data-hero-clip]')) {
+    const v = frame.querySelector('video');
+    const b = frame.querySelector<HTMLButtonElement>('.hero__toggle');
+    if (!v || !b) continue;
+    const sync = () => {
+      const on = !v.paused;
+      frame.classList.toggle('is-paused', !on);
+      b.setAttribute('aria-label', on ? 'Pause the flight clip' : 'Play the flight clip');
+    };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      v.autoplay = false;
+      v.removeAttribute('autoplay');
+      v.pause();
+    } else {
+      frame.classList.add('is-on');
+    }
+    v.addEventListener('playing', () => v.classList.add('is-started'));
+    v.addEventListener('play', sync);
+    v.addEventListener('pause', sync);
+    b.addEventListener('click', () => {
+      if (v.paused) {
+        frame.classList.add('is-on');
+        v.play().catch(sync);
+      } else {
+        v.pause();
+      }
+    });
+    b.hidden = false;
+    sync();
+  }
+</script>
+
 <style>
-  /* The home page is a summary: tighter section spacing than the sub-pages. */
-  .home > :global(.section) {
-    padding-block: clamp(44px, 6vw, 64px);
+  /* Rules between the home sections, as in the draft */
+  .home > :global(.section ~ .section) {
+    border-top: 1px solid var(--border);
   }
   /* Hero */
   .hero {
-    padding-block: clamp(40px, 7vw, 88px) clamp(32px, 5vw, 56px);
+    padding-block: clamp(28px, 3.6vw, 52px) 0;
   }
   .hero__grid {
     display: grid;
-    gap: 40px;
-    align-items: start;
+    gap: 28px;
+    align-items: center;
   }
   @media (min-width: 960px) {
     .hero__grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 40px;
-    }
-    .hero__side {
-      /* eyebrow line + wordmark margin: puts the photo top level with the wordmark */
-      margin-top: 37px;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: clamp(28px, 4vw, 56px);
     }
   }
-  .hero__figure {
-    margin: 0;
+  @media (max-width: 959px) {
+    .hero__media {
+      order: -1;
+    }
   }
-  .hero__decide {
-    margin-top: 22px;
-  }
-  .hero__decide .eyebrow {
-    margin-bottom: 8px;
-  }
-  .hero__decide ul {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0 14px;
-    border-left: 1px solid var(--border);
-    display: grid;
-    gap: 6px;
-    font-size: var(--step-0);
-    color: var(--text);
-  }
-  .hero__text :global(.wordmark) {
-    margin-top: 4px;
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 3.6vw, 3.25rem);
+    letter-spacing: -0.015em;
+    line-height: 1.04;
+    margin: 0 0 18px;
   }
   .hero__rule {
     display: block;
-    width: 32px;
+    width: 56px;
     height: 3px;
     background: var(--accent);
-    margin: 22px 0 20px;
+    margin: 0 0 18px;
   }
-  .hero__title {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: var(--step-4);
-    line-height: 1.15;
-    max-width: 22ch;
-    margin-bottom: 18px;
+  .hero__lede {
+    max-width: 68ch;
   }
-  .hero__body :global(p) {
-    color: var(--muted);
+  .hero__lede :global(p) {
+    margin-bottom: 14px;
   }
-  .hero__body :global(strong) {
-    color: var(--text);
+  .hero__lede :global(strong) {
     font-weight: 600;
+  }
+  .hero__game {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    line-height: 1.55;
+    color: var(--text);
+    max-width: 68ch;
+    margin-bottom: 22px;
+    border-left: 2px solid var(--border);
+    padding-left: 12px;
   }
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 24px;
   }
-  .hero__figure :global(img) {
-    width: 100%;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    object-position: 50% 40%;
+  .hero__media {
+    margin: 0;
   }
-  @media (max-width: 420px) {
-    .hero :global(.wordmark--lg) {
-      font-size: 2.35rem;
-    }
-  }
-  .facts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1px;
-    margin: clamp(32px, 5vw, 56px) 0 0;
-    background: var(--border);
+  .hero__frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-  }
-  .facts div {
     background: var(--surface);
-    padding: 14px 16px;
   }
-  @media (max-width: 719px) {
-    .facts div:last-child:nth-child(odd) {
-      grid-column: 1 / -1;
+  .hero__frame video,
+  .hero__frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+  /* each clip stacks the ground station (top) over the flight (bottom): show the flight */
+  .hero__frame video.is-started {
+    object-position: 50% 100%;
+  }
+  .hero__frame.has-video .hero__still {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__frame.has-video:not(.is-on) .hero__video {
+      display: none;
+    }
+    .hero__frame.has-video:not(.is-on) .hero__still {
+      display: block;
     }
   }
+  .hero__toggle {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--text) 70%, transparent);
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .hero__toggle:hover {
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+  }
+  .hero__toggle[hidden] {
+    display: none;
+  }
+  .hero__i-play,
+  .is-paused .hero__i-pause {
+    display: none;
+  }
+  .is-paused .hero__i-play {
+    display: block;
+  }
+  .hero__media figcaption {
+    font-family: var(--font-body);
+    letter-spacing: 0;
+    line-height: 1.5;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: 0.8fr 1.6fr 1.2fr 1fr;
+    margin: clamp(28px, 3.5vw, 44px) 0 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .facts > div {
+    padding: 16px 20px 16px 0;
+  }
+  .facts > div + div {
+    padding-left: 20px;
+    border-left: 1px solid var(--border);
+  }
   .facts dt {
-    font: 500 var(--step--1) var(--font-mono);
-    text-transform: uppercase;
+    font: 500 0.75rem var(--font-mono);
     letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--muted);
+    margin-bottom: 4px;
   }
   .facts dd {
-    margin: 4px 0 0;
-    font-weight: 600;
+    margin: 0;
     font-size: var(--step-0);
+    font-weight: 600;
+  }
+  @media (max-width: 900px) {
+    .facts {
+      grid-template-columns: 1fr 1fr;
+    }
+    .facts > div:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .facts > div:nth-child(n + 3) {
+      border-top: 1px solid var(--border);
+    }
+  }
+  @media (max-width: 640px) {
+    .facts {
+      grid-template-columns: 1fr;
+    }
+    .facts > div,
+    .facts > div + div {
+      padding: 12px 0;
+      border-left: 0;
+    }
+    .facts > div + div {
+      border-top: 1px solid var(--border);
+    }
   }
 </style>

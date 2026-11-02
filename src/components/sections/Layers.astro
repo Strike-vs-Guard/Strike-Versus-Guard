@@ -1,39 +1,38 @@
 ---
 /**
- * Home page: the five layers on the annotated drone (DroneDiagram, explain mode).
- * A click lights the layer here; each callout links to the connection diagram on
- * `partnersHref` (the Partners page), which selects that layer from the hash.
+ * Home page: the five layers on the annotated drone, compact (DroneDiagram mode "compact"):
+ * the drawing and six rows naming the partners on each layer. The full explain-mode drone
+ * lives on the Partners page; "Who works on each layer →" leads there.
  */
 import DroneDiagram from '../DroneDiagram.astro';
 import { getSystemData } from '../../lib/system';
+import { url } from '../../lib/url';
 import { section } from './content';
 
-interface Props {
-  partnersHref: string;
-}
-const { partnersHref } = Astro.props;
 const stack = await section('stack');
 const system = await getSystemData();
 ---
 
-<section class="section section--alt">
+<section class="section section--layers">
   <div class="wrap">
     <header class="section__head section__head--row">
       <div>
         <p class="eyebrow">{stack.eyebrow}</p>
         <h2>{stack.title}</h2>
-        <p class="sys-hint">What each layer does, top to bottom. Select a layer to light it on the drone.</p>
       </div>
-      <a class="btn btn--ghost" href={`${partnersHref}#who`}>Who works on each layer →</a>
+      <a class="arrow-link" href={url('partners/#who')}>Who works on each layer →</a>
     </header>
-    <DroneDiagram data={system} mode="explain" partnersHref={partnersHref} />
+    <DroneDiagram data={system} mode="compact" />
   </div>
 </section>
 
 <style>
-  .sys-hint {
-    margin: 0.5rem 0 0;
-    color: var(--muted);
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
     font-size: var(--step-0);
+    white-space: nowrap;
   }
 </style>

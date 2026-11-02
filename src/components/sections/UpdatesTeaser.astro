@@ -24,12 +24,12 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
             <p class="eyebrow">Updates</p>
             <h2>Latest from the programme</h2>
           </div>
-          <a class="btn btn--ghost" href={url('updates/')}>All updates</a>
+          <a class="arrow-link" href={url('updates/')}>All updates →</a>
         </header>
         <ul class="updates">
           {updates.map((u) => (
             <li class="card update">
-              <p class="eyebrow">
+              <p class="eyebrow update__meta">
                 <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmt(u.data.date)}</time> ·{' '}
                 {partnerName(u.data.partner)}
               </p>
@@ -52,11 +52,31 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: clamp(16px, 1.6vw, 24px);
+    /* auto-fit: two cards fill the row, three share it */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   }
   .update {
-    padding: 22px;
+    padding: clamp(20px, 2vw, 28px);
+  }
+  .update__meta {
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+  }
+  .update h3 {
+    margin-bottom: 8px;
+  }
+  .update p.muted {
+    font-size: var(--step-0);
+    max-width: 68ch;
+  }
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+    font-size: var(--step-0);
+    white-space: nowrap;
   }
   .update h3 a {
     text-decoration: none;
