@@ -1,0 +1,82 @@
+---
+/** Research directions and applications (content/programme/directions.md). Holds #directions. */
+import Icon from '../Icon.astro';
+import { section } from './content';
+
+interface Props {
+  alt?: boolean;
+}
+const { alt = false } = Astro.props;
+const directions = await section('directions');
+---
+
+<section id="directions" class:list={['section', { 'section--alt': alt }]}>
+  <div class="wrap">
+    <header class="section__head">
+      <p class="eyebrow">{directions.eyebrow}</p>
+      <h2>{directions.title}</h2>
+    </header>
+    <ul class="directions">
+      {
+        directions.items.map((d) => (
+          <li>
+            <Icon name={d.icon ?? 'drones'} />
+            <h3>{d.title}</h3>
+            <p class="muted">{d.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+    {
+      directions.tags.length > 0 && (
+        <div class="tags">
+          <p class="eyebrow">{directions.tagsLabel}</p>
+          <ul>
+            {directions.tags.map((t) => (
+              <li class="chip">{t}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  /* Directions */
+  .directions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 32px 28px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+  .directions li {
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+  .directions :global(svg) {
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .directions h3 {
+    margin-bottom: 4px;
+  }
+  .tags {
+    margin-top: 40px;
+  }
+  .tags ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tags .chip {
+    font-size: var(--step--1);
+    padding: 4px 12px;
+    color: var(--text);
+  }
+</style>

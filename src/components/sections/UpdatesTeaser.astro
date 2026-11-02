@@ -1,0 +1,80 @@
+---
+/** The latest updates as cards, with "All updates". Holds #updates. */
+import { getCollection } from 'astro:content';
+import { url } from '../../lib/url';
+
+interface Props {
+  limit?: number;
+}
+const { limit = 3 } = Astro.props;
+const partners = await getCollection('partners');
+const updates = (await getCollection('updates', (u) => !u.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, limit);
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.short ?? id;
+---
+
+{
+  updates.length > 0 && (
+    <section id="updates" class="section">
+      <div class="wrap">
+        <header class="section__head section__head--row">
+          <div>
+            <p class="eyebrow">Updates</p>
+            <h2>Latest from the programme</h2>
+          </div>
+          <a class="btn btn--ghost" href={url('updates/')}>All updates</a>
+        </header>
+        <ul class="updates">
+          {updates.map((u) => (
+            <li class="card update">
+              <p class="eyebrow">
+                <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmt(u.data.date)}</time> ·{' '}
+                {partnerName(u.data.partner)}
+              </p>
+              <h3>
+                <a href={url(`updates/${u.id}/`)}>{u.data.title}</a>
+              </h3>
+              <p class="muted">{u.data.summary}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  /* Updates */
+  .section__head--row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .section__head--row h2 {
+    margin: 0;
+  }
+  .updates {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .update {
+    padding: 22px;
+  }
+  .update h3 a {
+    text-decoration: none;
+  }
+  .update h3 a:hover {
+    text-decoration: underline;
+  }
+  .update p:last-child {
+    margin: 0;
+  }
+</style>

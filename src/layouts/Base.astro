@@ -16,12 +16,14 @@ const { title, description = site.description } = Astro.props;
 const pageTitle = title ? `${title} · ${site.title}` : `${site.title}: ${site.tagline}`;
 const path = Astro.url.pathname;
 const nav = [
-  { href: url('#programme'), label: 'Programme' },
+  { href: url('programme/'), label: 'Programme' },
   { href: url('#benchmark'), label: 'Benchmark' },
-  { href: url('#partners'), label: 'Partners' },
-  { href: url('#flights'), label: 'Flights' },
+  { href: url('partners/'), label: 'Partners' },
+  { href: url('flights/'), label: 'Flights' },
   { href: url('updates/'), label: 'Updates' },
 ];
+/* A page is current when its path starts with the nav link's path (anchors on the home page never are). */
+const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href);
 ---
 
 <!doctype html>
@@ -64,7 +66,7 @@ const nav = [
             {
               nav.map((n) => (
                 <li>
-                  <a href={n.href} aria-current={path === n.href ? 'page' : undefined}>
+                  <a href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>
                     {n.label}
                   </a>
                 </li>
@@ -104,6 +106,8 @@ const nav = [
         <div class="site-footer__cols">
           <p class="site-footer__note">{site.footerNote}</p>
           <ul class="site-footer__links">
+            <li><a href={url('programme/')}>Programme</a></li>
+            <li><a href={url('flights/')}>Flights</a></li>
             {
               partners
                 .filter((p) => p.data.page)

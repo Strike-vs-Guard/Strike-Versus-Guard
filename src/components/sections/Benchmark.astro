@@ -1,0 +1,19 @@
+---
+/** The benchmark game and the animated arena (content/programme/benchmark.md). Holds #benchmark. */
+import Arena from '../Arena.astro';
+import { section } from './content';
+
+const benchmark = await section('benchmark');
+---
+
+<section id="benchmark" class="section">
+  <div class="wrap">
+    <header class="section__head">
+      <p class="eyebrow">{benchmark.eyebrow}</p>
+      <h2>{benchmark.title}</h2>
+      <div class="prose"><benchmark.Content /></div>
+    </header>
+    <Arena steps={benchmark.items} />
+    {benchmark.note && <p class="section__note">{benchmark.note}</p>}
+  </div>
+</section>

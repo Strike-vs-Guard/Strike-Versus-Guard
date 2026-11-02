@@ -1,0 +1,86 @@
+---
+/**
+ * The four flight clips (content/programme/flights.md).
+ * size "compact" (home page): title, one row of clips with their titles, the note and "All flights →".
+ * size "large" (Flights page): no head (the page head shows the title and body), two clips per row
+ * with full captions. Holds #flights when given id="flights".
+ */
+import Clip from '../Clip.astro';
+import { url } from '../../lib/url';
+import { section } from './content';
+
+interface Props {
+  size?: 'compact' | 'large';
+  id?: string;
+}
+const { size = 'compact', id } = Astro.props;
+const compact = size === 'compact';
+const flights = await section('flights');
+---
+
+<section id={id} class:list={['section', compact ? 'section--clips' : 'section--clips-large']}>
+  <div class="wrap">
+    {
+      compact && (
+        <header class="section__head section__head--row">
+          <div>
+            <p class="eyebrow">{flights.eyebrow}</p>
+            <h2>{flights.title}</h2>
+          </div>
+          <a class="btn btn--ghost" href={url('flights/')}>All flights →</a>
+        </header>
+      )
+    }
+    <div class:list={['clips', { 'clips--large': !compact }]}>
+      {
+        flights.items.map((c) => (
+          <figure class="clip-card">
+            {c.video && <Clip video={c.video} poster={c.poster} title={c.title} />}
+            <figcaption>
+              <strong>{c.title}</strong>
+              {!compact && <span>{c.text}</span>}
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+    {flights.note && <p class="section__note">{flights.note}</p>}
+  </div>
+</section>
+
+<style>
+  .clips {
+    display: grid;
+    gap: 20px 14px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr));
+  }
+  .clip-card figcaption {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    letter-spacing: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .clip-card figcaption strong {
+    color: var(--text);
+  }
+  .clips--large {
+    gap: 32px 28px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  }
+  @media (min-width: 760px) {
+    .clips--large {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .section__head--row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .section__head--row h2 {
+    margin: 0;
+  }
+</style>

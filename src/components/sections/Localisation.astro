@@ -1,0 +1,53 @@
+---
+/**
+ * Localisation (content/programme/localisation.md).
+ * Default: the full section (Programme page). `statusOnly`: just the one-sentence `status:` line
+ * (Flights page). Renders nothing if the file is missing.
+ */
+import { getEntry, render } from 'astro:content';
+import { url } from '../../lib/url';
+
+interface Props {
+  statusOnly?: boolean;
+}
+const { statusOnly = false } = Astro.props;
+const entry = await getEntry('programme', 'localisation');
+const Content = entry ? (await render(entry)).Content : null;
+const d = entry?.data;
+---
+
+{
+  d && Content && !statusOnly && (
+    <section id="localisation" class="section">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">{d.eyebrow}</p>
+          <h2>{d.title}</h2>
+        </header>
+        <div class="prose loc"><Content /></div>
+      </div>
+    </section>
+  )
+}
+{
+  d && statusOnly && d.status && (
+    <section class="section section--alt">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="eyebrow">{d.eyebrow}</p>
+          <h2>{d.title}</h2>
+          <div class="prose">
+            <p>{d.status}</p>
+          </div>
+        </header>
+        <a class="btn btn--ghost" href={url('programme/#localisation')}>How localisation works →</a>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .loc :global(strong) {
+    font-weight: 600;
+  }
+</style>

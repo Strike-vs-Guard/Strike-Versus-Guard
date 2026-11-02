@@ -1,0 +1,20 @@
+---
+/** Flights page: the October 2026 flight day with the four clips, localisation status, milestones. */
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/sections/PageHead.astro';
+import Clips from '../components/sections/Clips.astro';
+import Localisation from '../components/sections/Localisation.astro';
+import Milestones from '../components/sections/Milestones.astro';
+import { section } from '../components/sections/content';
+
+const flights = await section('flights');
+---
+
+<Base title="Flights" description="Three Starling 2 Max drones flying with no pilot in CMU's flight cage, and what comes next.">
+  <PageHead eyebrow={flights.eyebrow} title={flights.title}>
+    <flights.Content />
+  </PageHead>
+  <Clips size="large" id="flights" />
+  <Localisation statusOnly />
+  <Milestones id="" alt={false} />
+</Base>

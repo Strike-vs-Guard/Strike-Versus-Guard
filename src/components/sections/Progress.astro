@@ -1,0 +1,59 @@
+---
+/** Proof so far: Crazyflie, Starling at CMU, Singapore lab (content/programme/progress.md). */
+import Clip from '../Clip.astro';
+import PartnerChips from '../PartnerChips.astro';
+import { section } from './content';
+
+const progress = await section('progress');
+---
+
+<section class="section">
+  <div class="wrap">
+    <header class="section__head">
+      <p class="eyebrow">{progress.eyebrow}</p>
+      <h2>{progress.title}</h2>
+      <div class="prose"><progress.Content /></div>
+    </header>
+    <ol class="progress">
+      {
+        progress.items.map((c) => (
+          <li class="progress__step">
+            {c.video && <Clip video={c.video} poster={c.poster} title={c.title} />}
+            <p class="eyebrow">{c.label}</p>
+            <h3>{c.title}</h3>
+            <p class="muted">{c.text}</p>
+            <PartnerChips ids={c.partners} />
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .progress {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 28px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    counter-reset: step;
+  }
+  .progress__step :global(.clip) {
+    margin-bottom: 14px;
+  }
+  .progress__step :global(video) {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .progress__step .eyebrow {
+    margin-bottom: 4px;
+  }
+  .progress__step h3 {
+    margin-bottom: 4px;
+  }
+  .progress__step p.muted {
+    margin-bottom: 10px;
+  }
+</style>
