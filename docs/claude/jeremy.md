@@ -231,6 +231,39 @@ question cards, the rule, a targets table, a simulation figure). Flights gained 
 M1–M6 test ladder (as of July 2026). Each partner page gained July results with 1–2 visuals; figures
 with banned words baked in were cropped or skipped.
 
+## 14. Content from the reports, round 3 (3 Nov 2026)
+> The programme lead approved publishing selected content from the October monthly report, then the
+> July FR&PDR and the localisation brief: "there's no code involved".
+
+**Exclusions that still hold:** budgets, prices, contract and deliverable IDs, the physical-contact
+scenario and kinetic wording, people beyond those named on the site, work under review.
+
+**What was done:**
+- An "In simulation" section per partner, with clips made from the reports' GIFs.
+- Programme: "We try it in simulation first" and "How a command travels".
+- Flights: "Test ladder" (M1–M6, as of July 2026), an outdoor clip, and CMU's three extra clips and
+  Starling photo. These came from CMU's public `svg-website` repo, used with CMU's consent and credited
+  "Photo/Video: CMU AirLab". That repo was only read.
+
+## 15. Humanising, round 4 (3 Nov 2026)
+> The site read as machine-written.
+
+A three-reviewer panel (editor, art director, outside professor; ad-hoc, brief in
+`AGENTS_AND_SKILLS.md`) found: no names, no dates, nothing went wrong, tidy triads.
+
+**What was done:**
+- `people:` per partner, shown as a row with faces; the team photo caption names everyone left to right.
+- Slogans rewritten ("the game we test with", "Who builds which part", "We try it in simulation
+  first"). The hero title is unchanged.
+- Partner pages in first person, with their own headings.
+- `open:`/`openLabel:` lists ("What we haven't solved yet") on Localisation, Simulation and Flights.
+- Updates as a dated log with `author:`. Footer note shortened.
+- Research directions as a plain numbered list. The drone drawing lost its dot grid and corner marks.
+- Flights: lead clip + grid with mono stamps and "watch" cues, plus an annotated Singapore lab photo.
+- Logos sized by visual weight (`src/lib/logo.ts`): footer 2×2 partner wells with lab logos, card well
+  104 px, partner-page well 128 px.
+- STANDARDS §2 now holds the voice rules. "Programme lead" is used only as Jeremy's role.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)

@@ -1,7 +1,7 @@
 # Claude handoff: Strike vs Guard website
 
 > **How to use this file:** paste it into any Claude conversation (or point Claude Code at the repo,
-> whose `CLAUDE.md` links here) to continue the work with full context. Last updated **3 Nov 2026** (round 2).
+> whose `CLAUDE.md` links here) to continue the work with full context. Last updated **3 Nov 2026** (rounds 3 and 4).
 
 ## 1. One-paragraph summary
 This repo (`Strike-vs-Guard/Strike-Versus-Guard`) is the website of **Strike vs Guard**, a research
@@ -38,8 +38,8 @@ programme lead driving the work is Jeremy (ST Engineering).
 
 ## 4. Current state (as of 3 Nov 2026)
 **Restructured on `development` (test site), not yet merged to `main`:**
-- Four pages plus Updates: Home, Programme, Partners, Flights (see STANDARDS §5). Nav: Programme ·
-  Benchmark · Partners · Flights · Updates.
+- Four pages plus Updates: Home, Programme, Partners, Flights (see STANDARDS §5). Nav (now): Programme ·
+  Partners ▾ · Flights · Updates.
 - Five layers (Strategy, Safety, Flight, Localisation, Drones, plus Integration). `work:` accepts
   `localisation`; ST Engineering leads it, CMU provides the simulator and technical advice.
 - One pure-black theme, no light mode, no toggle (Jeremy, 3 Nov 2026).
@@ -69,6 +69,21 @@ question cards, the rule, the plan as targets and a simulation figure. Flights: 
 pages: July results and 1–2 clips/stills each. Year 1 milestone names the March 2027 CMU demonstration
 as a target. New item fields: `passes:`, `state:`.
 
+**Round 3, content from the reports (3 Nov 2026, `development`, PR #6):** see the two paragraphs
+above. Extra: Programme "We try it in simulation first" and "How a command travels"; Flights "Test
+ladder" (M1–M6, July 2026), outdoor clip, and CMU's three extra clips and Starling photo from CMU's
+public `svg-website` repo (with consent, credit "Photo/Video: CMU AirLab"; that repo is never edited).
+
+**Round 4, humanising (3 Nov 2026, `development`, PR #6):** an ad-hoc three-reviewer panel (editor, art
+director, outside professor) said the site read as machine-written. Changes: `people:` per partner
+(row with faces; team photo caption names everyone); slogans rewritten (hero title unchanged); partner
+pages in first person; `open:`/`openLabel:` ("What we haven't solved yet") on Localisation, Simulation
+and Flights; updates as a dated log with `author:`; footer note "Four labs, in Singapore, Pittsburgh
+and Philadelphia. Funded by HTX."; directions as a plain numbered list; drone drawing without dot grid
+or corner marks; Flights = lead clip + grid with stamps and "watch" cues + annotated lab photo; logos
+sized by visual weight (`src/lib/logo.ts`). Voice rules: STANDARDS §2. Panel brief:
+`docs/claude/AGENTS_AND_SKILLS.md`.
+
 **Earlier work, already live or on `development`:**
 - Partner pages, Updates, schema/link/size checks, CI, deploy of both branches; Pages source is GitHub Actions.
 - Annotated drone + connection diagram, with `sys:select` shared selection and the polish pass.
@@ -78,7 +93,10 @@ as a target. New item fields: `passes:`, `state:`.
 ## 5. Open items / waiting on people
 | Item | Who |
 |---|---|
-| Check the round-2 test site (shorter home, hero clip, Partners menu, colour logos, wider layout), then merge PR #6 (already open, `development` into `main`) | Jeremy |
+| Check the test site (rounds 2 to 4: shorter home, hero clip, Partners menu, people rows, first-person pages, Flights page), then merge PR #6 (open, `development` into `main`) | Jeremy |
+| Check your first-person page, your people row and your roles. William Teo's role is unknown (left blank); Chen Jiaying's role was taken from nearlab.ai | ST Engineering, Jeremy |
+| Check the spelling of Yikuan Fang and Rahul Mangharam | CMU, UPenn |
+| Confirm the captions of CMU's clips and the Starling photo credit | CMU |
 | Review your partner page; the Partners menu and cards now lead visitors to it, and "Maintained by" sits in its "At a glance" box | Each partner |
 | Review the new Localisation line in your partner file (`work.localisation`, drafted for ST Engineering and CMU only) | Partners |
 | The home drone's click now lights locally and links to the Partners page; check it reads well on the test site | Jeremy |

@@ -35,6 +35,19 @@ Precedence: the programme lead's explicit instruction, then this file, then pers
   mission or defence framing.
 - **Never frame it as counter-UAS, counter-drone or defence.**
 - British spelling: behaviour, decentralised, programme.
+- **Voice rules** (from the humanising panel, round 4; see `docs/claude/AGENTS_AND_SKILLS.md`):
+
+| Rule | In practice |
+|---|---|
+| A partner speaks as "we" | Partner pages are first person plural, with the partner's own headings |
+| Name people and dates | "Jeremy flew it on 28 October", not "the team tested it" |
+| One number per claim | Give the number that matters; put the rest in the report |
+| Say what didn't work | Every results page ends with what is still open (`open:`) |
+| No self-praising adjectives | No "honest", "robust", "seamless" |
+| Avoid triads | Not three tidy items by habit; use two, or four, or one |
+| Clips carry a cue | The caption says what to look at: "Watch the gaps between the drones…" |
+
+- "Programme lead" is used only as Jeremy's role. Do not use it for anyone else or for ST Engineering.
 
 | Avoid | Use instead |
 |---|---|
@@ -82,8 +95,14 @@ columns stay about 68ch wide.
   0.06em tracking).
 - **Never** colour partners, tracks, buttons or banners blue or red. Red never means "alarm".
 - No crosshairs, HUD styling, radar sweeps or military imagery.
-- Logos always sit in a `--well`, shown **in colour**, in equal white wells. In the footer they are grouped
-  "Funded by | Partners". (The old "greyscale until hover" rule is withdrawn, 3 Nov 2026.)
+- Logos always sit in a `--well`, shown **in colour**, in equal white wells. In the footer they are in
+  2×2 partner wells (lab logos beside the institution's), with "Funded by" HTX beside them. (The old
+  "greyscale until hover" rule is withdrawn, 3 Nov 2026.)
+- **Logo sizing is by visual weight** (`src/lib/logo.ts`): height = base × 1/√(width ÷ height), 10 %
+  less for square solid-colour tiles, capped at the well's inner height. A wide wordmark and a square
+  badge then look the same size. Do not set logo heights by hand. Wells: footer base 60 px (cap 74 px),
+  partner card 104 px, partner page 128 px. Always white, always colour.
+- The drone drawing has no dot grid and no corner marks. Research directions is a plain numbered list.
 - One theme: pure black background. There is no light mode.
 
 ---
@@ -104,7 +123,11 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | Localisation section: the three questions (`items:`), the rule (`note:`), the plan as targets, the figure, and the one-line `status:` | `content/programme/localisation.md` | ST Engineering (CMU advises) |
 | Flights "Test ladder" (`items:` with `state:` chips; the safety order in the body) and "Outdoors" clip | `content/programme/ladder.md`, `content/programme/outdoor.md` | ST Engineering; CMU for `outdoor.md` |
 | Layers of the system (drone diagram and connection diagram) | `content/programme/stack.md` (`icon:` is the layer id) | ST Engineering |
-| News | `content/updates/YYYY-MM-DD-slug.md` | Any partner |
+| People on a partner's team: `people:` (name, role, photo, `lead`), a row with faces on the partner page | `content/partners/<NAME>.md`, photos in `content/partners/<NAME>/people/` (400 px square, 80 KB or less) | That partner |
+| Open problems: `open:` list and `openLabel:` ("What we haven't solved yet"), one line each | `localisation.md`, `simulation.md`, `flights.md` | ST Engineering (+ CMU for flights) |
+| Page head overrides: `pageEyebrow:` / `pageTitle:` (when the section also heads its own page) | `overview.md`, `flights.md` | ST Engineering |
+| Clips: `video:` + `poster:` on an item; a hero `video:` on a section | `content/programme/*.md`, files in `public/media/` | ST Engineering; CMU for its clips |
+| News, a dated log; `author:` names who wrote it, `draft: true` hides it | `content/updates/YYYY-MM-DD-slug.md` | Any partner |
 | Site title, footer | `content/site.yml` | ST Engineering |
 
 - **The schema is the contract:** `src/content.config.ts` validates every file at build time. Add a
@@ -123,6 +146,9 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
   contract or deliverable IDs; no classification markings; nothing about the physical-contact scenario
   and no kinetic wording; no names beyond the three PIs already on the site; no papers under review.
   Every adversarial term is translated per §2, and targets and pass marks stay labelled as targets.
+  People: only those named on the site (`people:` lists). Round 3 added CMU's three extra flight clips
+  and the Starling photo, taken from CMU's public `svg-website` repo with CMU's consent, credited
+  "Photo/Video: CMU AirLab". That repo is never edited.
   Extracted text lives outside the repo, in `~/Documents/GitHub/Strike-Versus-Guard-sources/` on Jeremy's laptop.
 - Images must be referenced **relative to the content file** (`./NUS/photo.jpg`), never as `/images/...`.
 - **Size limits:** images 5 MB or less and clips 15 MB or less (H.264 MP4, muted, with a `.jpg`
@@ -142,39 +168,40 @@ MARMot Lab, UPenn · xLab, CMU · AirLab (logo chip, name, contribution line), t
 under the header.
 
 **Home (`src/pages/index.astro`), top to bottom:**
-1. Hero: eyebrow, title, positioning statement, the `gameNote:` line, two buttons; right, the muted
-   looping flight clip (`video:`) with its still photo as poster. The facts strip is inside the first
-   screen at 1280×900.
-2. The game: the Arena, its four steps, "What they decide", and the no-pilot note.
-3. Proof so far: one-line progress bar from milestones (move `current: true` each year), the four
-   clips 4-across, "All flights →".
-4. How it fits together: the compact drone (0.8 screen at most), linking to `/partners/#who`.
-5. Latest updates.
-6. Team photo with caption, then the colour logo strip: "Funded by" HTX | "Partners" ST Engineering,
-   NUS, UPenn, CMU. No lone HTX block.
+1. Hero: eyebrow, the title (unchanged), positioning statement, the `gameNote:` ("the game we test
+   with"), two buttons; right, the muted looping flight clip with its still photo as poster.
+2. The game (Benchmark): the Arena, its four steps, "What they decide", the no-pilot note.
+3. Proof so far: one-line progress bar from milestones, the four clips 4-across, "All flights →".
+4. Who builds which part (Layers): the compact drone, linking to `/partners/#who`.
+5. Latest updates (dated log, newest three).
+6. Team photo with a caption naming everyone left to right, then the colour logo strip and footer note
+   "Four labs, in Singapore, Pittsburgh and Philadelphia. Funded by HTX."
 
 **Programme (`/programme/`):** positioning statement, two tracks, "How a command travels"
-(`command.md`, `CommandPath`), "In simulation" (`simulation.md` clips, through the shared `Clips`
-section), localisation (three question cards, the plan as targets, a figure, and its `status:` line),
-research directions.
+(`command.md`), "We try it in simulation first" (`simulation.md`, with "What we haven't solved yet"),
+localisation (three question cards, the plan as targets, a figure, `open:` list), research directions
+(a plain numbered list).
 
-**Partners (`/partners/`):** "Each partner writes and maintains its own page."; fully clickable partner
-cards ("<Short> page →"); the full explain-mode drone above the connection diagram
-(`ConnectionDiagram`); the HTX card (`id="funder"`).
+**Partners (`/partners/`, h1 "Who does what"):** "Each partner writes and maintains its own page."; fully
+clickable partner cards; the full explain-mode drone above the connection diagram; the HTX card
+(`id="funder"`).
 
 **Partner page (`src/pages/partners/[id].astro`):**
-- Header and meta card. "Maintained by <Short> · updated <date> · Edit this page" sits in the
-  "At a glance" box; the breadcrumb shows the institution.
+- Header and meta card. "Maintained by <Short> · updated <date> · Edit this page" sits in "At a glance".
+- People: a row with faces from `people:` (the lead first).
 - "In the system": `DroneDiagram` in `partner` mode, with that partner's layers lit.
-- The Markdown body, which may embed simulation clips as `<figure class="clip">` (see CONTRIBUTING §4).
-- Their updates.
+- The Markdown body, in first person with the partner's own headings. It may embed simulation clips as
+  `<figure class="clip">` (see CONTRIBUTING §4) and has an "In simulation" section.
+- "Updates from <Short>".
 
 Page titles are distinct: Programme h1 "How the programme works"; Flights h1 "Flights so far".
 
-**Flights (`/flights/`):** the October 2026 flight day story with the clips, CMU's outdoor flights
-(`outdoor.md`), the test ladder (`ladder.md`, `TestLadder`), the localisation status line, and milestones.
+**Flights (`/flights/`):** the CMU cage photo (credit line), a lead clip at full width and the other
+clips in a grid, each with a mono stamp line and a "Watch …" cue; CMU's outdoor clip (`outdoor.md`);
+the test ladder M1–M6 as of July 2026 (`ladder.md`) with the annotated Singapore lab photo; the
+localisation status line; "What went wrong, and what's still open" (`open:` in `flights.md`); milestones.
 
-**Updates:** unchanged.
+**Updates:** a dated log; each post shows its `author:`.
 
 The page sections live as section components under `src/components/sections/`.
 

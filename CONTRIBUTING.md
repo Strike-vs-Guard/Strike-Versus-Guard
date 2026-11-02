@@ -54,6 +54,7 @@ break one):
 - `work:` has one line (max 90 characters) for each layer you work on: `strategy`, `safety`, `flight`,
   `localisation`, `drones`, `integration`. These lines put you on the layers of the drone diagram and the connection diagram on the Partners page.
 - Dates are `YYYY-MM-DD`.
+- `people:`, `open:` and `openLabel:` are explained in sections 1a and 1b below.
 
 Your page is linked from the **Partners** menu in the header and from the Partners page. Your file
 is the only place its text lives, and your page says "Maintained by <you>" with an Edit link.
@@ -66,7 +67,7 @@ other programme reports.
 | What | File |
 |---|---|
 | Top of the home page: the `decisions:` list ("What they decide"), `video:` (the hero clip, in `public/media/`), `gameNote:` (one line about the game) and the Programme page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` |
-| Home "Proof so far" section head and its honest one-line `note:` | `content/programme/proof.md` |
+| Home "Proof so far" section head and its one-line `note:` | `content/programme/proof.md` |
 | Programme "In simulation" section (one paragraph, 2–4 clips) | `content/programme/simulation.md` (videos in `public/media/`) |
 | Localisation section and its one-line `status:` | `content/programme/localisation.md` |
 | Two tracks (NUS / UPenn) | `content/programme/tracks.md` |
@@ -79,6 +80,36 @@ other programme reports.
 | Site title and footer | `content/site.yml` |
 
 ---
+
+### 1a. Add yourself to `people:`
+
+Each partner file lists its team. The partner page shows them as a row with faces.
+
+```yaml
+people:
+  - name: Jane Tan
+    role: PhD student
+    photo: ./NUS/people/jane-tan.jpg
+  - name: Prof Guillaume Sartoretti
+    role: Principal investigator
+    photo: ./NUS/people/guillaume-sartoretti.jpg
+    lead: true
+```
+
+| Field | Rule |
+|---|---|
+| `name` | As you write it on papers |
+| `role` | Your actual role. Leave it out if you are unsure |
+| `photo` | 400 px square JPG, 80 KB or less, in `content/partners/<Name>/people/` (e.g. `./NUS/people/jane-tan.jpg`). Optional |
+| `lead` | `true` for the principal investigator or lead |
+
+Only add people who agree to be named. Photos need the person's consent.
+
+### 1b. The open-problems list
+
+Sections that report results end with what is not solved: `open:` (one line each) and
+`openLabel:` (e.g. "What we haven't solved yet"). It is in `localisation.md`, `simulation.md` and
+`flights.md`. Write what did not work or is still open, in plain words, with a number if you have one.
 
 ## 2a. Edit in the browser (no install needed)
 
@@ -140,7 +171,7 @@ Create `content/updates/2026-11-15-first-outdoor-test.md`:
 title: First outdoor test
 date: 2026-11-15
 partner: nus            # one of: htx, st, cmu, upenn, nus
-author: Jane Tan        # optional
+author: Jane Tan        # the person who wrote it
 summary: One or two sentences shown on the home page.
 image: ./images/outdoor.jpg     # optional, relative to this file
 imageAlt: Three drones over a field
@@ -151,6 +182,11 @@ The full post in Markdown.
 ```
 
 The three newest updates appear on the home page, and each partner page lists its own updates.
+Updates are a dated log, so:
+
+- Put your name in `author:`.
+- Write in the first person ("we flew…", "I tried…"), with dates and numbers.
+- End with what is still open.
 
 ---
 
@@ -163,7 +199,9 @@ The three newest updates appear on the home page, and each partner page lists it
 - Posters are frames from the flight footage (the bottom half of the clip), not stock images.
 - Video: MP4 (H.264), muted, under ~10 MB, in `public/media/`. Ask ST Engineering if you need help
   compressing a clip.
-- Partner-supplied clips carry a "Video: <lab>" credit in the caption.
+- Partner-supplied clips carry a "Video: <lab>" credit in the caption (photos: "Photo: <lab>").
+- Every clip caption says what to look at, starting with "Watch …": "Watch the gaps between the drones
+  as they swap places." Two sentences at most.
 - Only publish material you have the right to publish. The test site is public, even before merging.
 
 ### Adding a simulation clip to your partner page
@@ -203,7 +241,9 @@ of the benchmark game, not the purpose of the programme. Please keep the tone of
 | target(s) | goal, zone |
 | swarm | drone team, team of drones |
 
-Plain present tense and short sentences work best. Use British spelling (behaviour, decentralised).
+Plain present tense and short sentences work best. Write as "we" on your own page, name people and
+dates, give one number per claim, say what did not work, and skip words like "honest" or "robust".
+Full list: STANDARDS §2. Use British spelling (behaviour, decentralised).
 
 ## 6. If something goes wrong
 

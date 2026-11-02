@@ -28,6 +28,20 @@ editing workflow, and the visual design. The decisions below reconcile their pro
   as a hub of short cards), DeepMind, ETH ASL and UZH RPG (home never repeats a nav page in full).
   Jeremy chose, from a clickable draft: A compact drone on home (full one on Partners), B no
   Benchmark nav item, C looping clip in the hero.
+- **Reports (round 3, 3 Nov 2026).** The programme lead approved publishing selected content from the
+  October monthly report, then the July FR&PDR and the localisation brief ("there's no code
+  involved"). Exclusions stay: budgets, prices, contract and deliverable IDs, the physical-contact
+  scenario and kinetic wording, people beyond those named on the site, work under review. Added:
+  "In simulation" per partner, Programme "We try it in simulation first" and "How a command travels",
+  Flights "Test ladder" (M1–M6, July 2026), an outdoor clip, and CMU's extra clips and Starling photo
+  (from its public `svg-website` repo, with CMU's consent; never edited).
+- **Humanising panel (round 4, 3 Nov 2026).** An editor, an art director and an outside professor
+  found the site read as machine-written: no names, no dates, nothing went wrong, tidy triads. We
+  changed it: people lists with faces per partner; a team caption naming everyone; first-person
+  partner pages; open-problem lists; a dated update log with authors; plainer slogans ("the game we
+  test with", "Who builds which part", "We try it in simulation first"); a shorter footer note;
+  Research directions as a plain numbered list. The hero title stays as it was. Voice rules are in
+  STANDARDS §2.
 - Five layers: Strategy, Safety, Flight, **Localisation** (ST Engineering leads; CMU provides the
   simulator and technical advice), Drones, plus Integration across all.
 - The reports behind the localisation work are confidential. They are used for context only, and
@@ -64,13 +78,18 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 
 ## Visual design: "lab notebook, not mission control"
 
-- Calm: one pure-black theme (no light mode, no toggle; decided by Jeremy, 3 Nov 2026), graph-paper dot grid, IBM Plex Sans / Condensed / Mono.
+- Calm: one pure-black theme (no light mode, no toggle; decided by Jeremy, 3 Nov 2026), no dot grid (removed in round 4), IBM Plex Sans / Condensed / Mono.
 - Colour comes from the two teams and the partner logos only. ST red appears in three places: the
   wordmark, one short rule under the hero title, and the "We are here" milestone marker. It is never
   used for buttons, banners or backgrounds. Buttons are ink-coloured.
 - The two strategy tracks are never coloured blue/red, because those colours mean the game's teams.
 - Partner logos sit in equal white wells, in colour (Jeremy, 3 Nov 2026; the greyscale rule is
-  withdrawn). The footer groups them "Funded by | Partners".
+  withdrawn). The footer shows 2×2 partner wells with lab logos, beside "Funded by" HTX.
+- Logos are sized by visual weight (`src/lib/logo.ts`), not by one height, so wide wordmarks and
+  square badges look equal. Wells: card 104 px, partner page 128 px.
+- The drone drawing lost its dot grid and corner marks; they added noise, not meaning.
+- The Flights page leads with one big clip and a grid of the rest, each with a mono stamp and a
+  "watch" cue, plus an annotated photo of the Singapore lab.
 - Content width is 1320 px with a fluid gutter, so wide screens are used. Photos and video get a 1 px
   edge.
 - Signature visual: an animated diagram of the game in four beats (Divide, Share, Adapt, Recover),

@@ -16,7 +16,7 @@ University of Singapore, working toward decentralised multi-drone autonomy.
 
 ```
 content/                     ← everything people edit (Markdown + images)
-  partners/NUS.md  NUS/        one file + one image folder per partner
+  partners/NUS.md  NUS/        one file + one image folder per partner (people/ holds team photos)
   partners/UPenn.md UPenn/
   partners/CMU.md  CMU/
   partners/ST.md   ST/
@@ -33,7 +33,7 @@ src/                         ← layout, styles, components (ST-owned)
 ```
 
 Pages: Home, Programme (`/programme/`), Partners (`/partners/`, also a header menu that lists every partner's page), Flights (`/flights/`) and Updates.
-One pure-black theme. Each partner edits its own Markdown file.
+One pure-black theme. Each partner edits its own Markdown file, including its `people:` list and its updates (`author:`).
 
 Built with [Astro](https://astro.build) (static output, no server). Hosted on GitHub Pages, deployed by
 GitHub Actions. The repository keeps only two branches: `main` (live) and `development` (edits and test site).

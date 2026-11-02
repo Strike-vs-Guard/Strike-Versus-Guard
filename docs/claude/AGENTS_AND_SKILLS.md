@@ -69,6 +69,21 @@ Every agent brief included:
 
 Keep doing that; an agent knows only what its brief says.
 
+## Humanising panel (round 4, 3 Nov 2026)
+
+Three reviewers read the live test site, each through one lens. They were **ad-hoc, not saved as
+agent files**; this brief makes it reusable.
+
+| Reviewer | Lens: does the site sound like people made it? |
+|---|---|
+| Editor | Names, dates, first person. Is anything claimed without a person or a number? Tidy triads, filler, self-praising adjectives ("honest") |
+| Art director | Looks machine-made: decoration without meaning (dot grids, corner marks), uniform grids, logo sizes, empty faces, captions that only label |
+| Outside professor | Cold read as a visiting researcher: what went wrong, what is open, can I tell who did the work, would I trust it |
+
+How to run: start all three in one message; give each the preview URL and the voice rules in
+STANDARDS §2; ask for a ranked list under 550 words; the lead reconciles and shows Jeremy before
+building. Findings that two share come first.
+
 ### Draft-building harness used in phase 3
 Proposal agents wrote **fragments** (one `<section class="PREFIX">` with scoped CSS and an IIFE
 script). They used placeholders `{{DATA_JSON}}`, `{{LOGO_<id>}}` and `{{LAB_<id>}}`, which a small
