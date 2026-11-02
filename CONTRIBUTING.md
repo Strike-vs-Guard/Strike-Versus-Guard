@@ -52,7 +52,7 @@ break one):
 - `logo:` / `labLogo:` must point at an image that exists, written relative to the file,
   e.g. `./NUS/nus.png`.
 - `work:` has one line (max 90 characters) for each layer you work on: `strategy`, `safety`, `flight`,
-  `drones`, `integration`. These lines fill the "who does what" grid on the home page.
+  `localisation`, `drones`, `integration`. These lines fill the "who does what" grid on the home page.
 - Dates are `YYYY-MM-DD`.
 
 Other shared files (owned by ST Engineering, but anyone may propose changes):

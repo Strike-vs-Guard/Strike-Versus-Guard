@@ -1,12 +1,15 @@
 ---
 /**
  * The annotated drone: a labelled line drawing that explains what each layer
- * of the system is. Drawing on the left, callouts 1-4 in one column on the
+ * of the system is. Drawing on the left, callouts 1-5 in one column on the
  * right (top to bottom, like the stack), Integration as a bracket spanning them.
  *
  * mode "explain" (home page): callouts are buttons. Selecting one lights that
- *   layer, tells the connection diagram (a `sys:select` event on document) and
- *   moves to it. Selections made in the connection diagram light the drone too.
+ *   layer. With `target`, it also tells the connection diagram on the same page
+ *   (a `sys:select` event on document) and moves to it; selections made in the
+ *   connection diagram light the drone too. With `partnersHref` (and no
+ *   `target`), a click lights the layer locally only and each callout carries a
+ *   "Who works on it" link to `${partnersHref}#layer-<id>`.
  * mode "partner" (partner pages): static. The partner's layers are lit and the
  *   callouts show the partner's own `work:` line for each.
  *
@@ -21,13 +24,17 @@ interface Props {
   target?: string;
   /** explain mode: element to scroll to after a callout is selected (desktop) */
   scrollTo?: string;
+  /** explain mode: page holding the connection diagram; callouts link to `${partnersHref}#layer-<id>` */
+  partnersHref?: string;
   /** partner mode: partner id to light up */
   partner?: string;
 }
-const { data, mode = 'explain', target, scrollTo, partner } = Astro.props;
+const { data, mode = 'explain', target, scrollTo, partnersHref, partner } = Astro.props;
 const uid = 'pd' + Math.random().toString(36).slice(2, 8);
 const id = (s: string) => `${uid}-${s}`;
 const explain = mode !== 'partner';
+/* the "Who works on it" link replaces the in-button cue when the diagram is on another page */
+const linkOut = explain && !!partnersHref && !target;
 
 const numbered = data.layers.filter((l) => l.n != null).sort((a, b) => (a.n ?? 0) - (b.n ?? 0));
 const layers = [...numbered, ...data.layers.filter((l) => l.n == null)];
@@ -47,6 +54,7 @@ const OPTS = {
   mode,
   target: target ?? null,
   scrollTo: scrollTo ?? null,
+  partnersHref: partnersHref ?? null,
   lit,
   /* which layers each partner works on, for selections made in the connection diagram */
   pw: Object.fromEntries(P.map((p) => [p.id, Object.keys(p.work)])),
@@ -62,7 +70,7 @@ const label = explain
     <svg class="pd-lines" aria-hidden="true" focusable="false"></svg>
 
     <figure class="pd-fig">
-      <svg class="pd-ill" viewBox="0 0 600 440" role="img" aria-label="Line drawing of a quadcopter drone and its teammates. 1, Strategy: the drone and two teammates are linked peer to peer by dashed lines and share one plan; there is no central controller. 2, Safety: a dashed ring around the drone, and a third teammate kept a safe distance away. 3, Flight: dotted waypoints that become a solid flown line arriving just below the drone, labelled AirStack: plan to flight. 4, Drones: the Starling 2 Max airframe. Corner marks around the drawing stand for Integration, which spans layers 1 to 4.">
+      <svg class="pd-ill" viewBox="0 0 600 440" role="img" aria-label="Line drawing of a quadcopter drone and its teammates. 1, Strategy: the drone and two teammates are linked peer to peer by dashed lines and share one plan; there is no central controller. 2, Safety: a dashed ring around the drone, and a third teammate kept a safe distance away. 3, Flight: dotted waypoints that become a solid flown line arriving just below the drone, labelled AirStack: plan to flight. 4, Localisation: the drone's own camera and a position fix beneath it. 5, Drones: the Starling 2 Max airframe. Corner marks around the drawing stand for Integration, which spans layers 1 to 5.">
         <defs>
           <marker id={id('arr')} viewBox="0 0 10 10" refX="7.5" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
             <path class="pd-arrow" d="M2 1.5L7.5 5 2 8.5" />
@@ -131,13 +139,22 @@ const label = explain
           <text class="pd-lbl pd-lbl-sm" x="134" y="252" text-anchor="middle">safe distance</text>
         </g>
 
-        <!-- 4 Drones: the airframe -->
+        <!-- 5 Drones: the airframe -->
         <g class={`pd-g pd-air${on('drones')}`} data-layer="drones">
           <ellipse class="pd-shadow" cx="300" cy="362" rx="44" ry="17.6" />
           <use class="pd-main" href={`#${id('air')}`} transform="translate(300 270)" />
-          <path class="pd-tick" d="M326 316L318 392" />
-          <circle class="pd-tickdot" cx="326" cy="316" r="2" />
-          <text class="pd-lbl pd-lbl-air" x="298" y="408" text-anchor="end">Starling 2 Max</text>
+          <path class="pd-tick" d="M266 317L254 401" />
+          <circle class="pd-tickdot" cx="266" cy="317" r="2" />
+          <text class="pd-lbl pd-lbl-air" x="232" y="416" text-anchor="end">Starling 2 Max</text>
+        </g>
+
+        <!-- 4 Localisation: the drone's own camera looking forward-down, and the position fix it gives -->
+        <g class={`pd-g${on('localisation')}`} data-layer="localisation">
+          <path class="pd-link" d="M300 297L266 362M300 297L334 362" />
+          <path class="pd-link" d="M266 362Q300 371 334 362" />
+          <circle class="pd-dim" cx="300" cy="380" r="4.5" />
+          <path class="pd-dim" d="M290 380h20M300 370v20" />
+          <text class="pd-lbl pd-lbl-sm" x="300" y="402" text-anchor="middle">own camera</text>
         </g>
 
         <!-- 3 Flight: dotted waypoints smoothing into a flown line -->
@@ -160,6 +177,7 @@ const label = explain
             <rect class="pd-hit" data-layer="safety" x="12" y="250" width="160" height="70" />
             <path class="pd-hit pd-hit-path" data-layer="flight" d="M592 282C556 296 528 340 474 348C420 356 372 352 340 332" />
             <rect class="pd-hit" data-layer="drones" x="176" y="218" width="248" height="100" />
+            <rect class="pd-hit" data-layer="localisation" x="258" y="320" width="84" height="88" />
             <path class="pd-hit" data-layer="integration" d="M0 0h40v40H0ZM560 0h40v40h-40ZM560 400h40v40h-40ZM0 400h40v40H0Z" />
           </g>
         )}
@@ -168,7 +186,8 @@ const label = explain
         <g class={`pd-mk${on('strategy')}`} data-layer="strategy"><circle cx="300" cy="72" r="11" /><text x="300" y="72.5">1</text></g>
         <g class={`pd-mk${on('safety')}`} data-layer="safety"><circle cx="433" cy="237" r="11" /><text x="433" y="237.5">2</text></g>
         <g class={`pd-mk${on('flight')}`} data-layer="flight"><circle cx="562" cy="297" r="11" /><text x="562" y="297.5">3</text></g>
-        <g class={`pd-mk${on('drones')}`} data-layer="drones"><circle cx="318" cy="404" r="11" /><text x="318" y="404.5">4</text></g>
+        <g class={`pd-mk${on('localisation')}`} data-layer="localisation"><circle cx="348" cy="368" r="11" /><text x="348" y="368.5">4</text></g>
+        <g class={`pd-mk${on('drones')}`} data-layer="drones"><circle cx="250" cy="412" r="11" /><text x="250" y="412.5">5</text></g>
       </svg>
     </figure>
 
@@ -187,11 +206,13 @@ const label = explain
             </span>
             <span class="pd-co-title" id={id('t-' + l.id)}>{l.title}</span>
             {span && <span class="pd-co-tag" id={id('s-' + l.id)}>{spans}</span>}
-            {explain && <span class="pd-cue" aria-hidden="true">Show partners <span class="pd-cue-a">↓</span></span>}
+            {explain && (linkOut
+              ? <span class="pd-cue pd-cue--ph" aria-hidden="true">Who works on it <span class="pd-cue-a">→</span></span>
+              : <span class="pd-cue" aria-hidden="true">Show partners <span class="pd-cue-a">↓</span></span>)}
           </span>
         );
         return explain ? (
-          <li class="pd-item">
+          <li class={`pd-item${linkOut ? ' pd-item--link' : ''}`}>
             <button
               type="button"
               class={`pd-co pd-co--${l.id}`}
@@ -202,6 +223,11 @@ const label = explain
               {head}
               <span class="pd-co-desc" id={id('d-' + l.id)}>{l.desc}</span>
             </button>
+            {linkOut && (
+              <a class="pd-cue pd-cue-link" href={`${partnersHref}#layer-${l.id}`} data-layer={l.id} aria-label={`Who works on ${l.title}`}>
+                Who works on it <span class="pd-cue-a" aria-hidden="true">→</span>
+              </a>
+            )}
           </li>
         ) : (
           <li class={`pd-co pd-co--${l.id}${w ? ' is-on' : ''}`} data-layer={l.id}>
@@ -227,7 +253,7 @@ const label = explain
     var explain = OPTS.mode !== 'partner';
     var stage = root.querySelector('.pd-stage');
     var lines = root.querySelector('.pd-lines');
-    var NUM = ['strategy', 'safety', 'flight', 'drones'];
+    var NUM = ['strategy', 'safety', 'flight', 'localisation', 'drones'];
     var ALL = NUM.concat('integration');
     var state = { layer: null, partner: null };
     var hoverPeek = null, focusPeek = null;
@@ -276,9 +302,9 @@ const label = explain
         lines.appendChild(el('path', { 'class': cls(id, 'pd-ld'), d: 'M' + (mx + dx / d * r) + ' ' + (my + dy / d * r) + 'L' + kx + ' ' + sy + 'H' + (sx - 4) }));
         lines.appendChild(el('circle', { 'class': cls(id, 'pd-ldot'), cx: sx - 4, cy: sy, r: 2.5 }));
       });
-      var c1 = co('strategy'), c4 = co('drones'), ci = co('integration');
-      if (c1 && c4 && ci) {
-        var a = c1.getBoundingClientRect(), z = c4.getBoundingClientRect(), g = ci.getBoundingClientRect();
+      var c1 = co('strategy'), c5 = co('drones'), ci = co('integration');
+      if (c1 && c5 && ci) {
+        var a = c1.getBoundingClientRect(), z = c5.getBoundingClientRect(), g = ci.getBoundingClientRect();
         var xr = a.right - sr.left, x = xr + 14, t = a.top - sr.top + 8, e = z.bottom - sr.top - 8, im = g.top + g.height / 2 - sr.top;
         lines.appendChild(el('path', { 'class': cls('integration', 'pd-brk'),
           d: 'M' + (x - 7) + ' ' + t + 'H' + x + 'V' + im + 'H' + (xr + 4) + 'M' + (x - 7) + ' ' + e + 'H' + x }));
@@ -318,6 +344,8 @@ const label = explain
     function activate(id) {
       state.layer = id; state.partner = null;
       render();
+      /* the connection diagram is on another page: light the layer here only */
+      if (OPTS.partnersHref && !OPTS.target) return;
       document.dispatchEvent(new CustomEvent('sys:select', { detail: { layer: id, partner: null, source: 'drone' } }));
       var tgt = OPTS.target && document.querySelector(OPTS.target);
       var btn = tgt && tgt.querySelector('[data-sel="l:' + id + '"]');
@@ -348,7 +376,7 @@ const label = explain
     });
     root.addEventListener('mouseleave', function () { if (hoverPeek) { hoverPeek = null; render(); } });
     root.addEventListener('focusin', function (e) {
-      var t = e.target.closest('.pd-co');
+      var t = e.target.closest('.pd-co, .pd-cue-link');
       focusPeek = t ? t.getAttribute('data-layer') : null; render();
     });
     root.addEventListener('focusout', function () { focusPeek = null; render(); });
@@ -502,6 +530,14 @@ const label = explain
 .pd--explain .pd-co:hover .pd-cue,.pd--explain .pd-co:focus-visible .pd-cue,.pd--explain .pd-co.is-on .pd-cue{color:var(--text)}
 .pd .pd-cue-a{display:inline-block;transition:transform .15s}
 .pd--explain .pd-co:hover .pd-cue-a,.pd--explain .pd-co:focus-visible .pd-cue-a{transform:translateY(2px)}
+/* "Who works on it": a sibling link laid over the cue's reserved space (a link may not sit inside a button) */
+.pd .pd-item--link{position:relative}
+.pd .pd-cue--ph{visibility:hidden}
+.pd .pd-cue-link{position:absolute;top:13px;right:11px;margin:0;padding:4px 4px;border-radius:4px;color:var(--muted);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:3px}
+.pd .pd-cue-link:hover,.pd .pd-cue-link:focus-visible,.pd .pd-cue-link.is-on,.pd .pd-cue-link.is-peek{color:var(--text)}
+.pd .pd-cue-link:hover{text-decoration-color:currentColor}
+.pd .pd-cue-link:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.pd .pd-cue-link:hover .pd-cue-a,.pd .pd-cue-link:focus-visible .pd-cue-a{transform:translateX(2px)}
 
 /* partner mode: static list items */
 .pd--partner .pd-co{cursor:default;border-style:dashed;border-color:var(--border)}
@@ -511,13 +547,9 @@ const label = explain
 .pd--partner .pd-ill .pd-g:not(.is-on){opacity:.28}
 .pd--partner .pd-ill .pd-g.pd-air:not(.is-on){opacity:.5}
 
-/* dark mode: blades in muted, no ground shadow */
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme='light']) .pd{--pd-blade:var(--muted)}
-  :root:not([data-theme='light']) .pd .pd-ill .pd-shadow{display:none}
-}
-:root[data-theme='dark'] .pd{--pd-blade:var(--muted)}
-:root[data-theme='dark'] .pd .pd-ill .pd-shadow{display:none}
+/* one dark theme: blades in muted, no ground shadow */
+.pd{--pd-blade:var(--muted)}
+.pd .pd-ill .pd-shadow{display:none}
 
 /* narrower desktop */
 @media (max-width:1060px){
@@ -541,6 +573,10 @@ const label = explain
   .pd .pd-co-desc--sm{grid-row:3;font-size:13px}
   .pd .pd-cue{grid-column:3;grid-row:1;margin:0;padding:0;align-self:center;font-size:0;gap:0}
   .pd .pd-cue-a{font-size:15px}
+  .pd .pd-item--link .pd-cue{font-size:12px;gap:5px}
+  .pd .pd-item--link .pd-cue-a{font-size:12px}
+  .pd .pd-cue-link{top:11px;right:8px;padding:4px}
+  .pd .pd-cos > li.pd-item--link:last-child .pd-cue-link{top:23px}
   .pd--partner .pd-co.is-on{padding:9.5px 11.5px}
 }
 @media (max-width:639px){
