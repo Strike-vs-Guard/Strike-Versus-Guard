@@ -9,6 +9,8 @@ University of Singapore, working toward decentralised multi-drone autonomy.
 - **Partners editing their page:** read [CONTRIBUTING.md](CONTRIBUTING.md).
 - **Repo admins, first-time setup:** read [docs/admin-setup.md](docs/admin-setup.md).
 - **Why it's built this way:** [docs/design-decisions.md](docs/design-decisions.md).
+- **Rules every change follows:** [STANDARDS.md](STANDARDS.md).
+- **Working on this with Claude:** [CLAUDE.md](CLAUDE.md), [handoff](docs/claude/HANDOFF.md), [debugging process](docs/claude/DEBUGGING.md), [agents and skills](docs/claude/AGENTS_AND_SKILLS.md), [conversation history](docs/claude/jeremy.md).
 
 ## How it fits together
 
