@@ -49,6 +49,18 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
         <span class="hero__rule" aria-hidden="true"></span>
         <p class="hero__title">{overview.title}</p>
         <div class="prose hero__body"><overview.Content /></div>
+        {
+          overview.decisions.length > 0 && (
+            <div class="hero__decide">
+              <p class="eyebrow">{overview.decisionsLabel}</p>
+              <ul>
+                {overview.decisions.map((d) => (
+                  <li>{d}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
         <div class="hero__actions">
           <a class="btn" href="#programme">How it works</a>
           <a class="btn btn--ghost" href="#partners">Meet the partners</a>
@@ -334,13 +346,33 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
   .hero__grid {
     display: grid;
     gap: 40px;
-    align-items: center;
+    align-items: start;
   }
   @media (min-width: 960px) {
     .hero__grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 56px;
+      gap: 40px;
     }
+    .hero__figure {
+      /* eyebrow line + wordmark margin: puts the photo top level with the wordmark */
+      margin-top: 37px;
+    }
+  }
+  .hero__decide {
+    margin-top: 20px;
+  }
+  .hero__decide .eyebrow {
+    margin-bottom: 8px;
+  }
+  .hero__decide ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 14px;
+    border-left: 1px solid var(--border);
+    display: grid;
+    gap: 6px;
+    font-size: var(--step-0);
+    color: var(--text);
   }
   .hero__text :global(.wordmark) {
     margin-top: 4px;
@@ -377,7 +409,7 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     width: 100%;
     border-radius: var(--radius);
     border: 1px solid var(--border);
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
   }
   @media (max-width: 420px) {

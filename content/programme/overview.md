@@ -5,6 +5,12 @@ title: Teams of drones that coordinate, adapt and decide on their own
 order: 1
 image: ./images/flight-cage.jpg
 imageAlt: Three Starling drones hovering in the CMU flight cage, labelled Strike and Guard
+decisionsLabel: What they decide
+decisions:
+  - Which drone goes where.
+  - When to change the team's plan, because the other side has changed theirs or a teammate has dropped out.
+  - How the rest cover for a drone that is lost.
+  - A safety layer checks every command before it reaches a drone.
 caption: One Strike drone, two Guard drones, nobody on the sticks. CMU flight cage.
 ---
 
