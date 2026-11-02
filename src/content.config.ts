@@ -83,6 +83,23 @@ const partners = defineCollection({
         page: z.boolean().default(true),
         /** Date of the last meaningful edit, YYYY-MM-DD. */
         updated: z.coerce.date(),
+        /**
+         * People on this partner's team, shown as a row with faces on the partner page.
+         * `photo` is optional and relative to this file, e.g. ./ST/people/jeremy-chia.jpg
+         */
+        people: z
+          .array(
+            z
+              .object({
+                name: z.string(),
+                role: z.string().optional(),
+                photo: image().optional(),
+                /** Set true for the principal investigator or lead. */
+                lead: z.boolean().default(false),
+              })
+              .strict(),
+          )
+          .default([]),
       })
       .strict(),
 });
@@ -153,6 +170,9 @@ const programme = defineCollection({
         decisions: z.array(z.string()).default([]),
         /** Optional one-sentence status line, reused by other pages. */
         status: z.string().optional(),
+        /** Optional list of open problems ("what we haven't solved yet"), one line each. */
+        open: z.array(z.string()).default([]),
+        openLabel: z.string().optional(),
         /** Optional one-line note shown in the hero under the statement (home page). */
         gameNote: z.string().optional(),
         /** Optional hero clip in public/media (muted loop); `image` is its poster. */
