@@ -51,19 +51,17 @@ programme lead driving the work is Jeremy (ST Engineering).
   - Every partner page shows the drone with that partner's layers lit.
   - Partner order changed to ST, NUS, UPenn, CMU.
   - UPenn now also on the Drones layer.
-- **Drone polish pass (in progress when this file was written):** a spec synthesised from three
-  critics (illustration, information design, interaction). It covers:
-  - layers stacked 1→4 top to bottom, with Integration as a bracket
-  - a redrawn ¾-view airframe
-  - a peer-to-peer strategy metaphor, with no central "brain"
-  - a "safe distance" marker; "AirStack: plan → flight"
-  - one shared selection between the two diagrams (`sys:select` events), fixing a mouse/keyboard bug
-  - "Show partners ↓" cues
-  - a static partner mode showing each partner's own `work` text
-  - shorter layer copy in `content/programme/stack.md`
+- **Drone polish pass (done, on `development`):** implemented from the three critics' spec:
+  - stacked 1→4 callouts with an Integration bracket
+  - ¾-view airframe; peer-to-peer strategy with a shared-plan glyph; "safe distance"; "AirStack: plan → flight"
+  - shared `sys:select` selection between the drone and the connection diagram (mouse and keyboard
+    now behave the same)
+  - "Show partners ↓" cues; two-way hover peek; slow ring drift
+  - static partner mode showing each partner's own `work` line
+  - layer cards in the connection diagram trimmed to "Layer N · Title · N partners"
 
-  Check `git log` on `development` to see whether it has been committed. If it hasn't, the spec is in
-  §6 of `docs/claude/jeremy.md`.
+  Small polish left: the "AirStack: plan → flight" label is crossed by the leader line for marker 4,
+  and the "safe distance" label sits tight against its marker.
 
 ## 5. Open items / waiting on people
 | Item | Who |

@@ -158,6 +158,20 @@ Jeremy's preferences learned:
 - this file
 - `CLAUDE.md`
 
+## 9. Drone polish implemented
+The implementer agent delivered the full spec in §6.
+- **Changed files:** `DroneDiagram.astro` (rewritten), `ConnectionDiagram.astro`, `stack.md`,
+  `index.astro`.
+- **Checks:** `npm run check` passes; 25 interaction checks pass (click = Enter = Space; selecting NUS
+  lights Strategy and Drones; Escape clears both); 0 overflow; no console errors.
+- **Deviations it reported:**
+  - Clicking a callout always selects; the selection is cleared from the connection diagram.
+  - The small drawing labels are hidden on phones.
+  - The airframe uses unscoped `pd-a-*` classes, because Chrome doesn't apply ancestor selectors
+    inside `<use>` copies.
+
+Committed to `development`.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)

@@ -155,8 +155,8 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
       </header>
 
       <div class="sys-part">
-        <h3 class="sys-part__h">What each layer does</h3>
-        <p class="sys-part__hint">Select a label to see who works on it.</p>
+        <h3 class="sys-part__h">What each layer does, top to bottom</h3>
+        <p class="sys-part__hint">Select a layer to see who works on it below ↓</p>
       </div>
       <DroneDiagram data={system} mode="explain" target="#who-links" scrollTo="#who" />
 
@@ -648,7 +648,8 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     margin-top: 48px;
     padding-top: 28px;
     border-top: 1px solid var(--border);
-    scroll-margin-top: 80px;
+    /* with the page's 72px scroll-padding this lands ~80px down, clear of the sticky header */
+    scroll-margin-top: 8px;
   }
   .sys-part__h {
     font-family: var(--font-display);

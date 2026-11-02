@@ -1,12 +1,17 @@
 ---
 /**
  * The annotated drone: a labelled line drawing that explains what each layer
- * of the system is. Used on the home page (mode "explain") and on partner pages
- * (mode "partner", with that partner's layers lit up).
+ * of the system is. Drawing on the left, callouts 1-4 in one column on the
+ * right (top to bottom, like the stack), Integration as a bracket spanning them.
+ *
+ * mode "explain" (home page): callouts are buttons. Selecting one lights that
+ *   layer, tells the connection diagram (a `sys:select` event on document) and
+ *   moves to it. Selections made in the connection diagram light the drone too.
+ * mode "partner" (partner pages): static. The partner's layers are lit and the
+ *   callouts show the partner's own `work:` line for each.
  *
  * Content comes from content/programme/stack.md (layers) and each partner's
- * `work:` lines in content/partners/*.md. Styles are prefixed and global so the
- * script can build markup at runtime.
+ * `work:` lines in content/partners/*.md. Styles are prefixed and global.
  */
 import type { SystemData } from '../lib/system';
 interface Props {
@@ -14,511 +19,538 @@ interface Props {
   mode?: 'explain' | 'partner';
   /** explain mode: CSS selector of the connection diagram to drive */
   target?: string;
-  /** explain mode: element to scroll to after a label is clicked */
+  /** explain mode: element to scroll to after a callout is selected (desktop) */
   scrollTo?: string;
   /** partner mode: partner id to light up */
   partner?: string;
 }
-const { data, ...opts } = Astro.props;
-const D = {
-  section: data.section,
-  layers: data.layers,
-  partners_in_display_order: data.partners_in_display_order,
-  sponsor: data.sponsor,
+const { data, mode = 'explain', target, scrollTo, partner } = Astro.props;
+const uid = 'pd' + Math.random().toString(36).slice(2, 8);
+const id = (s: string) => `${uid}-${s}`;
+const explain = mode !== 'partner';
+
+const numbered = data.layers.filter((l) => l.n != null).sort((a, b) => (a.n ?? 0) - (b.n ?? 0));
+const layers = [...numbered, ...data.layers.filter((l) => l.n == null)];
+const lastN = numbered.length ? numbered[numbered.length - 1].n : 4;
+const spans = `Spans layers 1–${lastN}`;
+
+const P = data.partners_in_display_order;
+const pt = !explain ? P.find((p) => p.id === partner) : undefined;
+const work = (pt?.work ?? {}) as Record<string, string | undefined>;
+const lit = layers.filter((l) => !!work[l.id]).map((l) => l.id);
+const listWords = (a: string[]) => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
+
+const rootClass = ['pd', `pd--${mode}`, lit.length ? 'has-sel' : '', ...lit.map((l) => `lit-${l}`)].filter(Boolean).join(' ');
+const on = (layer: string) => (lit.includes(layer) ? ' is-on' : '');
+
+const OPTS = {
+  mode,
+  target: target ?? null,
+  scrollTo: scrollTo ?? null,
+  lit,
+  /* which layers each partner works on, for selections made in the connection diagram */
+  pw: Object.fromEntries(P.map((p) => [p.id, Object.keys(p.work)])),
 };
-const LOGO = data.logos;
-const LAB = data.labs;
-const OPTS = opts;
+const label = explain
+  ? 'Annotated drone: what each layer of the system does'
+  : `Annotated drone: the layers ${pt?.short ?? ''} works on`;
 ---
 
-<section class="pd" aria-labelledby="pd-title" data-opts={JSON.stringify(OPTS)}>
-<header class="pd-head">
-  <p class="pd-eyebrow" data-pd="eyebrow"></p>
-  <h2 class="pd-title" id="pd-title" data-pd="title"></h2>
-  <p class="pd-intro" data-pd="intro"></p>
-  <p class="pd-fund" data-pd="fund"></p>
-</header>
+<div class={rootClass} role="group" aria-label={label}>
+  {pt && <p class="pd-sr">{pt.short} works on {listWords(layers.filter((l) => work[l.id]).map((l) => l.title))}.</p>}
+  <div class="pd-stage">
+    <svg class="pd-lines" aria-hidden="true" focusable="false"></svg>
 
-<div class="pd-stage">
-  <svg class="pd-lines" aria-hidden="true"></svg>
+    <figure class="pd-fig">
+      <svg class="pd-ill" viewBox="0 0 600 440" role="img" aria-label="Line drawing of a quadcopter drone and its teammates. 1, Strategy: the drone and two teammates are linked peer to peer by dashed lines and share one plan; there is no central controller. 2, Safety: a dashed ring around the drone, and a third teammate kept a safe distance away. 3, Flight: dotted waypoints that become a solid flown line arriving just below the drone, labelled AirStack: plan to flight. 4, Drones: the Starling 2 Max airframe. Corner marks around the drawing stand for Integration, which spans layers 1 to 4.">
+        <defs>
+          <marker id={id('arr')} viewBox="0 0 10 10" refX="7.5" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
+            <path class="pd-arrow" d="M2 1.5L7.5 5 2 8.5" />
+          </marker>
+          <!-- the airframe, centred on 0 0; drawn once and reused for the teammates -->
+          <g id={id('air')}>
+            <g transform="translate(-210 -270)">
+              <ellipse class="pd-a-disc" cx="140" cy="236" rx="46" ry="18" />
+              <ellipse class="pd-a-disc" cx="280" cy="236" rx="46" ry="18" />
+              <ellipse class="pd-a-disc" cx="122" cy="296" rx="50" ry="20" />
+              <ellipse class="pd-a-disc" cx="298" cy="296" rx="50" ry="20" />
+              <line class="pd-a-tube-o" x1="196" y1="258" x2="140" y2="238" /><line class="pd-a-tube-o" x1="224" y1="258" x2="280" y2="238" />
+              <line class="pd-a-tube-o" x1="192" y1="276" x2="122" y2="298" /><line class="pd-a-tube-o" x1="228" y1="276" x2="298" y2="298" />
+              <line class="pd-a-tube-i" x1="196" y1="258" x2="140" y2="238" /><line class="pd-a-tube-i" x1="224" y1="258" x2="280" y2="238" />
+              <line class="pd-a-tube-i" x1="192" y1="276" x2="122" y2="298" /><line class="pd-a-tube-i" x1="228" y1="276" x2="298" y2="298" />
+              <path class="pd-a-t2 pd-a-ink pd-a-fine" d="M133.5 236v5a6.5 2.6 0 0 0 13 0v-5" /><ellipse class="pd-a-t1 pd-a-ink pd-a-fine" cx="140" cy="236" rx="6.5" ry="2.6" />
+              <path class="pd-a-t2 pd-a-ink pd-a-fine" d="M273.5 236v5a6.5 2.6 0 0 0 13 0v-5" /><ellipse class="pd-a-t1 pd-a-ink pd-a-fine" cx="280" cy="236" rx="6.5" ry="2.6" />
+              <path class="pd-a-blade" d="M98 236.5Q119 231 140 233.5Q161 236 182 231.5Q161 238.5 140 235.8Q119 233.5 98 236.5Z" />
+              <path class="pd-a-blade" d="M238 231.5Q259 236 280 233.5Q301 231 322 236.5Q301 233.5 280 235.8Q259 238.5 238 231.5Z" />
+              <path class="pd-a-ink pd-a-fine" d="M200 280l-3 22M220 280l3 22" />
+              <rect class="pd-a-t2 pd-a-ink pd-body" x="180" y="258" width="60" height="28" rx="8" />
+              <rect class="pd-a-t1 pd-a-ink pd-body" x="178" y="246" width="64" height="24" rx="11" />
+              <ellipse class="pd-a-solid pd-a-ink pd-a-fine" cx="210" cy="254" rx="9" ry="3.6" />
+              <path class="pd-a-ink pd-a-fine" d="M201 254v3a9 3.6 0 0 0 18 0v-3" />
+              <rect class="pd-a-solid pd-a-ink pd-a-fine" x="191" y="272" width="38" height="10" rx="5" />
+              <circle class="pd-a-inkfill" cx="198" cy="277" r="1.9" /><circle class="pd-a-inkfill" cx="222" cy="277" r="1.9" />
+              <circle class="pd-a-solid pd-a-ink pd-a-fine" cx="210" cy="277" r="3" /><circle class="pd-a-inkfill" cx="210" cy="277" r="1.2" />
+              <rect class="pd-a-t2 pd-a-ink pd-a-fine" x="192" y="286" width="36" height="7" rx="2" />
+              <path class="pd-a-ink" d="M190 284l-8 30M230 284l8 30M174 314h16M230 314h16" />
+              <path class="pd-a-t2 pd-a-ink pd-a-fine" d="M115 296v6a7 2.8 0 0 0 14 0v-6" /><ellipse class="pd-a-t1 pd-a-ink pd-a-fine" cx="122" cy="296" rx="7" ry="2.8" />
+              <path class="pd-a-t2 pd-a-ink pd-a-fine" d="M291 296v6a7 2.8 0 0 0 14 0v-6" /><ellipse class="pd-a-t1 pd-a-ink pd-a-fine" cx="298" cy="296" rx="7" ry="2.8" />
+              <path class="pd-a-blade" d="M76 299Q99 292 122 293.5Q145 295 168 290Q145 298 122 296.2Q99 295 76 299Z" />
+              <path class="pd-a-blade" d="M252 290Q275 295 298 293.5Q321 292 344 299Q321 295 298 296.2Q275 298 252 290Z" />
+            </g>
+          </g>
+        </defs>
 
-  <figure class="pd-fig">
-    <svg class="pd-ill" viewBox="0 0 420 440" role="img" aria-label="Line drawing of one quadcopter drone. A small planning graph above it links to two teammate drones (Strategy, 1). A dashed ring surrounds it (Safety, 2). A dotted flight path leads up to it (Flight, 3). The airframe itself is the Drones layer (4).">
-      <defs>
-        <g id="pd-mini">
-          <line x1="-8" y1="-4" x2="-26" y2="-11"/><line x1="8" y1="-4" x2="26" y2="-11"/>
-          <line x1="-8" y1="5" x2="-28" y2="12"/><line x1="8" y1="5" x2="28" y2="12"/>
-          <rect x="-11" y="-7" width="22" height="14" rx="5" class="pd-solid"/>
-          <ellipse cx="-26" cy="-12" rx="14" ry="4.5"/><ellipse cx="26" cy="-12" rx="14" ry="4.5"/>
-          <ellipse cx="-28" cy="11" rx="15" ry="5" class="pd-solid"/><ellipse cx="28" cy="11" rx="15" ry="5" class="pd-solid"/>
+        <!-- Integration: corner crop marks; the edge shows only when lit -->
+        <g class={`pd-g pd-int${on('integration')}`} data-layer="integration">
+          <rect class="pd-int-edge" x="4" y="4" width="592" height="432" rx="2" />
+          <path class="pd-crop" d="M4 28V4h24M572 4h24v24M596 412v24h-24M28 436H4v-24" />
         </g>
-      </defs>
 
-      <!-- integration frame (phones only; desktop draws it around the whole diagram) -->
-      <g class="pd-svgframe pd-g" data-layer="integration">
-        <path d="M4 24V4h20M396 4h20v20M416 416v20h-20M24 436H4v-20" class="pd-ink" stroke-width="1.6"/>
-      </g>
-
-      <!-- 2 Safety ring (drawn first, sits behind) -->
-      <g class="pd-g" data-layer="safety">
-        <ellipse class="pd-ring" cx="210" cy="268" rx="172" ry="80"/>
-      </g>
-
-      <!-- 1 Strategy: planner graph + teammates -->
-      <g class="pd-g" data-layer="strategy">
-        <line class="pd-link" x1="176" y1="70" x2="96" y2="134"/>
-        <line class="pd-link" x1="244" y1="70" x2="324" y2="134"/>
-        <line class="pd-link" x1="210" y1="78" x2="210" y2="238"/>
-        <g class="pd-faint" transform="translate(74 146)"><use href="#pd-mini"/></g>
-        <g class="pd-faint" transform="translate(346 146)"><use href="#pd-mini"/></g>
-        <rect class="pd-bubble pd-solid pd-ink" x="170" y="22" width="80" height="56" rx="16"/>
-        <g class="pd-ink">
-          <line x1="210" y1="50" x2="189" y2="38"/><line x1="210" y1="50" x2="231" y2="38"/>
-          <line x1="210" y1="50" x2="194" y2="64"/><line x1="210" y1="50" x2="227" y2="64"/>
-          <line x1="189" y1="38" x2="194" y2="64"/><line x1="231" y1="38" x2="227" y2="64"/>
+        <!-- 2 Safety, back half of the ring (behind the drone) -->
+        <g class={`pd-g${on('safety')}`} data-layer="safety">
+          <ellipse class="pd-ringfill" cx="300" cy="276" rx="164" ry="66" />
+          <path class="pd-ring" pathLength="380" d="M136 276A164 66 0 0 1 464 276" />
         </g>
-        <circle class="pd-inkfill" cx="210" cy="50" r="4.6"/>
-        <circle class="pd-solid pd-ink" cx="189" cy="38" r="3.4"/><circle class="pd-solid pd-ink" cx="231" cy="38" r="3.4"/>
-        <circle class="pd-solid pd-ink" cx="194" cy="64" r="3.4"/><circle class="pd-solid pd-ink" cx="227" cy="64" r="3.4"/>
-      </g>
 
-      <!-- 3 Flight path -->
-      <g class="pd-g" data-layer="flight">
-        <ellipse class="pd-pad" cx="40" cy="414" rx="20" ry="6"/>
-        <ellipse class="pd-pad" cx="40" cy="414" rx="9" ry="2.8"/>
-        <path class="pd-path" d="M40 406C52 360 96 394 126 370S160 334 176 322"/>
-        <path class="pd-ink" d="M164 321l13.5 0-6 12" stroke-width="1.8"/>
-        <text class="pd-lbl" x="70" y="430">AirStack</text>
-      </g>
-
-      <!-- 4 Drone airframe -->
-      <g class="pd-g" data-layer="drones">
-        <!-- rear rotors -->
-        <ellipse class="pd-disc" cx="140" cy="232" rx="46" ry="14"/>
-        <ellipse class="pd-disc" cx="280" cy="232" rx="46" ry="14"/>
-        <line class="pd-blade" x1="102" y1="226" x2="178" y2="238"/>
-        <line class="pd-blade" x1="242" y1="238" x2="318" y2="226"/>
-        <!-- arms -->
-        <g>
-          <line class="pd-tube-o" x1="194" y1="256" x2="140" y2="238"/><line class="pd-tube-o" x1="226" y1="256" x2="280" y2="238"/>
-          <line class="pd-tube-o" x1="192" y1="276" x2="126" y2="298"/><line class="pd-tube-o" x1="228" y1="276" x2="294" y2="298"/>
-          <line class="pd-tube-i" x1="194" y1="256" x2="140" y2="238"/><line class="pd-tube-i" x1="226" y1="256" x2="280" y2="238"/>
-          <line class="pd-tube-i" x1="192" y1="276" x2="126" y2="298"/><line class="pd-tube-i" x1="228" y1="276" x2="294" y2="298"/>
+        <!-- 1 Strategy: three peers linked to each other, sharing one plan -->
+        <g class={`pd-g${on('strategy')}`} data-layer="strategy">
+          <path class="pd-link" d="M216 118H384M188 136L288 240M412 136L312 240" />
+          <g class="pd-plan">
+            <path d="M300 157L290 173H310Z" />
+            <circle cx="300" cy="157" r="3" /><circle cx="290" cy="173" r="3" /><circle cx="310" cy="173" r="3" />
+          </g>
+          <text class="pd-lbl" x="300" y="194" text-anchor="middle">shared plan</text>
+          <use class="pd-mate" href={`#${id('air')}`} transform="translate(170 120) scale(.32)" />
+          <use class="pd-mate" href={`#${id('air')}`} transform="translate(430 120) scale(.32)" />
         </g>
-        <!-- rear motors -->
-        <path class="pd-solid pd-ink" d="M133 232v6a7 3.4 0 0 0 14 0v-6"/><ellipse class="pd-solid pd-ink" cx="140" cy="232" rx="7" ry="3.4"/>
-        <path class="pd-solid pd-ink" d="M273 232v6a7 3.4 0 0 0 14 0v-6"/><ellipse class="pd-solid pd-ink" cx="280" cy="232" rx="7" ry="3.4"/>
-        <!-- legs -->
-        <path class="pd-ink" d="M198 286l-7 28M184 314h14M222 286l7 28M222 314h14"/>
-        <!-- body -->
-        <rect class="pd-body pd-solid pd-ink" x="178" y="244" width="64" height="44" rx="14"/>
-        <rect x="188" y="251" width="44" height="24" rx="7"/>
-        <circle class="pd-ink" cx="210" cy="258" r="4"/>
-        <rect class="pd-solid pd-ink" x="202" y="281" width="16" height="9" rx="3"/>
-        <circle class="pd-inkfill" cx="210" cy="285.5" r="1.8"/>
-        <!-- front rotors -->
-        <ellipse class="pd-disc" cx="126" cy="292" rx="50" ry="15"/>
-        <ellipse class="pd-disc" cx="294" cy="292" rx="50" ry="15"/>
-        <path class="pd-solid pd-ink" d="M118 292v7a8 3.8 0 0 0 16 0v-7"/>
-        <path class="pd-solid pd-ink" d="M286 292v7a8 3.8 0 0 0 16 0v-7"/>
-        <line class="pd-blade" x1="84" y1="296" x2="168" y2="286"/>
-        <line class="pd-blade" x1="252" y1="286" x2="336" y2="296"/>
-        <ellipse class="pd-solid pd-ink" cx="126" cy="292" rx="8" ry="3.8"/>
-        <ellipse class="pd-solid pd-ink" cx="294" cy="292" rx="8" ry="3.8"/>
-        <text class="pd-lbl" x="214" y="368" text-anchor="middle">Starling 2 Max</text>
-      </g>
 
-      <!-- numbered markers = leader-line anchors -->
-      <g class="pd-mk" data-layer="strategy" data-anchor="strategy"><circle cx="160" cy="50" r="10"/><text x="160" y="50.5">1</text></g>
-      <g class="pd-mk" data-layer="safety" data-anchor="safety"><circle cx="382" cy="268" r="10"/><text x="382" y="268.5">2</text></g>
-      <g class="pd-mk" data-layer="flight" data-anchor="flight"><circle cx="70" cy="378" r="10"/><text x="70" y="378.5">3</text></g>
-      <g class="pd-mk" data-layer="drones" data-anchor="drones"><line x1="338" y1="298" x2="362" y2="326" stroke="var(--muted)"/><circle cx="368" cy="334" r="10"/><text x="368" y="334.5">4</text></g>
-    </svg>
-  </figure>
-</div>
+        <!-- 2 Safety: a teammate kept outside the ring -->
+        <g class={`pd-g${on('safety')}`} data-layer="safety">
+          <use class="pd-mate" href={`#${id('air')}`} transform="translate(62 300) scale(.32)" />
+          <path class="pd-dim" d="M105 292V258M162 290V258M105 266H162M101 270l8-8M158 270l8-8" />
+          <text class="pd-lbl pd-lbl-sm" x="134" y="252" text-anchor="middle">safe distance</text>
+        </g>
 
-<div class="pd-pwrap">
-  <div class="pd-pbar">
-    <h3 class="pd-ph">The partners</h3>
-    <p class="pd-status" aria-live="polite"></p>
+        <!-- 4 Drones: the airframe -->
+        <g class={`pd-g pd-air${on('drones')}`} data-layer="drones">
+          <ellipse class="pd-shadow" cx="300" cy="362" rx="44" ry="17.6" />
+          <use class="pd-main" href={`#${id('air')}`} transform="translate(300 270)" />
+          <path class="pd-tick" d="M326 316L318 392" />
+          <circle class="pd-tickdot" cx="326" cy="316" r="2" />
+          <text class="pd-lbl pd-lbl-air" x="298" y="408" text-anchor="end">Starling 2 Max</text>
+        </g>
+
+        <!-- 3 Flight: dotted waypoints smoothing into a flown line -->
+        <g class={`pd-g${on('flight')}`} data-layer="flight">
+          <path class="pd-wp" d="M592 282C556 296 528 340 474 348" />
+          <path class="pd-flown" d="M474 348C420 356 372 352 340 332" marker-end={`url(#${id('arr')})`} />
+          <path id={id('fp')} class="pd-none" d="M340 332C372 352 420 356 474 348C528 340 556 296 592 282" />
+          <text class="pd-lbl pd-lbl-path" dy="-7"><textPath href={`#${id('fp')}`} startOffset="14%">AirStack: plan → flight</textPath></text>
+        </g>
+
+        <!-- 2 Safety, front half of the ring (over the drone) -->
+        <g class={`pd-g${on('safety')}`} data-layer="safety">
+          <path class="pd-ring" pathLength="380" d="M464 276A164 66 0 0 1 136 276" />
+        </g>
+
+        {explain && (
+          <g class="pd-hits" aria-hidden="true">
+            <path class="pd-hit" data-layer="strategy" d="M120 92H480V146L330 246H270L120 146Z" />
+            <ellipse class="pd-hit pd-hit-ring" data-layer="safety" cx="300" cy="276" rx="164" ry="66" />
+            <rect class="pd-hit" data-layer="safety" x="12" y="250" width="160" height="70" />
+            <path class="pd-hit pd-hit-path" data-layer="flight" d="M592 282C556 296 528 340 474 348C420 356 372 352 340 332" />
+            <rect class="pd-hit" data-layer="drones" x="176" y="218" width="248" height="100" />
+            <path class="pd-hit" data-layer="integration" d="M0 0h40v40H0ZM560 0h40v40h-40ZM560 400h40v40h-40ZM0 400h40v40H0Z" />
+          </g>
+        )}
+
+        <!-- numbered markers: leader-line anchors, top to bottom -->
+        <g class={`pd-mk${on('strategy')}`} data-layer="strategy"><circle cx="300" cy="72" r="11" /><text x="300" y="72.5">1</text></g>
+        <g class={`pd-mk${on('safety')}`} data-layer="safety"><circle cx="433" cy="237" r="11" /><text x="433" y="237.5">2</text></g>
+        <g class={`pd-mk${on('flight')}`} data-layer="flight"><circle cx="562" cy="297" r="11" /><text x="562" y="297.5">3</text></g>
+        <g class={`pd-mk${on('drones')}`} data-layer="drones"><circle cx="318" cy="404" r="11" /><text x="318" y="404.5">4</text></g>
+      </svg>
+    </figure>
+
+    <ol class="pd-cos">
+      {layers.map((l) => {
+        const span = l.n == null;
+        const w = work[l.id];
+        const head = (
+          <span class="pd-co-head">
+            <span class="pd-num" aria-hidden="true">
+              {span ? (
+                <svg viewBox="0 0 14 14"><path d="M1 4.5V1h3.5M9.5 1H13v3.5M13 9.5V13H9.5M4.5 13H1V9.5" /></svg>
+              ) : (
+                l.n
+              )}
+            </span>
+            <span class="pd-co-title" id={id('t-' + l.id)}>{l.title}</span>
+            {span && <span class="pd-co-tag" id={id('s-' + l.id)}>{spans}</span>}
+            {explain && <span class="pd-cue" aria-hidden="true">Show partners <span class="pd-cue-a">↓</span></span>}
+          </span>
+        );
+        return explain ? (
+          <li class="pd-item">
+            <button
+              type="button"
+              class={`pd-co pd-co--${l.id}`}
+              data-layer={l.id}
+              aria-labelledby={id('t-' + l.id)}
+              aria-describedby={span ? `${id('d-' + l.id)} ${id('s-' + l.id)}` : id('d-' + l.id)}
+            >
+              {head}
+              <span class="pd-co-desc" id={id('d-' + l.id)}>{l.desc}</span>
+            </button>
+          </li>
+        ) : (
+          <li class={`pd-co pd-co--${l.id}${w ? ' is-on' : ''}`} data-layer={l.id}>
+            {head}
+            {w ? (
+              <>
+                <span class="pd-co-work">{w}</span>
+                <span class="pd-co-desc pd-co-desc--sm">{l.desc}</span>
+              </>
+            ) : (
+              <span class="pd-co-desc">{l.desc}</span>
+            )}
+          </li>
+        );
+      })}
+    </ol>
   </div>
-  <ul class="pd-plist"></ul>
-</div>
-<script is:inline define:vars={{ D, LOGO, LAB, OPTS }}>
-(function () {
-  var root = (document.currentScript && document.currentScript.closest('section.pd')) || document.querySelector('section.pd');
-  if (!root) return;
-  var P = D.partners_in_display_order, L = D.layers;
-  var q = function (s, el) { return (el || root).querySelector(s); };
-  var qa = function (s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); };
-  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); };
-  var who = function (lid) { return P.filter(function (p) { return p.work[lid]; }); };
-  var layersOf = function (p) { return L.filter(function (l) { return p.work[l.id]; }); };
-  var listWords = function (a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; };
-  var uid = 'pd' + Math.random().toString(36).slice(2, 7);
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  q('[data-pd=eyebrow]').textContent = D.section.eyebrow;
-  q('[data-pd=title]').textContent = D.section.title;
-  q('[data-pd=intro]').textContent = D.section.intro;
-  q('[data-pd=fund]').textContent = D.sponsor.note;
+  <script is:inline define:vars={{ OPTS }}>
+  (function () {
+    var root = document.currentScript && document.currentScript.closest('.pd');
+    if (!root) return;
+    var explain = OPTS.mode !== 'partner';
+    var stage = root.querySelector('.pd-stage');
+    var lines = root.querySelector('.pd-lines');
+    var NUM = ['strategy', 'safety', 'flight', 'drones'];
+    var ALL = NUM.concat('integration');
+    var state = { layer: null, partner: null };
+    var hoverPeek = null, focusPeek = null;
+    var qa = function (s) { return Array.prototype.slice.call(root.querySelectorAll(s)); };
+    var co = function (id) { return root.querySelector('.pd-co[data-layer="' + id + '"]'); };
 
-  var chev = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
-  var bracket = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 4.5V1h3.5M9.5 1H13v3.5M13 9.5V13H9.5M4.5 13H1V9.5"/></svg>';
-  var tick = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2l2.4 2.4 4.6-5"/></svg>';
-  var wellHTML = function (p) {
-    return '<span class="pd-well"><img src="' + LOGO[p.id] + '" alt="' + esc(p.institution) + ' logo"><span class="pd-wdiv" aria-hidden="true"></span><img src="' + LAB[p.id] + '" alt="' + esc(p.lab) + ' logo"></span>';
-  };
-
-  /* callouts */
-  var stage = q('.pd-stage');
-  var cardId = uid + '-card';
-  L.forEach(function (l) {
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'pd-co pd-co--' + l.id;
-    b.dataset.layer = l.id;
-    b.setAttribute('aria-expanded', 'false');
-    b.setAttribute('aria-controls', cardId);
-    b.innerHTML =
-      '<span class="pd-co-head"><span class="pd-num" aria-hidden="true">' + (l.n ? l.n : bracket) + '</span>' +
-      '<span class="pd-co-title">' + esc(l.title) + '</span>' +
-      (l.n ? '' : '<span class="pd-co-tag">All layers</span>') + '</span>' +
-      '<span class="pd-co-desc">' + esc(l.desc) + '</span>' +
-      '<span class="pd-chips"><span class="pd-sr">Partners: </span>' + who(l.id).map(function (p) { return '<span class="pd-chip" data-p="' + p.id + '">' + esc(p.short) + '</span>'; }).join('') + '</span>' +
-      '<span class="pd-cue"><span class="pd-cue-t">Who works on this</span>' + chev + '</span>';
-    stage.appendChild(b);
-  });
-
-  var card = document.createElement('div');
-  card.className = 'pd-card';
-  card.id = cardId;
-  card.setAttribute('role', 'region');
-  card.hidden = true;
-  stage.appendChild(card);
-
-  /* partners */
-  var plist = q('.pd-plist');
-  P.forEach(function (p) {
-    var n = layersOf(p).length;
-    var li = document.createElement('li');
-    li.className = 'pd-pcard';
-    li.dataset.p = p.id;
-    li.innerHTML =
-      '<button type="button" class="pd-pbtn" aria-pressed="false" data-p="' + p.id + '">' + wellHTML(p) +
-      '<span class="pd-pname">' + esc(p.short) + '</span>' +
-      '<span class="pd-plab"><b>' + esc(p.lab) + '</b><br>' + esc(p.role) + '</span>' +
-      '<span class="pd-tog"><span class="pd-box" aria-hidden="true">' + tick + '</span><span class="pd-tog-t">Highlight their ' + n + ' layer' + (n > 1 ? 's' : '') + '</span></span></button>' +
-      '<div class="pd-pfoot"><a class="pd-more" href="' + esc(p.href) + '">See more →<span class="pd-sr"> about ' + esc(p.short) + '</span></a></div>';
-    plist.appendChild(li);
-  });
-
-  var state = {layer: 'strategy', partner: null};
-
-  function renderCard() {
-    if (!state.layer) { card.hidden = true; return; }
-    var l = L.filter(function (x) { return x.id === state.layer; })[0];
-    var ps = who(l.id);
-    var btn = q('.pd-co--' + l.id);
-    btn.insertAdjacentElement('afterend', card);
-    card.setAttribute('aria-label', l.title + ': who works on this');
-    card.innerHTML =
-      '<div><p class="pd-card-k">' + (l.n ? 'Layer ' + l.n : 'Spans all layers') + ' · ' + ps.length + ' partner' + (ps.length > 1 ? 's' : '') + '</p>' +
-      '<p class="pd-card-t">' + esc(l.title) + '</p><p class="pd-card-d">' + esc(l.desc) + '</p></div>' +
-      '<ul class="pd-ents" style="--pd-n:' + ps.length + '">' + ps.map(function (p) {
-        return '<li class="pd-ent' + (state.partner === p.id ? ' is-match' : '') + '">' + wellHTML(p) +
-          '<p class="pd-ent-n">' + esc(p.short) + ' <span>· ' + esc(p.lab) + '</span></p>' +
-          '<p class="pd-ent-w">' + esc(p.work[l.id]) + '</p>' +
-          '<a class="pd-more" href="' + esc(p.href) + '">See more →<span class="pd-sr"> about ' + esc(p.short) + '</span></a></li>';
-      }).join('') + '</ul>';
-    card.hidden = false;
-  }
-
-  function render() {
-    var partner = state.partner && P.filter(function (p) { return p.id === state.partner; })[0];
-    root.classList.toggle('has-partner', !!partner);
-    qa('.pd-co').forEach(function (b) {
-      var id = b.dataset.layer, open = id === state.layer;
-      b.classList.toggle('is-open', open);
-      b.setAttribute('aria-expanded', open ? 'true' : 'false');
-      q('.pd-cue-t', b).textContent = open ? 'Hide partners' : 'Who works on this';
-      b.classList.toggle('is-match', !!(partner && partner.work[id]));
-      qa('.pd-chip', b).forEach(function (c) { c.classList.toggle('is-match', !!partner && c.dataset.p === partner.id); });
-    });
-    qa('.pd-ill .pd-g').forEach(function (g) { g.classList.toggle('is-on', g.dataset.layer === state.layer); });
-    qa('.pd-ill .pd-mk').forEach(function (g) {
-      g.classList.toggle('is-on', g.dataset.layer === state.layer);
-      g.classList.toggle('is-match', !!(partner && partner.work[g.dataset.layer]));
-    });
-    qa('.pd-pcard').forEach(function (c) {
-      var on = !!partner && c.dataset.p === partner.id, n = layersOf(P.filter(function (p) { return p.id === c.dataset.p; })[0]).length;
-      c.classList.toggle('is-on', on);
-      q('.pd-pbtn', c).setAttribute('aria-pressed', on ? 'true' : 'false');
-      q('.pd-tog-t', c).textContent = on ? 'Highlighting ' + n + ' layer' + (n > 1 ? 's' : '') : 'Highlight their ' + n + ' layer' + (n > 1 ? 's' : '');
-    });
-    var st = q('.pd-status');
-    if (partner) {
-      st.innerHTML = '<strong>' + esc(partner.short) + '</strong> works on ' + esc(listWords(layersOf(partner).map(function (l) { return l.title; }))) + '. <button type="button" class="pd-clear">Clear</button>';
-    } else {
-      st.textContent = 'Select a partner to highlight the layers they work on.';
+    function litSet() {
+      if (!explain) return OPTS.lit || [];
+      if (state.layer) return [state.layer];
+      if (state.partner && OPTS.pw[state.partner]) return OPTS.pw[state.partner];
+      return [];
     }
-    renderCard();
-    draw();
-  }
+    function render() {
+      var L = litSet(), peek = hoverPeek || focusPeek;
+      root.classList.toggle('has-sel', L.length > 0);
+      ALL.forEach(function (id) {
+        root.classList.toggle('lit-' + id, L.indexOf(id) >= 0);
+        root.classList.toggle('peek-' + id, peek === id);
+      });
+      qa('[data-layer]').forEach(function (el) {
+        var id = el.getAttribute('data-layer');
+        el.classList.toggle('is-on', L.indexOf(id) >= 0);
+        el.classList.toggle('is-peek', peek === id);
+      });
+      draw();
+    }
 
-  root.addEventListener('click', function (e) {
-    var co = e.target.closest('.pd-co'), pb = e.target.closest('.pd-pbtn'), cl = e.target.closest('.pd-clear');
-    if (co && root.contains(co)) {
-      state.layer = state.layer === co.dataset.layer ? null : co.dataset.layer;
-      render();
-      if (state.layer && card.getBoundingClientRect().bottom > window.innerHeight) {
-        card.scrollIntoView({block: 'nearest', behavior: reduce ? 'auto' : 'smooth'});
+    /* leader lines and the Integration bracket (desktop layout only) */
+    var NS = 'http://www.w3.org/2000/svg';
+    function el(tag, attrs) { var n = document.createElementNS(NS, tag); for (var k in attrs) n.setAttribute(k, attrs[k]); return n; }
+    function draw() {
+      while (lines.firstChild) lines.removeChild(lines.firstChild);
+      var sr = stage.getBoundingClientRect();
+      if (!sr.width || !sr.height) return;
+      if (getComputedStyle(lines).display === 'none') return;
+      lines.setAttribute('viewBox', '0 0 ' + sr.width + ' ' + sr.height);
+      var L = litSet(), peek = hoverPeek || focusPeek;
+      var cls = function (id, base) { return base + (L.indexOf(id) >= 0 ? ' is-on' : '') + (peek === id ? ' is-peek' : ''); };
+      NUM.forEach(function (id) {
+        var c = co(id), mk = root.querySelector('.pd-mk[data-layer="' + id + '"] circle');
+        if (!c || !mk) return;
+        var b = c.getBoundingClientRect(), n = c.querySelector('.pd-num').getBoundingClientRect(), m = mk.getBoundingClientRect();
+        var sx = b.left - sr.left, sy = n.top + n.height / 2 - sr.top;
+        var mx = m.left + m.width / 2 - sr.left, my = m.top + m.height / 2 - sr.top, r = m.width / 2;
+        var kx = sx - 18, dx = kx - mx, dy = sy - my, d = Math.sqrt(dx * dx + dy * dy) || 1;
+        lines.appendChild(el('path', { 'class': cls(id, 'pd-ld'), d: 'M' + (mx + dx / d * r) + ' ' + (my + dy / d * r) + 'L' + kx + ' ' + sy + 'H' + (sx - 4) }));
+        lines.appendChild(el('circle', { 'class': cls(id, 'pd-ldot'), cx: sx - 4, cy: sy, r: 2.5 }));
+      });
+      var c1 = co('strategy'), c4 = co('drones'), ci = co('integration');
+      if (c1 && c4 && ci) {
+        var a = c1.getBoundingClientRect(), z = c4.getBoundingClientRect(), g = ci.getBoundingClientRect();
+        var xr = a.right - sr.left, x = xr + 14, t = a.top - sr.top + 8, e = z.bottom - sr.top - 8, im = g.top + g.height / 2 - sr.top;
+        lines.appendChild(el('path', { 'class': cls('integration', 'pd-brk'),
+          d: 'M' + (x - 7) + ' ' + t + 'H' + x + 'V' + im + 'H' + (xr + 4) + 'M' + (x - 7) + ' ' + e + 'H' + x }));
+        lines.appendChild(el('circle', { 'class': cls('integration', 'pd-ldot'), cx: xr + 4, cy: im, r: 2.5 }));
       }
-    } else if (pb && root.contains(pb)) {
-      state.partner = state.partner === pb.dataset.p ? null : pb.dataset.p;
-      render();
-    } else if (cl && root.contains(cl)) {
-      var was = state.partner;
-      state.partner = null;
-      render();
-      var back = q('.pd-pbtn[data-p="' + was + '"]');
-      if (back) back.focus();
     }
-  });
 
-  /* leader lines + integration frame (desktop only) */
-  var lines = q('.pd-lines');
-  var NS = 'http://www.w3.org/2000/svg';
-  function el(tag, attrs) { var n = document.createElementNS(NS, tag); for (var k in attrs) n.setAttribute(k, attrs[k]); return n; }
-  function draw() {
-    if (getComputedStyle(lines).display === 'none') return;
-    var sr = stage.getBoundingClientRect();
-    var W = sr.width, H = sr.height;
-    lines.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-    while (lines.firstChild) lines.removeChild(lines.firstChild);
-    var partner = state.partner && P.filter(function (p) { return p.id === state.partner; })[0];
-    ['strategy', 'safety', 'flight', 'drones'].forEach(function (id) {
-      var b = q('.pd-co--' + id).getBoundingClientRect();
-      var m = q('.pd-mk[data-anchor=' + id + '] circle').getBoundingClientRect();
-      var left = b.left + b.width / 2 < sr.left + W / 2;
-      var sx = (left ? b.right : b.left) - sr.left, sy = b.top - sr.top + 26;
-      var mx = m.left + m.width / 2 - sr.left, my = m.top + m.height / 2 - sr.top;
-      var kx = sx + (left ? 22 : -22);
-      var on = id === state.layer, match = !!(partner && partner.work[id]);
-      var cls = 'pd-ld' + (on ? ' is-on' : '') + (match ? ' is-match' : '');
-      lines.appendChild(el('path', {d: 'M' + sx + ' ' + sy + 'H' + kx + 'L' + mx + ' ' + my, 'class': cls}));
-      lines.appendChild(el('circle', {cx: sx, cy: sy, r: 2.6, 'class': cls}));
+    if (window.ResizeObserver) new ResizeObserver(function () { draw(); }).observe(stage);
+    else window.addEventListener('resize', draw);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+    render();
+    if (!explain) return;
+
+    /* ── explain mode ───────────────────────────────────────────────── */
+    var mq = function (q) { return !!(window.matchMedia && matchMedia(q).matches); };
+    function inView(n) {
+      var r = n.getBoundingClientRect();
+      return r.top >= 72 && r.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+    }
+    function whenSettled(scrolled, fn) {
+      if (!scrolled) return fn();
+      var done = false, go = function () { if (done) return; done = true; window.removeEventListener('scrollend', go); fn(); };
+      window.addEventListener('scrollend', go);
+      setTimeout(go, 900);
+    }
+    function echo(btn, reduce) {
+      btn.classList.remove('pc-echo', 'pc-echo-static');
+      if (reduce) {
+        btn.classList.add('pc-echo-static');
+        btn.addEventListener('blur', function off() { btn.classList.remove('pc-echo-static'); btn.removeEventListener('blur', off); });
+        return;
+      }
+      void btn.offsetWidth;
+      btn.classList.add('pc-echo');
+      btn.addEventListener('animationend', function off() { btn.classList.remove('pc-echo'); btn.removeEventListener('animationend', off); });
+    }
+    function activate(id) {
+      state.layer = id; state.partner = null;
+      render();
+      document.dispatchEvent(new CustomEvent('sys:select', { detail: { layer: id, partner: null, source: 'drone' } }));
+      var tgt = OPTS.target && document.querySelector(OPTS.target);
+      var btn = tgt && tgt.querySelector('[data-sel="l:' + id + '"]');
+      /* phones: the connection diagram is stacked, so go straight to the layer; desktop: to the heading */
+      var phone = mq('(max-width: 820px)');
+      var dest = (phone ? btn : OPTS.scrollTo && document.querySelector(OPTS.scrollTo)) || btn;
+      var reduce = mq('(prefers-reduced-motion: reduce)');
+      var scrolled = false;
+      /* scroll only if the destination (and the layer it leads to) is not already in view */
+      if (dest && !(inView(dest) && (!btn || inView(btn)))) {
+        dest.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: phone ? 'center' : 'start' });
+        scrolled = !reduce;
+      }
+      if (btn) {
+        btn.focus({ preventScroll: true });
+        whenSettled(scrolled, function () { echo(btn, reduce); });
+      }
+    }
+
+    root.addEventListener('click', function (e) {
+      var t = e.target.closest('.pd-co, .pd-hit');
+      if (t && root.contains(t)) activate(t.getAttribute('data-layer'));
     });
-    var ib = q('.pd-co--integration').getBoundingClientRect();
-    var x0 = 14, y0 = 14, x1 = W - 14, y1 = ib.top - sr.top + 26, c = 22;
-    lines.setAttribute('class', 'pd-lines' + (state.layer === 'integration' || (partner && partner.work.integration) ? ' is-int' : ''));
-    lines.appendChild(el('path', {'class': 'pd-frame-edge', d: 'M' + x0 + ' ' + y0 + 'H' + x1 + 'V' + y1 + 'H' + x0 + 'Z'}));
-    lines.appendChild(el('path', {'class': 'pd-frame-corner', d:
-      'M' + x0 + ' ' + (y0 + c) + 'V' + y0 + 'H' + (x0 + c) +
-      'M' + (x1 - c) + ' ' + y0 + 'H' + x1 + 'V' + (y0 + c) +
-      'M' + x1 + ' ' + (y1 - c) + 'V' + y1 + 'H' + (x1 - c) +
-      'M' + (x0 + c) + ' ' + y1 + 'H' + x0 + 'V' + (y1 - c)}));
-  }
+    root.addEventListener('mouseover', function (e) {
+      var t = e.target.closest && e.target.closest('.pd-co, .pd-hit');
+      var id = t && root.contains(t) ? t.getAttribute('data-layer') : null;
+      if (id !== hoverPeek) { hoverPeek = id; render(); }
+    });
+    root.addEventListener('mouseleave', function () { if (hoverPeek) { hoverPeek = null; render(); } });
+    root.addEventListener('focusin', function (e) {
+      var t = e.target.closest('.pd-co');
+      focusPeek = t ? t.getAttribute('data-layer') : null; render();
+    });
+    root.addEventListener('focusout', function () { focusPeek = null; render(); });
 
-  render();
-  if (window.ResizeObserver) new ResizeObserver(function () { draw(); }).observe(stage);
-  else window.addEventListener('resize', draw);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
-})();
+    /* one shared selection with the connection diagram */
+    document.addEventListener('sys:select', function (e) {
+      var d = e.detail || {};
+      if (d.source === 'drone') return;
+      state.layer = d.layer || null; state.partner = d.partner || null;
+      render();
+    });
 
-/* ── Site modes ──────────────────────────────────────────────────────────
-   OPTS.mode === 'explain': a label selects the same layer in the connection
-     diagram (selector OPTS.target) and scrolls to OPTS.scrollTo.
-   OPTS.mode === 'partner': light up OPTS.partner's layers, nothing else. */
-(function () {
-  var root = document.currentScript && document.currentScript.closest('section.pd');
-  if (!root) return;
-  root.classList.add('pd--site', 'pd--' + (OPTS.mode || 'explain'));
-  root.querySelectorAll('.pd-co.is-open').forEach(function (b) { b.click(); });
-  if (OPTS.mode === 'partner' && OPTS.partner) {
-    var btn = root.querySelector('.pd-pbtn[data-p="' + OPTS.partner + '"]');
-    if (btn && btn.getAttribute('aria-pressed') !== 'true') btn.click();
-    return;
-  }
-  root.addEventListener('click', function (e) {
-    var co = e.target.closest('.pd-co'); if (!co) return;
-    var target = OPTS.target && document.querySelector(OPTS.target);
-    var lb = target && target.querySelector('[data-sel="l:' + co.dataset.layer + '"]');
-    if (lb && lb.getAttribute('aria-pressed') !== 'true') lb.click();
-    if (co.classList.contains('is-open')) co.click();
-    var to = OPTS.scrollTo && document.querySelector(OPTS.scrollTo);
-    if (to) to.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-  });
-})();
-</script>
-</section>
+    /* the safety ring drifts only while on screen */
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (es) { es.forEach(function (en) { root.classList.toggle('is-vis', en.isIntersecting); }); }).observe(stage);
+    }
+  })();
+  </script>
+</div>
 
 <style is:global>
-.pd{font-family:var(--font-body);color:var(--text);line-height:1.55}
+.pd{font-family:var(--font-body);color:var(--text);line-height:1.5;
+  --pd-t1:color-mix(in srgb,var(--text) 6%,var(--surface));
+  --pd-t2:color-mix(in srgb,var(--text) 13%,var(--surface))}
 .pd *,.pd *::before,.pd *::after{box-sizing:border-box}
 .pd .pd-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
-/* header */
-.pd .pd-head{max-width:760px;margin:0 0 28px}
-.pd .pd-eyebrow{font:500 13px/1.2 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
-.pd .pd-title{font:700 clamp(30px,5vw,44px)/1.08 var(--font-display);letter-spacing:-.01em;margin:0 0 14px;color:var(--text)}
-.pd .pd-intro{margin:0 0 16px;color:var(--muted);font-size:17px;max-width:64ch}
-.pd .pd-fund{display:inline-flex;align-items:center;gap:10px;margin:0;font:500 12px/1 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.pd .pd-fund::before{content:"";width:22px;height:1px;background:var(--muted)}
-
-/* stage */
-.pd .pd-stage{position:relative;display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(360px,430px) minmax(0,1fr);
-  grid-template-areas:"strat fig safe" "flight fig drones" "integ integ integ" "card card card";
-  column-gap:36px;row-gap:18px;padding:44px 44px 36px;
+/* ── stage: drawing left (55%), callouts right ── */
+.pd .pd-stage{position:relative;display:grid;grid-template-columns:minmax(0,55fr) minmax(0,45fr);column-gap:52px;align-items:start;
+  padding:28px 52px 28px 28px;
   background-color:var(--surface);
   background-image:radial-gradient(circle,var(--grid) 1.3px,transparent 1.7px);
   background-size:20px 20px;background-position:10px 10px;
   border:1px solid var(--border);border-radius:var(--radius)}
 .pd .pd-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
-.pd .pd-lines path,.pd .pd-lines line{fill:none;stroke:var(--muted);stroke-width:1;vector-effect:non-scaling-stroke}
-.pd .pd-lines circle{fill:var(--muted)}
-.pd .pd-lines .pd-ld.is-on{stroke:var(--text);stroke-width:1.6}
+.pd .pd-lines path{fill:none;stroke:var(--muted);stroke-width:1;transition:stroke .22s,stroke-width .22s}
+.pd .pd-lines circle{fill:var(--muted);transition:fill .22s}
+.pd .pd-lines .is-peek{stroke:var(--text);transition-duration:.12s}
+.pd .pd-lines circle.is-peek{fill:var(--text)}
+.pd.has-sel .pd-lines path:not(.is-on):not(.is-peek){stroke:var(--border)}
+.pd.has-sel .pd-lines circle:not(.is-on):not(.is-peek){fill:var(--border)}
+.pd .pd-lines path.is-on{stroke:var(--text);stroke-width:1.6}
 .pd .pd-lines circle.is-on{fill:var(--text)}
-.pd .pd-lines .pd-frame-edge{stroke:var(--border)}
-.pd .pd-lines .pd-frame-corner{stroke:var(--muted);stroke-width:1.5}
-.pd .pd-lines.is-int .pd-frame-edge{stroke:var(--muted)}
-.pd .pd-lines.is-int .pd-frame-corner{stroke:var(--text);stroke-width:2.2}
-.pd.has-partner .pd-lines .pd-ld:not(.is-match){opacity:.35}
 
-.pd .pd-fig{grid-area:fig;align-self:center;position:relative;z-index:1;margin:0}
-.pd .pd-fig svg{display:block;width:100%;height:auto;overflow:visible}
+.pd .pd-fig{position:relative;z-index:1;margin:0}
+.pd .pd-ill{display:block;width:100%;height:auto;overflow:visible}
 
-/* illustration strokes */
-.pd .pd-ill{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
-.pd .pd-ill .pd-ink{stroke:var(--text)}
-.pd .pd-ill .pd-solid{fill:var(--surface)}
-.pd .pd-ill .pd-dotfill{fill:var(--muted);stroke:none}
-.pd .pd-ill .pd-inkfill{fill:var(--text);stroke:none}
-.pd .pd-ill .pd-tube-o{stroke:var(--text);stroke-width:7}
-.pd .pd-ill .pd-tube-i{stroke:var(--surface);stroke-width:4.2}
-.pd .pd-ill .pd-disc{stroke-dasharray:2 4;opacity:.7}
-.pd .pd-ill .pd-blade{stroke:var(--text);stroke-width:2.6}
-.pd .pd-ill .pd-ring{stroke-dasharray:6 6;stroke-width:1.3}
-.pd .pd-ill .pd-path{stroke:var(--text);stroke-width:2.2;stroke-dasharray:0 7}
-.pd .pd-ill .pd-link{stroke-dasharray:3 5}
-.pd .pd-ill .pd-faint{opacity:.6}
-.pd .pd-ill .pd-lbl{font:500 10px var(--font-mono);fill:var(--muted);stroke:none;letter-spacing:.04em}
-.pd .pd-ill .pd-g{transition:opacity .2s}
-.pd .pd-ill .pd-g.is-on .pd-ring{stroke:var(--text);stroke-width:2.2}
-.pd .pd-ill .pd-g.is-on .pd-link{stroke:var(--text);stroke-width:1.6}
-.pd .pd-ill .pd-g.is-on .pd-bubble{stroke:var(--text);stroke-width:2}
-.pd .pd-ill .pd-g.is-on .pd-faint{opacity:1}
-.pd .pd-ill .pd-g.is-on .pd-path{stroke-width:3.2}
-.pd .pd-ill .pd-g.is-on .pd-pad{stroke:var(--text);stroke-width:1.8}
-.pd .pd-ill .pd-g.is-on .pd-body{stroke-width:2}
-.pd .pd-ill .pd-g.is-on .pd-disc{stroke:var(--text);opacity:1}
-.pd .pd-ill .pd-mk circle{fill:var(--surface);stroke:var(--muted);stroke-width:1.3}
+/* ── drawing ── */
+.pd .pd-ill{--pd-c:var(--text);--pd-k:1;fill:none;stroke:var(--muted);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+.pd .pd-ill .pd-g,.pd .pd-ill .pd-g *,.pd .pd-ill .pd-mk *{transition:stroke .22s,stroke-width .22s,fill .22s,opacity .22s}
+.pd .pd-ill .pd-g.is-peek,.pd .pd-ill .pd-g.is-peek *,.pd .pd-ill .pd-mk.is-peek *{transition-duration:.12s}
+/* airframe: 1.5 ink, 1.0 detail; scaled by --pd-k so the small teammates keep a visible line.
+   These live in a <use>d group: <use> instances only match selectors without outside
+   ancestors, so they are styled by their own (pd-a-) classes plus inherited custom properties. */
+.pd-a-ink{stroke:var(--pd-c);stroke-width:calc(1.5px * var(--pd-k))}
+.pd-a-ink.pd-a-fine{stroke-width:calc(1px * var(--pd-k))}
+.pd-a-solid{fill:var(--surface)}
+.pd-a-t1{fill:var(--pd-t1)}
+.pd-a-t2{fill:var(--pd-t2)}
+.pd-a-inkfill{fill:var(--pd-c);stroke:none}
+.pd-a-tube-o{stroke:var(--pd-c);stroke-width:6}
+.pd-a-tube-i{stroke:var(--pd-t1);stroke-width:3.4}
+.pd-a-disc{fill:color-mix(in srgb,var(--surface) 55%,transparent);stroke:color-mix(in srgb,var(--pd-c) 65%,transparent);stroke-width:calc(.8px * var(--pd-k));stroke-dasharray:3 2.5}
+.pd-a-blade{fill:var(--pd-blade,color-mix(in srgb,var(--pd-c) 85%,transparent));stroke:none}
+.pd .pd-ill .pd-shadow{fill:var(--text);opacity:.045;stroke:none}
+.pd .pd-ill .pd-mate{--pd-c:var(--muted);--pd-k:2.4}
+.pd .pd-ill .pd-g.is-on .pd-mate{--pd-c:var(--text)}
+.pd .pd-ill .pd-g.is-peek:not(.is-on) .pd-mate{--pd-c:color-mix(in srgb,var(--text) 70%,var(--muted))}
+.pd .pd-ill .pd-air.is-on .pd-main{--pd-k:1.25}
+.pd .pd-ill .pd-air.is-peek:not(.is-on) .pd-main{--pd-k:1.12}
+.pd .pd-ill .pd-tick{stroke:var(--muted);stroke-width:1}
+.pd .pd-ill .pd-tickdot{fill:var(--muted);stroke:none}
+.pd .pd-ill .pd-none{fill:none;stroke:none}
+
+/* layer overlays: 1.2 muted off, 1.8 text on; peek sits between */
+.pd .pd-ill .pd-ring{stroke-dasharray:5 5}
+.pd .pd-ill .pd-ringfill{fill:none;stroke:none}
+.pd .pd-ill .pd-link{stroke-dasharray:3 4}
+.pd .pd-ill .pd-plan{fill:var(--surface)}
+.pd .pd-ill .pd-plan path{fill:none}
+.pd .pd-ill .pd-dim{stroke-width:.8}
+.pd .pd-ill .pd-wp{stroke-width:2.2;stroke-dasharray:0 7}
+.pd .pd-ill .pd-arrow{fill:none;stroke:var(--muted);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.pd .pd-ill .pd-crop{stroke-width:1.2}
+.pd .pd-ill .pd-int-edge{stroke:none}
+.pd .pd-ill .pd-lbl{font:500 10px var(--font-mono);fill:var(--muted);stroke:none;letter-spacing:.03em}
+.pd .pd-ill .pd-lbl-sm{font-size:9px}
+
+.pd .pd-ill .pd-g.is-peek .pd-ring,.pd .pd-ill .pd-g.is-peek .pd-link,.pd .pd-ill .pd-g.is-peek .pd-plan,
+.pd .pd-ill .pd-g.is-peek .pd-dim,.pd .pd-ill .pd-g.is-peek .pd-flown,.pd .pd-ill .pd-g.is-peek .pd-crop{stroke:var(--text);stroke-width:1.4}
+.pd .pd-ill .pd-g.is-peek .pd-wp{stroke:var(--text)}
+.pd .pd-ill .pd-g.is-on .pd-ring,.pd .pd-ill .pd-g.is-on .pd-link,.pd .pd-ill .pd-g.is-on .pd-plan,
+.pd .pd-ill .pd-g.is-on .pd-flown,.pd .pd-ill .pd-g.is-on .pd-crop{stroke:var(--text);stroke-width:1.8}
+.pd .pd-ill .pd-g.is-on .pd-dim{stroke:var(--text);stroke-width:1}
+.pd .pd-ill .pd-g.is-on .pd-wp{stroke:var(--text);stroke-width:2.6}
+.pd .pd-ill .pd-g.is-on .pd-ringfill{fill:var(--text);opacity:.035}
+.pd .pd-ill .pd-g.is-on .pd-lbl,.pd .pd-ill .pd-g.is-peek .pd-lbl{fill:var(--text)}
+.pd .pd-ill .pd-int.is-on .pd-int-edge,.pd .pd-ill .pd-int.is-peek .pd-int-edge{stroke:var(--border);stroke-width:1}
+.pd.lit-flight .pd-ill .pd-arrow,.pd.peek-flight .pd-ill .pd-arrow{stroke:var(--text);stroke-width:1.8}
+
+/* markers: tone and colour, not opacity */
+.pd .pd-ill .pd-mk circle{fill:var(--surface);stroke:var(--muted);stroke-width:1.2}
 .pd .pd-ill .pd-mk text{font:500 11px var(--font-mono);fill:var(--text);stroke:none;text-anchor:middle;dominant-baseline:central}
+.pd .pd-ill .pd-mk{transform-box:fill-box;transform-origin:center}
+.pd .pd-ill .pd-mk.is-peek circle{stroke:var(--text);stroke-width:1.8}
+.pd.has-sel .pd-ill .pd-mk:not(.is-on):not(.is-peek) circle{stroke:var(--border)}
+.pd.has-sel .pd-ill .pd-mk:not(.is-on):not(.is-peek) text{fill:var(--muted)}
 .pd .pd-ill .pd-mk.is-on circle{fill:var(--text);stroke:var(--text)}
 .pd .pd-ill .pd-mk.is-on text{fill:var(--surface)}
-.pd .pd-ill .pd-mk{transition:opacity .2s}
-.pd.has-partner .pd-ill .pd-mk:not(.is-match){opacity:.35}
-.pd .pd-ill .pd-svgframe{display:none}
 
-/* callouts */
-.pd .pd-co{position:relative;z-index:2;display:flex;flex-direction:column;gap:8px;width:100%;max-width:300px;margin:0;padding:14px 16px 12px;
-  font:inherit;color:inherit;text-align:left;cursor:pointer;
+/* ambient: the safety ring drifts while on screen (explain mode) */
+@keyframes pd-drift{to{stroke-dashoffset:-120}}
+.pd--explain .pd-ill .pd-ring{animation:pd-drift 40s linear infinite;animation-play-state:paused}
+.pd--explain.is-vis .pd-ill .pd-ring{animation-play-state:running}
+.pd--explain .pd-stage:hover .pd-ill .pd-ring,.pd--explain .pd-stage:focus-within .pd-ill .pd-ring{animation-play-state:paused}
+
+/* hit-areas: fine pointers only, never focusable */
+.pd .pd-hits{display:none}
+@media (hover:hover) and (pointer:fine){
+  .pd--explain .pd-hits{display:inline}
+  .pd .pd-hit{fill:transparent;stroke:transparent;pointer-events:all;cursor:pointer}
+  .pd .pd-hit-ring{fill:none;stroke-width:14;pointer-events:stroke}
+  .pd .pd-hit-path{fill:none;stroke-width:18;pointer-events:stroke}
+}
+
+/* ── callouts ── */
+.pd .pd-cos{position:relative;z-index:2;display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.pd .pd-item{margin:0;padding:0}
+.pd .pd-cos > li:last-child{margin-top:8px}
+.pd .pd-co{display:flex;flex-direction:column;gap:5px;width:100%;margin:0;padding:11px 14px 12px;
+  font:inherit;color:inherit;text-align:left;
   background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  transition:border-color .15s,transform .15s,opacity .2s,box-shadow .15s}
-.pd .pd-co:hover{border-color:var(--muted);transform:translateY(-1px)}
-.pd .pd-co:focus-visible,.pd .pd-pbtn:focus-visible,.pd .pd-more:focus-visible,.pd .pd-clear:focus-visible{outline:2px solid var(--text);outline-offset:3px}
-.pd .pd-co.is-open{border-color:var(--text);box-shadow:inset 0 0 0 1px var(--text)}
-.pd.has-partner .pd-co:not(.is-match){opacity:.42}
-.pd .pd-co--strategy{grid-area:strat;align-self:start;justify-self:start}
-.pd .pd-co--flight{grid-area:flight;align-self:end;justify-self:start}
-.pd .pd-co--safety{grid-area:safe;align-self:start;justify-self:end}
-.pd .pd-co--drones{grid-area:drones;align-self:end;justify-self:end}
-.pd .pd-co--integration{grid-area:integ;justify-self:center;max-width:560px;margin-top:6px}
-.pd .pd-co-head{display:flex;align-items:center;gap:10px}
-.pd .pd-num{flex:none;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1.3px solid var(--muted);font:500 12px/1 var(--font-mono);color:var(--text);background:var(--surface)}
+  transition:border-color .15s,box-shadow .15s}
+.pd .pd-co-head{display:flex;align-items:center;gap:10px;min-width:0}
+.pd .pd-num{flex:none;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1.2px solid var(--muted);font:500 12px/1 var(--font-mono);color:var(--text);background:var(--surface);transition:background .15s,color .15s,border-color .15s}
 .pd .pd-num svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6}
-.pd .pd-co.is-open .pd-num{background:var(--text);border-color:var(--text);color:var(--surface)}
-.pd .pd-co-title{font:700 21px/1.1 var(--font-display);letter-spacing:.005em}
-.pd .pd-co-tag{margin-left:auto;font:500 10.5px/1 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pd .pd-co-title{font:700 20px/1.1 var(--font-display);letter-spacing:.005em}
+.pd .pd-co-tag{font:500 11.5px/1.2 var(--font-mono);letter-spacing:.02em;color:var(--muted)}
 .pd .pd-co-desc{font-size:14px;line-height:1.45;color:var(--muted)}
-.pd .pd-chips{display:flex;flex-wrap:wrap;gap:6px}
-.pd .pd-chip{font:600 12px/1 var(--font-body);padding:5px 8px;border-radius:999px;border:1px solid var(--border);color:var(--text);background:var(--surface);transition:background .15s,color .15s,border-color .15s}
-.pd .pd-chip.is-match{background:var(--text);border-color:var(--text);color:var(--surface)}
-.pd .pd-cue{display:flex;align-items:center;gap:6px;margin-top:2px;padding-top:9px;border-top:1px solid var(--border);font:500 12px/1 var(--font-mono);letter-spacing:.04em;color:var(--text)}
-.pd .pd-cue svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;transition:transform .2s}
-.pd .pd-co.is-open .pd-cue svg{transform:rotate(180deg)}
+.pd .pd-co-work{font-size:15px;line-height:1.45;color:var(--text)}
+.pd .pd-co-desc--sm{font-size:13px;line-height:1.4}
 
-/* detail card */
-.pd .pd-card{grid-area:card;position:relative;z-index:2;margin-top:18px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:28px;padding:22px 24px 24px;background:var(--surface);border:1px solid var(--text);border-radius:var(--radius)}
-.pd .pd-card[hidden]{display:none}
-.pd .pd-card-k{font:500 11px/1.2 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
-.pd .pd-card-t{font:700 26px/1.1 var(--font-display);margin:0 0 8px}
-.pd .pd-card-d{font-size:15px;color:var(--muted);margin:0}
-.pd .pd-ents{display:grid;gap:18px 24px;grid-template-columns:repeat(var(--pd-n,1),minmax(0,1fr));margin:0;padding:0;list-style:none}
-.pd .pd-ent{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0;padding-left:16px;border-left:1px solid var(--border)}
-.pd .pd-ent.is-match{border-left:2px solid var(--text);padding-left:15px}
-.pd .pd-well{display:inline-flex;align-items:center;gap:12px;max-width:100%;padding:9px 12px;background:var(--well);border-radius:6px;border:1px solid var(--border)}
-.pd .pd-well img{display:block;height:26px;width:auto;max-width:100%;min-width:0;flex:0 1 auto;object-fit:contain}
-.pd .pd-well .pd-wdiv{flex:none;width:1px;align-self:stretch;background:#d5d9de}
-.pd .pd-ent-n{font-weight:600;font-size:15px;line-height:1.3;margin:2px 0 0}
-.pd .pd-ent-n span{font-weight:400;color:var(--muted)}
-.pd .pd-ent-w{font-size:15px;line-height:1.5;margin:0}
-.pd .pd-more{font:600 14px/1.2 var(--font-body);color:var(--text);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;border-radius:3px}
-.pd .pd-more:hover{text-decoration-thickness:2px}
+/* explain mode: buttons */
+.pd--explain .pd-co{cursor:pointer}
+.pd--explain .pd-co:hover,.pd--explain .pd-co.is-peek{border-color:var(--muted)}
+.pd--explain .pd-co:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.pd--explain .pd-co.is-on{border-color:var(--text);box-shadow:inset 0 0 0 1px var(--text)}
+.pd .pd-co.is-on .pd-num{background:var(--text);border-color:var(--text);color:var(--surface)}
+.pd--explain.has-sel .pd-co:not(.is-on) .pd-num{border-color:var(--border);color:var(--muted)}
+.pd .pd-cue{display:inline-flex;align-items:center;gap:5px;margin-left:auto;padding-left:8px;flex:none;font:500 12px/1 var(--font-mono);letter-spacing:.02em;color:var(--muted);transition:color .15s}
+.pd--explain .pd-co:hover .pd-cue,.pd--explain .pd-co:focus-visible .pd-cue,.pd--explain .pd-co.is-on .pd-cue{color:var(--text)}
+.pd .pd-cue-a{display:inline-block;transition:transform .15s}
+.pd--explain .pd-co:hover .pd-cue-a,.pd--explain .pd-co:focus-visible .pd-cue-a{transform:translateY(2px)}
 
-/* partners */
-.pd .pd-pwrap{margin-top:36px}
-.pd .pd-pbar{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin:0 0 14px}
-.pd .pd-ph{font:700 22px/1.2 var(--font-display);margin:0}
-.pd .pd-status{margin:0;font-size:14px;color:var(--muted);min-height:1.5em}
-.pd .pd-status strong{color:var(--text);font-weight:600}
-.pd .pd-clear{margin-left:8px;padding:2px 8px;font:500 12px/1.6 var(--font-mono);color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:999px;cursor:pointer}
-.pd .pd-clear:hover{border-color:var(--muted)}
-.pd .pd-plist{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0;padding:0;list-style:none}
-.pd .pd-pcard{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);transition:border-color .15s,box-shadow .15s}
-.pd .pd-pcard.is-on{border-color:var(--text);box-shadow:inset 0 0 0 1px var(--text)}
-.pd .pd-pbtn{flex:1;display:flex;flex-direction:column;align-items:stretch;gap:10px;width:100%;margin:0;padding:12px 12px 12px;font:inherit;color:inherit;text-align:left;cursor:pointer;background:none;border:0;border-radius:var(--radius) var(--radius) 0 0}
-.pd .pd-pbtn .pd-well{display:flex;justify-content:center;height:58px}
-.pd .pd-pname{font:700 18px/1.15 var(--font-display);margin-top:2px}
-.pd .pd-plab{font-size:14px;line-height:1.35;color:var(--muted)}
-.pd .pd-plab b{font-weight:600;color:var(--text)}
-.pd .pd-tog{display:flex;align-items:center;gap:8px;margin-top:auto;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font:500 12px/1.2 var(--font-mono);color:var(--text);transition:background .15s,color .15s,border-color .15s}
-.pd .pd-pbtn:hover .pd-tog{border-color:var(--muted)}
-.pd .pd-box{flex:none;display:inline-grid;place-items:center;width:15px;height:15px;border:1.4px solid var(--muted);border-radius:3px}
-.pd .pd-box svg{width:11px;height:11px;stroke:var(--surface);fill:none;stroke-width:2.4;opacity:0}
-.pd .pd-pcard.is-on .pd-tog{background:var(--text);border-color:var(--text);color:var(--surface)}
-.pd .pd-pcard.is-on .pd-box{border-color:var(--surface);background:var(--surface)}
-.pd .pd-pcard.is-on .pd-box svg{opacity:1;stroke:var(--text)}
-.pd .pd-pfoot{padding:10px 12px 12px;border-top:1px solid var(--border)}
+/* partner mode: static list items */
+.pd--partner .pd-co{cursor:default;border-style:dashed;border-color:var(--border)}
+.pd--partner .pd-co:not(.is-on),.pd--partner .pd-co:not(.is-on) .pd-num{color:var(--muted)}
+.pd--partner .pd-co:not(.is-on) .pd-num{border-color:var(--border)}
+.pd--partner .pd-co.is-on{border:1.5px solid var(--text);padding:11.5px 15.5px}
+.pd--partner .pd-ill .pd-g:not(.is-on){opacity:.28}
+.pd--partner .pd-ill .pd-g.pd-air:not(.is-on){opacity:.5}
+
+/* dark mode: blades in muted, no ground shadow */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme='light']) .pd{--pd-blade:var(--muted)}
+  :root:not([data-theme='light']) .pd .pd-ill .pd-shadow{display:none}
+}
+:root[data-theme='dark'] .pd{--pd-blade:var(--muted)}
+:root[data-theme='dark'] .pd .pd-ill .pd-shadow{display:none}
 
 /* narrower desktop */
 @media (max-width:1060px){
-  .pd .pd-stage{column-gap:24px;padding:36px 30px 30px;grid-template-columns:minmax(0,1fr) minmax(320px,380px) minmax(0,1fr)}
-  .pd .pd-plist{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pd .pd-stage{column-gap:40px;padding:22px 44px 22px 20px}
+  .pd .pd-co-title{font-size:19px}
 }
-/* phone / tablet: illustration on top, callouts as a list */
+
+/* ── tablet and phone: drawing on top, compact list below ── */
 @media (max-width:899px){
-  .pd .pd-stage{display:flex;flex-direction:column;gap:10px;padding:14px 14px 16px}
+  .pd .pd-stage{display:flex;flex-direction:column;gap:14px;padding:12px 12px 14px}
   .pd .pd-lines{display:none}
-  .pd .pd-fig{margin:0 0 10px}
-  .pd .pd-ill .pd-svgframe{display:inline}
-  .pd .pd-co{max-width:none;margin:0}
-  .pd .pd-co--integration{margin-top:0}
-  .pd .pd-co:hover{transform:none}
-  .pd .pd-card{margin:-2px 0 6px;grid-template-columns:1fr;gap:16px;padding:16px}
-  .pd .pd-ents{grid-template-columns:1fr}
-  .pd .pd-card-t{font-size:22px}
+  .pd .pd-fig{width:100%;max-width:600px;margin:0 auto}
+  .pd .pd-cos{gap:8px}
+  .pd .pd-cos > li:last-child{margin-top:4px;padding-top:12px;border-top:1px solid var(--border)}
+  .pd .pd-co{display:grid;grid-template-columns:28px minmax(0,1fr) auto;column-gap:10px;row-gap:2px;align-items:start;padding:10px 12px}
+  .pd .pd-co-head{display:contents}
+  .pd .pd-num{grid-column:1;grid-row:1 / span 2;width:26px;height:26px;margin-top:1px}
+  .pd .pd-co-title{grid-column:2;grid-row:1;font-size:18px;line-height:1.25}
+  .pd .pd-co-tag{grid-column:2 / -1;grid-row:4;margin:3px 0 0}
+  .pd .pd-co-desc,.pd .pd-co-work{grid-column:2 / -1;grid-row:2;font-size:14px;line-height:1.4}
+  .pd .pd-co-desc--sm{grid-row:3;font-size:13px}
+  .pd .pd-cue{grid-column:3;grid-row:1;margin:0;padding:0;align-self:center;font-size:0;gap:0}
+  .pd .pd-cue-a{font-size:15px}
+  .pd--partner .pd-co.is-on{padding:9.5px 11.5px}
 }
-@media (max-width:560px){
-  .pd .pd-plist{grid-template-columns:1fr}
-  .pd .pd-intro{font-size:16px}
+@media (max-width:639px){
+  .pd .pd-ill .pd-mk{transform:scale(2)}
+  .pd .pd-ill .pd-mk text{font-size:12px}
+  .pd .pd-ill .pd-lbl{font-size:15px}
+  .pd .pd-ill .pd-lbl-sm,.pd .pd-ill .pd-lbl-path{display:none}
+  .pd .pd-ill .pd-lbl-air{transform:translateX(-14px)}
 }
 @media (prefers-reduced-motion:reduce){
   .pd *,.pd *::before,.pd *::after{transition:none!important;animation:none!important}
-  .pd .pd-co:hover{transform:none}
 }
-/* On the site: heading comes from the page; partners are shown by the
-   connection diagram (home) or the page itself (partner pages). */
-.pd .pd-head,.pd--site .pd-pwrap,.pd--site .pd-card,.pd--site .pd-chips,.pd--site .pd-cue{display:none!important}
 </style>

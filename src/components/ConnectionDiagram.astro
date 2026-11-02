@@ -6,6 +6,10 @@
  * Content comes from content/programme/stack.md (layers) and each partner's
  * `work:` lines in content/partners/*.md. Styles are prefixed and global so the
  * script can build markup at runtime.
+ *
+ * Shares one selection with the annotated drone through a `sys:select` event on
+ * document: it dispatches {layer, partner, source:'links'} whenever its own
+ * selection changes, and follows events from other sources without re-dispatching.
  */
 import type { SystemData } from '../lib/system';
 interface Props {
@@ -47,23 +51,27 @@ const OPTS = opts;
   if (!root) return;
   var $ = function(s){ return root.querySelector(s); };
 
+  /* glyphs echo the drone drawing: peers in a triangle, a ring round a dot,
+     dotted-to-solid path, a small quad, corner crop marks */
   var ICON = {
-    integration:'<path d="M12 3 3 7.5 12 12l9-4.5L12 3Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/>',
-    strategy:'<circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 6h3a3 3 0 0 1 3 3v0a3 3 0 0 0 3 3h1M7 18h3a3 3 0 0 0 3-3v0a3 3 0 0 1 3-3"/>',
-    safety:'<path d="M12 3 5 6v5.5c0 4.2 2.9 7.8 7 9.5 4.1-1.7 7-5.3 7-9.5V6l-7-3Z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
-    flight:'<path d="M3 18c4 0 5-6 9-6s5 4 9-6"/><path d="m17.5 5.5 3.5.5-.6 3.4"/><circle cx="3" cy="18" r="1.2"/>',
-    drones:'<rect x="9.5" y="9.5" width="5" height="5" rx="1.2"/><path d="m9.5 9.5-3-3m8 3 3-3m-8 8-3 3m8-3 3 3"/><circle cx="5.5" cy="5.5" r="2.5"/><circle cx="18.5" cy="5.5" r="2.5"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>'
+    strategy:'<path d="M12 5.5 5.5 17.5h13Z" stroke-dasharray="2 2.2"/><circle cx="12" cy="5" r="2.3"/><circle cx="5" cy="18" r="2.3"/><circle cx="19" cy="18" r="2.3"/>',
+    safety:'<ellipse cx="12" cy="12" rx="9.5" ry="9.5" stroke-dasharray="2.6 2.4"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/>',
+    flight:'<path d="M3 19.5c1.5-.8 2.6-1.8 3.6-3" stroke-dasharray="0 3"/><path d="M8.5 14c2-2.6 4.4-4.6 10.5-6.5"/><path d="m15.8 5.4 3.4 2-2.2 3.2"/>',
+    drones:'<rect x="9.5" y="9.5" width="5" height="5" rx="1.2"/><path d="m9.5 9.5-2.2-2.2m9.4 0-2.2 2.2m-5 5-2.2 2.2m9.4 0-2.2-2.2"/><circle cx="6" cy="6" r="2.8"/><circle cx="18" cy="6" r="2.8"/><circle cx="6" cy="18" r="2.8"/><circle cx="18" cy="18" r="2.8"/>',
+    integration:'<path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5"/>'
   };
 
   var esc = function(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
   var P = D.partners_in_display_order;
-  /* Integration spans every layer, so it sits on top as an umbrella; layers 1-4 follow in order. */
-  var LAYERS = D.layers.filter(function(l){ return l.n == null; }).concat(D.layers.filter(function(l){ return l.n != null; }).sort(function(a,b){ return a.n - b.n; }));
+  /* Layers 1-4 in order, then Integration below a rule, as on the drone. */
+  var NUMBERED = D.layers.filter(function(l){ return l.n != null; }).sort(function(a,b){ return a.n - b.n; });
+  var LAYERS = NUMBERED.concat(D.layers.filter(function(l){ return l.n == null; }));
+  var SPANS = 'Spans layers 1–' + (NUMBERED.length ? NUMBERED[NUMBERED.length - 1].n : 4);
   var layerById = {}; D.layers.forEach(function(l){ layerById[l.id] = l; });
   var partnerById = {}; P.forEach(function(p){ partnerById[p.id] = p; });
   var LINKS = [];
   P.forEach(function(p){ LINKS.push.apply(LINKS, LAYERS.filter(function(l){ return p.work[l.id]; }).map(function(l){ return {p:p.id, l:l.id}; })); });
-  var layerLabel = function(l){ return l.n == null ? 'All layers' : 'Layer ' + l.n; };
+  var layerLabel = function(l){ return l.n == null ? SPANS : 'Layer ' + l.n; };
   var partnersOn = function(lid){ return P.filter(function(p){ return p.work[lid]; }); };
 
   /* header */
@@ -93,13 +101,15 @@ const OPTS = opts;
   $('.pc-layers').innerHTML = LAYERS.map(function(l, i){
     var who = partnersOn(l.id);
     var span = l.n == null;
-    return (i === 1 ? '<li class="pc-sep" aria-hidden="true"></li>' : '') +
+    return (span && i > 0 ? '<li class="pc-sep" aria-hidden="true"></li>' : '') +
       '<li class="pc-node pc-lnode' + (span ? ' pc-span' : '') + '" data-l="' + l.id + '">' +
       '<button type="button" class="pc-btn pc-lbtn" aria-pressed="false" aria-controls="pc-cap" data-sel="l:' + l.id + '">' +
         '<span class="pc-icon" aria-hidden="true"><svg viewBox="0 0 24 24">' + ICON[l.id] + '</svg></span>' +
-        '<span><span class="pc-ltop"><span class="pc-lnum">' + (span ? 'Spans all four layers' : 'Layer ' + l.n) + '</span>' + hint + '</span>' +
-        '<span class="pc-ltitle">' + esc(l.title) + '</span>' +
-        '<span class="pc-ldesc">' + esc(l.desc) + '</span>' +
+        '<span><span class="pc-ltop"><span class="pc-lhead">' +
+          (span ? '<span class="pc-ltitle">' + esc(l.title) + '</span><span class="pc-lnum">' + esc(SPANS) + '</span>'
+                : '<span class="pc-lnum">Layer ' + l.n + ' ·</span> <span class="pc-ltitle">' + esc(l.title) + '</span>') +
+        '</span>' + hint + '</span>' +
+        '<span class="pc-lcount">' + who.length + ' partner' + (who.length === 1 ? '' : 's') + '</span>' +
         '<span class="pc-tags"><span class="pc-tags-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Partners: </span>' +
           who.map(function(p){ return '<span class="pc-tag" data-p="' + p.id + '">' + esc(p.short) + '</span>'; }).join('') +
         '</span></span>' +
@@ -191,6 +201,14 @@ const OPTS = opts;
     }
   }
 
+  function announce(){
+    document.dispatchEvent(new CustomEvent('sys:select', { detail: {
+      layer: sel && sel.t === 'l' ? sel.id : null,
+      partner: sel && sel.t === 'p' ? sel.id : null,
+      source: 'links'
+    }}));
+  }
+
   function apply(animate){
     root.querySelectorAll('[data-sel]').forEach(function(btn){
       btn.setAttribute('aria-pressed', String(!!sel && btn.dataset.sel === sel.t + ':' + sel.id));
@@ -223,19 +241,30 @@ const OPTS = opts;
     var r = e.target.closest('[data-reset]');
     if (r && root.contains(r)){
       var back = sel && root.querySelector('[data-sel="' + sel.t + ':' + sel.id + '"]');
-      sel = null; apply(false); if (back) back.focus(); return;
+      sel = null; apply(false); announce(); if (back) back.focus(); return;
     }
     var b = e.target.closest('[data-sel]');
     if (!b || !root.contains(b)) return;
     var parts = b.dataset.sel.split(':');
     sel = (sel && sel.t === parts[0] && sel.id === parts[1]) ? null : {t:parts[0], id:parts[1]};
     apply(true);
+    announce();
   });
   root.addEventListener('keydown', function(e){
     if (e.key === 'Escape' && sel){
       var back = root.querySelector('[data-sel="' + sel.t + ':' + sel.id + '"]');
-      sel = null; apply(false); if (back) back.focus();
+      sel = null; apply(false); announce(); if (back) back.focus();
     }
+  });
+
+  /* follow selections made elsewhere (the drone); never re-dispatch */
+  document.addEventListener('sys:select', function(e){
+    var d = e.detail || {};
+    if (d.source === 'links') return;
+    var next = d.layer && layerById[d.layer] ? {t:'l', id:d.layer} : d.partner && partnerById[d.partner] ? {t:'p', id:d.partner} : null;
+    var same = (!next && !sel) || (next && sel && next.t === sel.t && next.id === sel.id);
+    sel = next;
+    apply(!same);
   });
 
   var raf = 0;
@@ -274,7 +303,7 @@ const OPTS = opts;
 .pc .pc-partners,.pc .pc-layers{list-style:none;margin:0;padding:0;position:relative;z-index:1}
 .pc .pc-partners{grid-area:p;display:flex;flex-direction:column;justify-content:space-around;gap:var(--pc-gap)}
 .pc .pc-layers{grid-area:l;display:flex;flex-direction:column;gap:10px}
-.pc .pc-sep{height:0;border-top:1px dashed var(--border);margin:4px 0 2px}
+.pc .pc-sep{height:0;border-top:1px solid var(--border);margin:4px 0 2px}
 
 /* shared node/button look */
 .pc .pc-node{position:relative;transition:opacity .25s ease}
@@ -284,6 +313,13 @@ const OPTS = opts;
 .pc .pc-btn[aria-pressed="true"]{border-color:var(--text);box-shadow:inset 0 0 0 1px var(--text);background:color-mix(in srgb,var(--text) 5%,var(--surface))}
 .pc .pc-node.pc-dim{opacity:.42}
 .pc .pc-node.pc-dim:hover,.pc .pc-node.pc-dim:focus-within{opacity:.8}
+/* echo ring when the annotated drone hands focus to a layer here */
+.pc .pc-btn.pc-echo{animation:pc-echo .7s cubic-bezier(.2,.7,.2,1)}
+.pc .pc-btn.pc-echo-static{box-shadow:inset 0 0 0 1px var(--text),0 0 0 4px color-mix(in srgb,var(--text) 18%,transparent)}
+@keyframes pc-echo{
+  from{box-shadow:inset 0 0 0 1px var(--text),0 0 0 4px color-mix(in srgb,var(--text) 18%,transparent)}
+  to{box-shadow:inset 0 0 0 1px var(--text),0 0 0 4px color-mix(in srgb,var(--text) 0%,transparent)}
+}
 
 /* select hint */
 .pc .pc-hint{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--font-mono);letter-spacing:.04em;color:var(--muted)}
@@ -316,9 +352,11 @@ const OPTS = opts;
 .pc .pc-icon{width:40px;height:40px;border-radius:8px;border:1px solid var(--border);background:var(--bg);display:grid;place-items:center;color:var(--text)}
 .pc .pc-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .pc .pc-ltop{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-.pc .pc-lnum{font:500 11px/1.3 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.pc .pc-ltitle{display:block;font:700 19px/1.15 var(--font-display);margin-top:1px}
-.pc .pc-ldesc{display:block;font-size:14px;line-height:1.4;color:var(--muted);margin-top:3px}
+.pc .pc-lhead{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:6px;min-width:0}
+.pc .pc-lnum{font:500 12px/1.3 var(--font-mono);letter-spacing:.03em;color:var(--muted)}
+.pc .pc-ltitle{font:700 19px/1.15 var(--font-display)}
+.pc .pc-lcount{display:block;font:500 12px/1.3 var(--font-mono);color:var(--muted);margin-top:3px}
+.pc .pc-lbtn{align-items:center}
 .pc .pc-span .pc-lbtn{border-style:dashed}
 .pc .pc-span .pc-lbtn[aria-pressed="true"]{border-style:solid}
 
@@ -373,6 +411,7 @@ const OPTS = opts;
   .pc .pc-btn,.pc .pc-node,.pc .pc-wire,.pc .pc-dot,.pc .pc-tag{transition:none}
   .pc .pc-btn:hover{transform:none}
   .pc .pc-wire.pc-anim{animation:none}
+  .pc .pc-btn.pc-echo{animation:none}
 }
 
 /* ---------- phone / narrow: stacked, links become tags ---------- */
