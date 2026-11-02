@@ -168,7 +168,7 @@ monthly report (MR-001, 29 Oct 2026), the D3 FR&PDR deck and report (July 2026),
 site's own descriptions accurate. Published facts stay within what the poster and the live site
 already show, plus the existence and shape of the localisation work. Specifically **not**
 published: any number from the reports (accuracy, trajectory lengths, win rates, training counts,
-RTK precision), paper submissions under review, budgets, hardware vendors, pass marks, dates beyond
+positioning precision), paper submissions under review, budgets, hardware vendors, pass marks, dates beyond
 the three-year milestones, and anything about the other team's drones.
 
 ### 7.1 Localisation (Programme page)
@@ -184,7 +184,7 @@ Public-safe draft, three short paragraphs:
   camera-only localisation is being tested there before it goes on a real drone. Real-drone tests
   follow one step behind, in the Singapore lab.
 
-No numbers. The brief's sensor plans (UWB, LiDAR), pass marks and anything about the other team
+No numbers. The brief's future sensor plans, pass marks and anything about the other team
 stay off the site.
 
 ### 7.2 Flights page
