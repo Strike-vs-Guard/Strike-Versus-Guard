@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { getEntry, getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { url, isPreview, previewPr } from '../lib/url';
 import Wordmark from '../components/Wordmark.astro';
 import PartnersMenu from '../components/PartnersMenu.astro';
@@ -25,6 +26,17 @@ const navAfter = [
 const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href);
 const funder = partners.find((p) => p.data.role === 'Funding sponsor');
 const logoPartners = partners.filter((p) => p !== funder);
+/*
+ * Footer logos are sized by visual weight (see .logo-well in global.css): height = 60 px × 1/√(width÷height),
+ * 10 % less for square solid-colour tiles, capped at the well's 74 px inner height.
+ */
+const LOGO_BASE = 60;
+const LOGO_MAX = 74;
+const logoSize = (img: ImageMetadata) => {
+  const ar = img.width / img.height;
+  const k = (Math.abs(ar - 1) < 0.02 ? 0.9 : 1) / Math.sqrt(ar);
+  return { style: `--logo-k:${k.toFixed(3)}`, height: Math.ceil(Math.min(LOGO_BASE * k, LOGO_MAX)) };
+};
 ---
 
 <!doctype html>
@@ -99,10 +111,10 @@ const logoPartners = partners.filter((p) => p !== funder);
             funder && (
               <div class="logo-strip__group">
                 <p class="eyebrow" id="logo-strip-funder">Funded by</p>
-                <ul class="logo-strip__row" aria-labelledby="logo-strip-funder">
+                <ul class="logo-strip__row logo-strip__row--funder" aria-labelledby="logo-strip-funder">
                   <li>
-                    <a href={funder.data.website ?? url('partners/#funder')} title={funder.data.institution} class="logo-strip__item">
-                      <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.institution} height={60} densities={[1, 2]} />
+                    <a href={funder.data.website ?? url('partners/#funder')} title={funder.data.institution} class="logo-well logo-strip__item">
+                      <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.institution} {...logoSize(funder.data.logo)} densities={[1, 2]} />
                     </a>
                   </li>
                 </ul>
@@ -119,9 +131,19 @@ const logoPartners = partners.filter((p) => p !== funder);
                     <a
                       href={p.data.page ? url(`partners/${p.id}/`) : p.data.website}
                       title={p.data.institution}
-                      class="logo-strip__item"
+                      class="logo-well logo-strip__item logo-strip__item--pair"
                     >
-                      <Image src={p.data.logo} alt={p.data.logoAlt ?? p.data.institution} height={60} densities={[1, 2]} />
+                      <span class="logo-well__half">
+                        <Image src={p.data.logo} alt={p.data.logoAlt ?? p.data.institution} {...logoSize(p.data.logo)} densities={[1, 2]} />
+                      </span>
+                      {p.data.labLogo && (
+                        <>
+                          <span class="logo-well__rule" aria-hidden="true"></span>
+                          <span class="logo-well__half">
+                            <Image src={p.data.labLogo} alt={p.data.lab ?? ''} {...logoSize(p.data.labLogo)} densities={[1, 2]} />
+                          </span>
+                        </>
+                      )}
                     </a>
                   </li>
                 ))
@@ -238,7 +260,11 @@ const logoPartners = partners.filter((p) => p !== funder);
     padding-block: 48px 32px;
     font-size: var(--step-0);
   }
-  /* Logos in colour, in equal white wells: the funder, a divider, then the partners. */
+  /*
+   * Logos in colour, in equal white wells: the funder, a divider, then the partners in a 2 × 2 grid
+   * (four 288 px wells never fit beside the funder inside --max). Each partner well holds the
+   * institution and its lab. Heights per logo come from logoSize() above.
+   */
   .logo-strip {
     display: flex;
     justify-content: center;
@@ -253,7 +279,8 @@ const logoPartners = partners.filter((p) => p !== funder);
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 288px);
     gap: 12px;
   }
   .logo-strip__divider {
@@ -261,32 +288,17 @@ const logoPartners = partners.filter((p) => p !== funder);
     background: var(--border);
   }
   .logo-strip__item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 200px;
-    height: 88px;
-    padding: 14px 20px;
-    background: var(--well);
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    --logo-base: 60px;
+    --logo-max: 74px;
+    width: 220px;
+    height: 100px;
+    padding: 12px 16px;
   }
-  .logo-strip__item :global(img) {
-    max-height: 52px;
-    max-width: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
+  .logo-strip__item--pair {
+    width: 288px;
   }
-  @media (max-width: 1200px) {
-    .logo-strip__item {
-      width: 168px;
-      height: 76px;
-      padding: 12px 16px;
-    }
-    .logo-strip__item :global(img) {
-      max-height: 46px;
-    }
+  .logo-strip__row--funder {
+    grid-template-columns: 220px;
   }
   @media (max-width: 1040px) {
     .logo-strip {
@@ -301,24 +313,22 @@ const logoPartners = partners.filter((p) => p !== funder);
     .logo-strip__group {
       text-align: center;
     }
-    .logo-strip__row {
-      justify-content: center;
-    }
   }
-  @media (max-width: 760px) {
+  /* Phones: one well per row, full width. */
+  @media (max-width: 680px) {
     .logo-strip {
       align-items: stretch;
     }
     .logo-strip__group {
       text-align: left;
     }
-    .logo-strip__row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .logo-strip__row,
+    .logo-strip__row--funder {
+      grid-template-columns: 1fr;
     }
-    .logo-strip__item {
+    .logo-strip__item,
+    .logo-strip__item--pair {
       width: auto;
-      height: 72px;
     }
   }
   .site-footer__cols {

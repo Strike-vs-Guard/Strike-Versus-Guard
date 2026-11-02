@@ -224,18 +224,44 @@ p {
 }
 
 /* Logos always sit in a white well so they read correctly in dark mode too. */
+/*
+ * Logo wells (STANDARDS §3): white, logos in colour. Logos are sized by visual weight, not by
+ * height: each <img> gets --logo-k = 1/√(width÷height) from its component (0.9× that for square
+ * solid-colour tiles), so height = --logo-base × --logo-k, capped at the well's inner height
+ * --logo-max. Every logo then covers about the same area. Each use sets --logo-base and --logo-max.
+ */
 .logo-well {
+  --logo-base: 48px;
+  --logo-max: 56px;
   background: var(--well);
+  border: 1px solid var(--border);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 14px;
   padding: 12px 16px;
 }
 .logo-well img {
-  max-height: 48px;
+  display: block;
+  flex: none;
+  height: min(calc(var(--logo-base) * var(--logo-k, 1)), var(--logo-max));
   width: auto;
+  max-width: 100%;
   object-fit: contain;
+}
+/* Institution and lab in one well: institution left, a hairline, lab right. */
+.logo-well__half {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+.logo-well__rule {
+  flex: none;
+  align-self: stretch;
+  width: 1px;
+  background: var(--border);
 }
 
 .chip {
