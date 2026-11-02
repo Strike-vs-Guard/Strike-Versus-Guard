@@ -22,7 +22,8 @@ const problems = [];
 let checked = 0;
 for (const file of walk(dist)) {
   if (extname(file) !== '.html') continue;
-  const html = readFileSync(file, 'utf8');
+  // Ignore inline scripts: they build markup at runtime and contain strings like src="' + x + '".
+  const html = readFileSync(file, 'utf8').replace(/<script\b[\s\S]*?<\/script>/g, '');
   const page = file.slice(dist.length - 1);
   for (const m of html.matchAll(/\s(?:href|src|poster|srcset)="([^"]+)"/g)) {
     for (const raw of m[1].split(',').map((s) => s.trim().split(/\s+/)[0])) {
