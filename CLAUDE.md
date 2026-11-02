@@ -18,8 +18,8 @@ Website for **Strike vs Guard**, a research programme on decentralised multi-dro
 - **Branches:** only `development` (edits; test site at `/preview/`) and `main` (live, via a PR from
   `development`). Never create other branches.
 - **Paths:** copy lives in `content/`, never in templates. Never hard-code the base path; use `url()`.
-- **Before pushing:** `npm run check`. For visual changes, Playwright screenshots at 1280 light,
-  1280 dark and 390px with zero overflow and no console errors.
+- **Before pushing:** `npm run check`. For visual changes, Playwright screenshots at 1280 and 390px,
+  with zero overflow and no console errors.
 - **Visual work:** show Jeremy a clickable draft first, then build it into the site.
 
 **Commands:** `npm ci` · `npm run dev` · `npm run check` · `npx astro preview`

@@ -1,22 +1,22 @@
-/* Strike vs Guard: "lab notebook, not mission control".
+/* Strike vs Guard: "lab notebook, not mission control". One theme: pure black, no light mode.
    Colour comes from the two teams and the partner logos, never from alarm states.
    ST red is used sparingly: the wordmark, one rule under the hero title, and the
    "we are here" milestone marker. */
 
 :root {
-  --bg: #f6f7f8;
-  --surface: #ffffff;
-  --text: #16191d;
-  --muted: #5b636e;
-  --border: #dfe2e6;
-  --grid: #e3e6ea;
-  --accent: #e4002b;
-  --guard: #2463c7;
-  --guard-tint: rgba(36, 99, 199, 0.07);
-  --strike: #d2342a;
-  --zone: rgba(91, 99, 110, 0.06);
+  --bg: #000000;
+  --surface: #111417;
+  --text: #e6e8eb;
+  --muted: #9ba4af;
+  --border: #262b31;
+  --grid: #1f252b;
+  --accent: #ff4d5e;
+  --guard: #6fa3f5;
+  --guard-tint: rgba(111, 163, 245, 0.09);
+  --strike: #f2766a;
+  --zone: rgba(155, 164, 175, 0.07);
   --well: #ffffff;
-  --shadow: 0 1px 2px rgba(22, 25, 29, 0.04), 0 4px 16px rgba(22, 25, 29, 0.05);
+  --shadow: none;
 
   --font-display: 'IBM Plex Sans Condensed', 'Arial Narrow', system-ui, sans-serif;
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -34,39 +34,6 @@
   --radius: 10px;
   --gutter: 16px;
   --max: 1160px;
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #0e1114;
-    --surface: #161a1f;
-    --text: #e6e8eb;
-    --muted: #9ba4af;
-    --border: #2a3139;
-    --grid: #232930;
-    --accent: #ff4d5e;
-    --guard: #6fa3f5;
-    --guard-tint: rgba(111, 163, 245, 0.09);
-    --strike: #f2766a;
-    --zone: rgba(155, 164, 175, 0.07);
-    --shadow: none;
-    color-scheme: dark;
-  }
-}
-:root[data-theme='dark'] {
-  --bg: #0e1114;
-  --surface: #161a1f;
-  --text: #e6e8eb;
-  --muted: #9ba4af;
-  --border: #2a3139;
-  --grid: #232930;
-  --accent: #ff4d5e;
-  --guard: #6fa3f5;
-  --guard-tint: rgba(111, 163, 245, 0.09);
-  --strike: #f2766a;
-  --zone: rgba(155, 164, 175, 0.07);
-  --shadow: none;
   color-scheme: dark;
 }
 

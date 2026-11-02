@@ -60,17 +60,17 @@ Precedence: the programme lead's explicit instruction, then this file, then pers
 
 All tokens live in `src/styles/global.css`. Do not introduce new colours or fonts.
 
-| Token | Light | Dark | Use |
-|---|---|---|---|
-| `--bg` | #f6f7f8 | #0e1114 | page |
-| `--surface` | #ffffff | #161a1f | cards, alternate sections |
-| `--text` | #16191d | #e6e8eb | text, buttons (ink), selected states |
-| `--muted` | #5b636e | #9ba4af | secondary text, labels |
-| `--border` | #dfe2e6 | #2a3139 | rules, card borders |
-| `--accent` (ST red) | #e4002b | #ff4d5e | **only** the wordmark, one rule under the hero title and the "We are here" marker |
-| `--guard` (blue) | #2463c7 | #6fa3f5 | **only** the Guard team in the game |
-| `--strike` (red) | #d2342a | #f2766a | **only** the Strike team in the game |
-| `--well` | #ffffff | #ffffff | the white background behind every logo, in both themes |
+| Token | Value | Use |
+|---|---|---|
+| `--bg` | #000000 | page |
+| `--surface` | #111417 | cards, alternate sections |
+| `--text` | #e6e8eb | text, buttons (ink), selected states |
+| `--muted` | #9ba4af | secondary text, labels |
+| `--border` | #262b31 | rules, card borders |
+| `--accent` (ST red) | #ff4d5e | **only** the wordmark, one rule under the hero title and the "We are here" marker |
+| `--guard` (blue) | #6fa3f5 | **only** the Guard team in the game |
+| `--strike` (red) | #f2766a | **only** the Strike team in the game |
+| `--well` | #ffffff | the white background behind every logo |
 
 - **Fonts:** IBM Plex Sans Condensed 700 for display; IBM Plex Sans 400/600 for body (17px, line
   height 1.6, about 68ch wide); IBM Plex Mono 500 for eyebrows, labels, dates and captions (uppercase,
@@ -78,7 +78,7 @@ All tokens live in `src/styles/global.css`. Do not introduce new colours or font
 - **Never** colour partners, tracks, buttons or banners blue or red. Red never means "alarm".
 - No crosshairs, HUD styling, radar sweeps or military imagery.
 - Logos always sit in a `--well`. Footer logos are greyscale until hover.
-- Both themes must be designed. The theme follows the system setting.
+- One theme: pure black background. There is no light mode.
 
 ---
 
@@ -186,7 +186,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 ## 8. Definition of done for any change
 
 - [ ] `npm run check` passes (schema, build, internal links, size budget).
-- [ ] Checked in a real browser (Playwright screenshots) at 1280px light, 1280px dark and 390px:
+- [ ] Checked in a real browser (Playwright screenshots) at 1280px and 390px:
       no overflow, no console errors.
 - [ ] Wording follows §2; colours and fonts follow §3; the partner order is correct.
 - [ ] Interactive parts tested by mouse **and** keyboard.
