@@ -60,6 +60,6 @@ open:
   - "None of the 7 clips here is a full Strike vs Guard game yet."
 ---
 
-In October 2026 we spent several days in CMU's flight cage in Pittsburgh with three Starlings. Nobody flew them, and the safety filter stayed on the whole time. Then one of us flew a fourth drone by hand straight across the other two to see if they would keep their spacing. They did.
+In October 2026 we spent several days in CMU's flight cage in Pittsburgh with three Starlings. Nobody flew them, and the safety filter stayed on the whole time. Then one of us flew the third by hand straight across the other two to see if they would keep their spacing. They did.
 
 In the same visit, the NUS team strategy moved from Crazyflies to the Starlings for the first time.

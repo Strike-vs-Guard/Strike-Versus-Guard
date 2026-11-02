@@ -6,7 +6,7 @@ main:
     A research programme funded by HTX and carried out by ST Engineering with
     Carnegie Mellon University, the University of Pennsylvania and the National
     University of Singapore, working toward teams of drones that coordinate,
-    adapt and make decisions for themselves.
+    adapt and make decisions on their own.
   repository: https://github.com/Strike-vs-Guard/Strike-Versus-Guard
   footerNote: >-
     Four labs, in Singapore, Pittsburgh and Philadelphia. Funded by HTX.
