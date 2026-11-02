@@ -14,7 +14,9 @@ role: Partner                                # Funding sponsor | Lead partner | 
 contribution: What you contribute, in a few words (max 70 characters)
 summary: >-
   One or two sentences for the home page card (max ~40 words).
-layers: [strategy]                           # any of: strategy, safety, flight, drones, integration
+work:                                        # one line per layer you work on (max 90 characters)
+  strategy: What you do on the strategy layer
+  # safety: …   flight: …   drones: …   integration: …
 logo: ./ABC/logo.png
 labLogo: ./ABC/lab-logo.png                  # optional
 website: https://example.org                 # optional

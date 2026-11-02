@@ -51,7 +51,8 @@ break one):
 - `contribution` must be 70 characters or fewer; `summary` 320 or fewer.
 - `logo:` / `labLogo:` must point at an image that exists, written relative to the file,
   e.g. `./NUS/nus.png`.
-- `layers:` can only contain `strategy`, `safety`, `flight`, `drones`, `integration`.
+- `work:` has one line (max 90 characters) for each layer you work on: `strategy`, `safety`, `flight`,
+  `drones`, `integration`. These lines fill the "who does what" grid on the home page.
 - Dates are `YYYY-MM-DD`.
 
 Other shared files (owned by ST Engineering, but anyone may propose changes):
@@ -61,7 +62,7 @@ Other shared files (owned by ST Engineering, but anyone may propose changes):
 | Top of the home page | `content/programme/overview.md` |
 | Two tracks (NUS / UPenn) | `content/programme/tracks.md` |
 | The benchmark game and its four steps | `content/programme/benchmark.md` |
-| Four layers | `content/programme/stack.md` |
+| Layers and "who does what" grid (rows; the cells come from partner files) | `content/programme/stack.md` |
 | Flight clips | `content/programme/flights.md`, `content/programme/progress.md` (videos in `public/media/`) |
 | Milestones (move `current: true` each year) | `content/programme/milestones.md` |
 | Research directions | `content/programme/directions.md` |

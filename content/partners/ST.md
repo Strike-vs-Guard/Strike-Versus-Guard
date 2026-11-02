@@ -12,7 +12,11 @@ contribution: Coordination, system integration and the Singapore flight lab
 summary: >-
   ST Engineering's AI and Robotics Strategic Technology Centre coordinates the
   programme, integrates every layer of the system and runs the Singapore flight lab.
-layers: [integration, drones]
+# What you do on each layer (one line each, max 90 characters). Shown in the
+# "who does what" grid on the home page. Layers: strategy, safety, flight, drones, integration.
+work:
+  drones: "Runs the Singapore flight lab."
+  integration: "Coordinates the programme and brings every layer together on Starling 2 Max."
 logo: ./ST/st-engineering.png
 labLogo: ./ST/near-lab.png
 logoAlt: ST Engineering
