@@ -40,13 +40,15 @@ we run the Singapore flight lab where the drone teams are tested.
   drones.
 - **The Singapore flight lab.** An indoor flight space at ST Engineering for
   testing multi-drone teams locally, alongside CMU's flight cage.
+- **Simulation and localisation.** Flying the Starling 2 Max in the AirStack simulator and starting camera-only localisation there.
 - **The benchmark.** Running Strike vs Guard games so that the learning-based
   and formal approaches can be compared on the same hardware.
 
 ## Results so far
 
 The first Starling 2 Max flights have taken place in the Singapore lab, with
-more drones on the way.
+more drones on the way. The Starling 2 Max now flies in the AirStack simulator, where camera-only
+localisation has started.
 
 ![Starling drones in the ST Engineering flight lab in Singapore](./ST/singapore-flight-lab.jpg)
 

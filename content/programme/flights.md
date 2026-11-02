@@ -32,7 +32,4 @@ items:
     partners: [cmu]
 ---
 
-Three Starling 2 Max drones in CMU's indoor flight cage, with no pilot. Each
-drone picks its own path to the team's goals, and a safety filter keeps them
-apart without stopping them. In the last two clips, a drone the team knows
-nothing about is flown into its way.
+In October 2026, three Starling 2 Max drones flew in CMU's indoor flight cage with no pilot and the safety filter on throughout. They changed formation, flew to separate goals, flew a figure-8 while a hand-flown drone cut across them, and kept inside the boundary while a hand-flown drone was pushed at it. The NUS team strategy went from simulation to Crazyflies to the three Starlings in the same visit.

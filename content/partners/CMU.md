@@ -48,7 +48,7 @@ and the formal strategy tracks run on it.
 Three Starling 2 Max drones have flown in CMU's flight cage with no pilot: changing
 formation while keeping their spacing, flying to separate goals with crossing
 paths resolved on their own, and continuing their task while a hand-flown drone
-cut across them. A virtual boundary kept every drone inside the flight area.
+cut across them. A virtual boundary kept every drone inside the flight area. This was CMU's flight day in October 2026.
 
 In one working visit, the NUS team strategy went from palm-sized drones to
 full-size Starlings on AirStack: the programme's first successful run on
