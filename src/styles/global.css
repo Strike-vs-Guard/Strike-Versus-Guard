@@ -334,7 +334,7 @@ figcaption {
   /* square sim clips would otherwise fill a whole screen; they letterbox instead */
   max-height: min(520px, 75vh);
   border-radius: var(--radius);
-  background: #0e1114;
+  background: var(--surface);
 }
 .md ul,
 .md ol {

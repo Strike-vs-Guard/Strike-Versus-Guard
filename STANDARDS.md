@@ -114,6 +114,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | What | File | Owner |
 |---|---|---|
 | A partner's card, page and `work:` lines | `content/partners/<NAME>.md` + `content/partners/<NAME>/` images | That partner |
+| A partner's square emblem for the Partners menu chip: optional `logoMark:` (falls back to `logo:`) | `content/partners/<NAME>.md` + `content/partners/<NAME>/mark.png` | That partner |
 | Funder card | `content/partners/HTX.md` | ST Engineering |
 | Page sections | `content/programme/*.md` (one file per section, `order:` sets position) | ST Engineering (+ co-owners in CODEOWNERS) |
 | Top of the home page, incl. the `decisions:` list ("What they decide"), the hero `video:`, the one-line `gameNote:` and the Programme page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` | ST Engineering |
@@ -148,7 +149,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
   Every adversarial term is translated per §2, and targets and pass marks stay labelled as targets.
   People: only those named on the site (`people:` lists). Round 3 added CMU's three extra flight clips
   and the Starling photo, taken from CMU's public `svg-website` repo with CMU's consent, credited
-  "Photo/Video: CMU AirLab". That repo is never edited.
+  "Photo: <lab>." or "Video: <lab>." (e.g. "Photo: CMU AirLab." in `flights.md`). That repo is never edited.
   Extracted text lives outside the repo, in `~/Documents/GitHub/Strike-Versus-Guard-sources/` on Jeremy's laptop.
 - Images must be referenced **relative to the content file** (`./NUS/photo.jpg`), never as `/images/...`.
 - **Size limits:** images 5 MB or less and clips 15 MB or less (H.264 MP4, muted, with a `.jpg`

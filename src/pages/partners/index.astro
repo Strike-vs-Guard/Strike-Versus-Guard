@@ -21,8 +21,8 @@ const system = await getSystemData();
   <section class="section section--alt">
     <div class="wrap">
       <div class="sys-part sys-part--layers">
-        <h2 class="sys-part__h">What each layer does</h2>
-        <p class="sys-part__hint">Select a layer to see who works on it.</p>
+        {stack.droneTitle && <h2 class="sys-part__h">{stack.droneTitle}</h2>}
+        {stack.droneHint && <p class="sys-part__hint">{stack.droneHint}</p>}
       </div>
       <DroneDiagram data={system} mode="explain" target="#who-links" scrollTo="#who" />
       <div class="sys-part sys-part--who" id="who">

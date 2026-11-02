@@ -19,6 +19,7 @@ work:
   drones: "Runs the Singapore flight lab."
   integration: "Coordinates the programme and brings every layer together on Starling 2 Max."
 logo: ./ST/st-engineering.png
+logoMark: ./ST/mark.png
 labLogo: ./ST/near-lab.png
 logoAlt: ST Engineering
 website: https://www.stengg.com

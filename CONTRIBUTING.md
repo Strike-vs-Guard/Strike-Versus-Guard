@@ -51,6 +51,7 @@ break one):
 - `contribution` must be 70 characters or fewer; `summary` 320 or fewer.
 - `logo:` / `labLogo:` must point at an image that exists, written relative to the file,
   e.g. `./NUS/nus.png`.
+- `logoMark:` (optional) is a square crop of just your emblem, e.g. `./NUS/mark.png`; the Partners menu shows it, or `logo:` if absent.
 - `work:` has one line (max 90 characters) for each layer you work on: `strategy`, `safety`, `flight`,
   `localisation`, `drones`, `integration`. These lines put you on the layers of the drone diagram and the connection diagram on the Partners page.
 - Dates are `YYYY-MM-DD`.

@@ -4,17 +4,17 @@
  * A plain numbered list (two columns from 900 px); the application tags read as one sentence.
  */
 import { section } from './content';
+import { listWords } from '../../lib/text';
 
 interface Props {
   alt?: boolean;
 }
 const { alt = false } = Astro.props;
 const directions = await section('directions');
-/* Lower-case the first letter of each tag after the first, unless it looks like an acronym ("UAV"). */
-const soft = (t: string) => (/^[A-Z][a-z]/.test(t) ? t[0].toLowerCase() + t.slice(1) : t);
-const tags = directions.tags.map((t, i) => (i === 0 ? t : soft(t)));
-const tagSentence =
-  tags.length < 2 ? tags.join('') : `${tags.slice(0, -1).join(', ')} and ${tags[tags.length - 1]}`;
+/* Tags are written in sentence case in the content (lower case except proper nouns); only the first is capitalised. */
+const tags = directions.tags;
+const tagList = listWords(tags);
+const tagSentence = tagList.charAt(0).toUpperCase() + tagList.slice(1);
 ---
 
 <section id="directions" class:list={['section', { 'section--alt': alt }]}>

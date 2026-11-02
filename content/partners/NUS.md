@@ -20,6 +20,7 @@ work:
   strategy: "Leads the learning-based track: drones discover their own skills and team plays."
   drones: "First flew the team strategy on palm-sized Crazyflie drones."
 logo: ./NUS/nus.png
+logoMark: ./NUS/mark.png
 labLogo: ./NUS/marmot-lab.png
 logoAlt: National University of Singapore
 website: https://www.marmotlab.org

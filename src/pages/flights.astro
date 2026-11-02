@@ -13,15 +13,10 @@ import Localisation from '../components/sections/Localisation.astro';
 import Milestones from '../components/sections/Milestones.astro';
 import AnnotatedPhoto from '../components/AnnotatedPhoto.astro';
 import { section } from '../components/sections/content';
-import labPhoto from '../../content/partners/ST/singapore-flight-lab.jpg';
 
 const flights = await section('flights');
-/* Points on the Singapore lab photo, in percent of the photo (placed by eye on the 1100 × 623 original). */
-const labPoints = [
-  { x: 21.8, y: 17, label: 'Motion-capture cameras', lx: 37, ly: 9.5 },
-  { x: 52.1, y: 48.6, label: 'Start pads', lx: 44, ly: 60 },
-  { x: 62.4, y: 70.9, label: 'Starling 2 Max', lx: 52, ly: 82 },
-];
+/* the annotated lab photo under the test ladder: image, alt, caption and points from ladder.md */
+const ladder = await section('ladder');
 ---
 
 <Base title="Flights" description="Three Starling 2 Max drones flying with no pilot in CMU's flight cage, and what comes next.">
@@ -47,14 +42,13 @@ const labPoints = [
   <Clips id="flights" lead log />
   <Clips id="outdoor" body alt aspect="16 / 9" log />
   <TestLadder>
-    <div class="fl-lab">
-      <AnnotatedPhoto
-        src={labPhoto}
-        alt="ST Engineering's flight lab in Singapore: motion-capture cameras on tall stands around a grey floor, a row of white start pads, and one Starling 2 Max on the floor."
-        points={labPoints}
-        caption="ST Engineering's flight lab in Singapore, where the ladder ends."
-      />
-    </div>
+    {
+      ladder.image && (
+        <div class="fl-lab">
+          <AnnotatedPhoto src={ladder.image} alt={ladder.imageAlt ?? ''} points={ladder.points} caption={ladder.caption} />
+        </div>
+      )
+    }
   </TestLadder>
   <Localisation statusOnly />
   <Milestones id="" alt={false} />

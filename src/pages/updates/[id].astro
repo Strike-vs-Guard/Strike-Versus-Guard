@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import { url } from '../../lib/url';
+import { fmtDate } from '../../lib/text';
 
 export async function getStaticPaths() {
   const updates = await getCollection('updates', (u) => !u.data.draft);
@@ -12,7 +13,6 @@ const { update } = Astro.props;
 const { Content } = await render(update);
 const partners = await getCollection('partners');
 const p = partners.find((x) => x.id === update.data.partner);
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 
 <Base title={update.data.title} description={update.data.summary}>
@@ -20,7 +20,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
     <div class="wrap">
       <header class="post-head">
         <p class="eyebrow">
-          <a href={url('updates/')}>Updates</a> / <time datetime={update.data.date.toISOString().slice(0, 10)}>{fmt(update.data.date)}</time>
+          <a href={url('updates/')}>Updates</a> / <time datetime={update.data.date.toISOString().slice(0, 10)}>{fmtDate(update.data.date, 'long')}</time>
         </p>
         <h1>{update.data.title}</h1>
         <p class="muted post-by">

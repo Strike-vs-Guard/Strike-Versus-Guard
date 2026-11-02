@@ -43,10 +43,9 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
                     src={url(`media/${overview.video}`)}
                     poster={still?.src}
                     muted
-                    autoplay
                     loop
                     playsinline
-                    preload="metadata"
+                    preload="none"
                     aria-label={`Flight clip: ${clipTitle}`}
                   />
                 )}
@@ -62,7 +61,7 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
                   />
                 )}
                 {overview.video && (
-                  <button type="button" class="hero__toggle" aria-label="Pause the flight clip" hidden>
+                  <button type="button" class="hero__toggle" aria-label="Play the flight clip" hidden>
                     <svg class="hero__i-play" width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
                       <path d="M5 3l10 6-10 6z" fill="currentColor" />
                     </svg>
@@ -96,36 +95,32 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
 </Base>
 
 <script>
-  /* Hero clip: autoplays muted; reduced-motion visitors get the still photo and a play button. */
+  /*
+   * Hero clip: no autoplay attribute and preload="none", so nothing loads until the script starts it.
+   * It plays muted on load unless the visitor prefers reduced motion; they get the still photo and a
+   * play button instead. Shares the play/pause wiring (and one-clip-at-a-time) with Clip.astro.
+   */
+  import { bindToggle } from '../lib/clip-player';
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   for (const frame of document.querySelectorAll<HTMLElement>('[data-hero-clip]')) {
-    const v = frame.querySelector('video');
-    const b = frame.querySelector<HTMLButtonElement>('.hero__toggle');
-    if (!v || !b) continue;
-    const sync = () => {
-      const on = !v.paused;
-      frame.classList.toggle('is-paused', !on);
-      b.setAttribute('aria-label', on ? 'Pause the flight clip' : 'Play the flight clip');
-    };
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      v.autoplay = false;
-      v.removeAttribute('autoplay');
-      v.pause();
-    } else {
-      frame.classList.add('is-on');
-    }
-    v.addEventListener('playing', () => v.classList.add('is-started'));
-    v.addEventListener('play', sync);
-    v.addEventListener('pause', sync);
-    b.addEventListener('click', () => {
-      if (v.paused) {
-        frame.classList.add('is-on');
-        v.play().catch(sync);
-      } else {
-        v.pause();
-      }
+    const video = frame.querySelector('video');
+    const button = frame.querySelector<HTMLButtonElement>('.hero__toggle');
+    if (!video || !button) continue;
+    video.addEventListener('playing', () => video.classList.add('is-started'));
+    bindToggle({
+      root: frame,
+      video,
+      button,
+      pressed: false,
+      label: (on) => (on ? 'Pause the flight clip' : 'Play the flight clip'),
+      beforePlay: () => frame.classList.add('is-on'),
     });
-    b.hidden = false;
-    sync();
+    button.hidden = false;
+    if (!reduce) {
+      frame.classList.add('is-on');
+      video.play().catch(() => {});
+    }
   }
 </script>
 
@@ -248,11 +243,11 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
   .hero__toggle[hidden] {
     display: none;
   }
-  .hero__i-play,
-  .is-paused .hero__i-pause {
+  .hero__i-pause,
+  .is-playing .hero__i-play {
     display: none;
   }
-  .is-paused .hero__i-play {
+  .is-playing .hero__i-pause {
     display: block;
   }
   .hero__media figcaption {

@@ -7,9 +7,8 @@
  * mode "explain" (home page): callouts are buttons. Selecting one lights that
  *   layer. With `target`, it also tells the connection diagram on the same page
  *   (a `sys:select` event on document) and moves to it; selections made in the
- *   connection diagram light the drone too. With `partnersHref` (and no
- *   `target`), a click lights the layer locally only and each callout carries a
- *   "Who works on it" link to `${partnersHref}#layer-<id>`.
+ *   connection diagram light the drone too. Without `target`, a click lights the
+ *   layer on the drone only.
  * mode "partner" (partner pages): static. The partner's layers are lit and the
  *   callouts show the partner's own `work:` line for each.
  * mode "compact" (home page): static and short. The drawing (no leader
@@ -19,6 +18,7 @@
  * `work:` lines in content/partners/*.md. Styles are prefixed and global.
  */
 import type { SystemData } from '../lib/system';
+import { listWords } from '../lib/text';
 interface Props {
   data: SystemData;
   mode?: 'explain' | 'partner' | 'compact';
@@ -26,18 +26,14 @@ interface Props {
   target?: string;
   /** explain mode: element to scroll to after a callout is selected (desktop) */
   scrollTo?: string;
-  /** explain mode: page holding the connection diagram; callouts link to `${partnersHref}#layer-<id>` */
-  partnersHref?: string;
   /** partner mode: partner id to light up */
   partner?: string;
 }
-const { data, mode = 'explain', target, scrollTo, partnersHref, partner } = Astro.props;
+const { data, mode = 'explain', target, scrollTo, partner } = Astro.props;
 const uid = 'pd' + Math.random().toString(36).slice(2, 8);
 const id = (s: string) => `${uid}-${s}`;
 const explain = mode === 'explain';
 const compact = mode === 'compact';
-/* the "Who works on it" link replaces the in-button cue when the diagram is on another page */
-const linkOut = explain && !!partnersHref && !target;
 
 const numbered = data.layers.filter((l) => l.n != null).sort((a, b) => (a.n ?? 0) - (b.n ?? 0));
 const layers = [...numbered, ...data.layers.filter((l) => l.n == null)];
@@ -72,7 +68,6 @@ const pt = mode === 'partner' ? P.find((p) => p.id === partner) : undefined;
 const whoOn = (layer: string) => P.filter((p) => p.work[layer]).map((p) => p.short).join(' · ');
 const work = (pt?.work ?? {}) as Record<string, string | undefined>;
 const lit = layers.filter((l) => !!work[l.id]).map((l) => l.id);
-const listWords = (a: string[]) => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
 
 const rootClass = ['pd', `pd--${mode}`, lit.length ? 'has-sel' : '', ...lit.map((l) => `lit-${l}`)].filter(Boolean).join(' ');
 const on = (layer: string) => (lit.includes(layer) ? ' is-on' : '');
@@ -81,7 +76,6 @@ const OPTS = {
   mode,
   target: target ?? null,
   scrollTo: scrollTo ?? null,
-  partnersHref: partnersHref ?? null,
   lit,
   /* the numbered layers in stack order, for the leader lines */
   num: numbered.map((l) => l.id),
@@ -252,13 +246,15 @@ const label = explain
             </span>
             <span class="pd-co-title" id={id('t-' + l.id)}>{l.title}</span>
             {span && <span class="pd-co-tag" id={id('s-' + l.id)}>{spans}</span>}
-            {explain && (linkOut
-              ? <span class="pd-cue pd-cue--ph" aria-hidden="true">Who works on it <span class="pd-cue-a">→</span></span>
-              : <span class="pd-cue" aria-hidden="true">Show partners <span class="pd-cue-a">↓</span></span>)}
+            {explain && (
+              <span class="pd-cue" aria-hidden="true">
+                Show partners <span class="pd-cue-a">↓</span>
+              </span>
+            )}
           </span>
         );
         return explain ? (
-          <li class={`pd-item${linkOut ? ' pd-item--link' : ''}`}>
+          <li class="pd-item">
             <button
               type="button"
               class={`pd-co pd-co--${l.id}`}
@@ -270,11 +266,6 @@ const label = explain
               <span class="pd-co-desc" id={id('d-' + l.id)}>{l.desc}</span>
               <span class="pd-co-who">{whoOn(l.id)}</span>
             </button>
-            {linkOut && (
-              <a class="pd-cue pd-cue-link" href={`${partnersHref}#layer-${l.id}`} data-layer={l.id} aria-label={`Who works on ${l.title}`}>
-                Who works on it <span class="pd-cue-a" aria-hidden="true">→</span>
-              </a>
-            )}
           </li>
         ) : (
           <li class={`pd-co pd-co--${l.id}${w ? ' is-on' : ''}`} data-layer={l.id}>
@@ -392,8 +383,6 @@ const label = explain
     function activate(id) {
       state.layer = id; state.partner = null;
       render();
-      /* the connection diagram is on another page: light the layer here only */
-      if (OPTS.partnersHref && !OPTS.target) return;
       document.dispatchEvent(new CustomEvent('sys:select', { detail: { layer: id, partner: null, source: 'drone' } }));
       var tgt = OPTS.target && document.querySelector(OPTS.target);
       var btn = tgt && tgt.querySelector('[data-sel="l:' + id + '"]');
@@ -424,7 +413,7 @@ const label = explain
     });
     root.addEventListener('mouseleave', function () { if (hoverPeek) { hoverPeek = null; render(); } });
     root.addEventListener('focusin', function (e) {
-      var t = e.target.closest('.pd-co, .pd-cue-link');
+      var t = e.target.closest('.pd-co');
       focusPeek = t ? t.getAttribute('data-layer') : null; render();
     });
     root.addEventListener('focusout', function () { focusPeek = null; render(); });
@@ -578,13 +567,6 @@ const label = explain
 .pd .pd-cue-a{display:inline-block;transition:transform .15s}
 .pd--explain .pd-co:hover .pd-cue-a,.pd--explain .pd-co:focus-visible .pd-cue-a{transform:translateY(2px)}
 /* "Who works on it": a sibling link laid over the cue's reserved space (a link may not sit inside a button) */
-.pd .pd-item--link{position:relative}
-.pd .pd-cue--ph{visibility:hidden}
-.pd .pd-cue-link{position:absolute;top:13px;right:11px;margin:0;padding:4px 4px;border-radius:4px;color:var(--muted);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:3px}
-.pd .pd-cue-link:hover,.pd .pd-cue-link:focus-visible,.pd .pd-cue-link.is-on,.pd .pd-cue-link.is-peek{color:var(--text)}
-.pd .pd-cue-link:hover{text-decoration-color:currentColor}
-.pd .pd-cue-link:focus-visible{outline:2px solid var(--text);outline-offset:2px}
-.pd .pd-cue-link:hover .pd-cue-a,.pd .pd-cue-link:focus-visible .pd-cue-a{transform:translateX(2px)}
 
 /* partner mode: static list items */
 .pd--partner .pd-co{cursor:default;border-style:dashed;border-color:var(--border)}
@@ -620,10 +602,6 @@ const label = explain
   .pd .pd-co-desc--sm{grid-row:3;font-size:13px}
   .pd .pd-cue{grid-column:3;grid-row:1;margin:0;padding:0;align-self:center;font-size:0;gap:0}
   .pd .pd-cue-a{font-size:15px}
-  .pd .pd-item--link .pd-cue{font-size:12px;gap:5px}
-  .pd .pd-item--link .pd-cue-a{font-size:12px}
-  .pd .pd-cue-link{top:11px;right:8px;padding:4px}
-  .pd .pd-cos > li.pd-item--link:last-child .pd-cue-link{top:23px}
   .pd--partner .pd-co.is-on{padding:9.5px 11.5px}
 }
 @media (max-width:639px){

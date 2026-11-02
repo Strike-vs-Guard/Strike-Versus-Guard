@@ -5,6 +5,15 @@ eyebrow: Test ladder
 title: Six steps before a Starling flies in Singapore
 order: 12
 note: Status as of July 2026. Each step must pass before the next one starts.
+# The annotated photo under the ladder. `points:` are in percent of the photo from the top left
+# (placed by eye on the 1100 x 623 original); `lx`/`ly` place each label.
+image: ../partners/ST/singapore-flight-lab.jpg
+imageAlt: "ST Engineering's flight lab in Singapore: motion-capture cameras on tall stands around a grey floor, a row of white start pads, and one Starling 2 Max on the floor."
+caption: ST Engineering's flight lab in Singapore, where the ladder ends.
+points:
+  - { x: 21.8, y: 17, label: Motion-capture cameras, lx: 37, ly: 9.5 }
+  - { x: 52.1, y: 48.6, label: Start pads, lx: 44, ly: 60 }
+  - { x: 62.4, y: 70.9, label: Starling 2 Max, lx: 52, ly: 82 }
 items:
   - label: M1
     title: Simulation rehearsal

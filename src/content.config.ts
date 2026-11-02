@@ -69,6 +69,8 @@ const partners = defineCollection({
           .default({}),
         /** Institution logo, relative to this file, e.g. ./NUS/nus.png */
         logo: image(),
+        /** Optional square emblem cut from the logo, e.g. ./NUS/mark.png; the Partners menu chip uses it. */
+        logoMark: image().optional(),
         /** Optional lab logo, shown on the partner page. */
         labLogo: image().optional(),
         /** Alt text for the logo. Defaults to the institution name. */
@@ -161,6 +163,23 @@ const programme = defineCollection({
         image: image().optional(),
         imageAlt: z.string().optional(),
         caption: z.string().optional(),
+        /**
+         * Optional labelled points on `image` (an annotated photo, e.g. ladder.md). `x`/`y` are percent of the
+         * photo from the top left; optional `lx`/`ly` place the label.
+         */
+        points: z
+          .array(
+            z
+              .object({
+                x: z.number().min(0).max(100),
+                y: z.number().min(0).max(100),
+                label: z.string().max(40),
+                lx: z.number().min(0).max(100).optional(),
+                ly: z.number().min(0).max(100).optional(),
+              })
+              .strict(),
+          )
+          .default([]),
         items: z.array(item(image)).default([]),
         /** Optional secondary list, e.g. use cases. */
         tags: z.array(z.string()).default([]),
@@ -175,6 +194,9 @@ const programme = defineCollection({
         openLabel: z.string().optional(),
         /** Optional one-line note shown in the hero under the statement (home page). */
         gameNote: z.string().optional(),
+        /** Optional heading and hint above the drone diagram on the Partners page (stack.md). */
+        droneTitle: z.string().optional(),
+        droneHint: z.string().optional(),
         /** Optional hero clip in public/media (muted loop); `image` is its poster. */
         video: z.string().regex(/^[\w.-]+\.mp4$/).optional(),
       })

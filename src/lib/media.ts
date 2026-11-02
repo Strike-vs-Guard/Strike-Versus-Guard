@@ -4,7 +4,8 @@ import { join } from 'node:path';
 const cache = new Map<string, { width: number; height: number } | null>();
 
 /**
- * Width and height of an MP4 in public/media, read from its video track header (`tkhd`) at build time.
+ * Display width and height of an MP4 in public/media, read from its video track header (`tkhd`) at build
+ * time; a 90° or 270° rotation matrix swaps them.
  * Returns null if the file is missing or cannot be read; callers fall back to a fixed frame.
  */
 export function videoSize(name: string): { width: number; height: number } | null {
@@ -27,10 +28,19 @@ export function videoSize(name: string): { width: number; height: number } | nul
         else if (type === 'tkhd') {
           const b = p + head;
           const v = buf[b];
-          const off = b + (v === 1 ? 4 + 8 + 8 + 4 + 4 + 8 : 4 + 4 + 4 + 4 + 4 + 4) + 8 + 2 + 2 + 2 + 2 + 36;
+          const mat = b + (v === 1 ? 4 + 8 + 8 + 4 + 4 + 8 : 4 + 4 + 4 + 4 + 4 + 4) + 8 + 2 + 2 + 2 + 2;
+          const off = mat + 36;
           const w = buf.readUInt32BE(off) / 65536;
           const h = buf.readUInt32BE(off + 4) / 65536;
-          if (w > 0 && h > 0) out = { width: Math.round(w), height: Math.round(h) };
+          // Display matrix {a b u; c d v; x y w}: a 90° or 270° rotation has a = d = 0, b and c non-zero.
+          const a = buf.readInt32BE(mat);
+          const bb = buf.readInt32BE(mat + 4);
+          const d = buf.readInt32BE(mat + 16);
+          const rotated = a === 0 && d === 0 && bb !== 0;
+          if (w > 0 && h > 0)
+            out = rotated
+              ? { width: Math.round(h), height: Math.round(w) }
+              : { width: Math.round(w), height: Math.round(h) };
         }
         p += size;
       }

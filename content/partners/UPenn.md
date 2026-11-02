@@ -20,6 +20,7 @@ work:
   safety: "Co-develops the safety filter with CMU."
   drones: "Runs the formal-track strategy on the shared Starling 2 Max drones."
 logo: ./UPenn/penn.png
+logoMark: ./UPenn/mark.png
 labLogo: ./UPenn/xlab.png
 logoAlt: University of Pennsylvania
 website: https://xlab.upenn.edu

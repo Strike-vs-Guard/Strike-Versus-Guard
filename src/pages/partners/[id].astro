@@ -11,6 +11,7 @@ import Base from '../../layouts/Base.astro';
 import { url } from '../../lib/url';
 import { getSystemData } from '../../lib/system';
 import DroneDiagram from '../../components/DroneDiagram.astro';
+import { fmtDate, listWords } from '../../lib/text';
 
 export async function getStaticPaths() {
   const partners = await getCollection('partners', (p) => p.data.page);
@@ -22,14 +23,12 @@ const d = partner.data;
 const { Content } = await render(partner);
 const system = await getSystemData();
 const worksOn = system.layers.filter((l) => (d.work as Record<string, string | undefined>)[l.id]);
-const listWords = (a: string[]) => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
 const all = (await getCollection('partners', (p) => p.data.page)).sort((a, b) => a.data.order - b.data.order);
 const updates = (await getCollection('updates', (u) => !u.data.draft && u.data.partner === partner.id)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 const repo = 'https://github.com/Strike-vs-Guard/Strike-Versus-Guard';
 const fileName = partner.filePath?.split('/').pop();
-const fmt = (x: Date) => x.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 /* Head logos: base 76 px, capped at the well's 94 px inner height (src/lib/logo.ts). */
 const logo = (img: ImageMetadata) => logoSize(img, 76, 94);
 const people = d.people ?? [];
@@ -103,7 +102,7 @@ const layerNames: Record<string, string> = {
             <div>
               <dt>Page</dt>
               <dd>
-                Maintained by {d.short} · updated {fmt(d.updated)} ·{' '}
+                Maintained by {d.short} · updated {fmtDate(d.updated, 'long')} ·{' '}
                 <a href={`${repo}/edit/development/content/partners/${fileName}`}>Edit this page</a>
               </dd>
             </div>
@@ -163,7 +162,7 @@ const layerNames: Record<string, string> = {
             <ul>
               {updates.map((u) => (
                 <li>
-                  <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmt(u.data.date)}</time>
+                  <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmtDate(u.data.date, 'long')}</time>
                   <a href={url(`updates/${u.id}/`)}>{u.data.title}</a>
                 </li>
               ))}

@@ -25,21 +25,15 @@ const sorted = [...partners].sort((a, b) => a.data.order - b.data.order);
 const rows = sorted.filter((p) => p.data.role !== 'Funding sponsor' && p.data.page);
 const funder = sorted.find((p) => p.data.role === 'Funding sponsor');
 
-/*
- * The chip is 28 px inside its padding. Wide institution logos are cropped to their left-hand
- * emblem (width as a fraction of the logo height); square logos are shown whole.
- */
+/* The chip is 28 px inside its padding. It shows the partner's square `logoMark` if it has one, else the logo. */
 const CHIP = 28;
 /* A lab written as "Centre · Lab" shows only its last part, e.g. "NEAR Lab". */
 const labName = (lab?: string) => lab?.split(' · ').at(-1);
-const EMBLEM: Record<string, number> = { st: 1, nus: 196 / 240, upenn: 210 / 240 };
 const chip = (p: CollectionEntry<'partners'>) => {
-  const r = EMBLEM[p.id];
-  if (r) return { width: Math.round(CHIP * r), height: CHIP, fit: 'cover' as const, position: 'left' };
-  const ar = p.data.logo.width / p.data.logo.height;
-  return ar >= 1
-    ? { width: CHIP, height: Math.round(CHIP / ar), fit: 'contain' as const }
-    : { width: Math.round(CHIP * ar), height: CHIP, fit: 'contain' as const };
+  const src = p.data.logoMark ?? p.data.logo;
+  const ar = src.width / src.height;
+  const size = ar >= 1 ? { width: CHIP, height: Math.round(CHIP / ar) } : { width: Math.round(CHIP * ar), height: CHIP };
+  return { src, ...size };
 };
 ---
 
@@ -59,7 +53,7 @@ const chip = (p: CollectionEntry<'partners'>) => {
             <li>
               <a class="pm__row" href={href} aria-current={path === href ? 'page' : undefined}>
                 <span class="pm__chip">
-                  <Image src={p.data.logo} alt="" {...chip(p)} densities={[1, 2]} />
+                  <Image alt="" {...chip(p)} densities={[1, 2]} />
                 </span>
                 <span>
                   <span class="pm__name">
@@ -79,7 +73,7 @@ const chip = (p: CollectionEntry<'partners'>) => {
       funder && (
         <a class="pm__row pm__row--muted" href={url('partners/#funder')}>
           <span class="pm__chip">
-            <Image src={funder.data.logo} alt="" {...chip(funder)} densities={[1, 2]} />
+            <Image alt="" {...chip(funder)} densities={[1, 2]} />
           </span>
           <span>Funded by {funder.data.short}</span>
         </a>
@@ -166,7 +160,7 @@ const chip = (p: CollectionEntry<'partners'>) => {
   }
   .pm__row:hover,
   .pm__row:focus-visible {
-    background: #1b2026;
+    background: color-mix(in srgb, var(--text) 8%, var(--surface));
   }
   .pm__row[aria-current='page'] .pm__name {
     text-decoration: underline;

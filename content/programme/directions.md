@@ -4,13 +4,14 @@ eyebrow: Where it leads
 title: Research directions that open up
 order: 8
 tagsLabel: Applications
+# Tags read as one sentence: write them in lower case except proper nouns; the first letter is capitalised for you.
 tags:
-  - Low-altitude operations
-  - Search and rescue
-  - Disaster response
-  - Infrastructure inspection
-  - Urban delivery
-  - Large-event coverage
+  - low-altitude operations
+  - search and rescue
+  - disaster response
+  - infrastructure inspection
+  - urban delivery
+  - large-event coverage
 items:
   - icon: anywhere
     title: Fly anywhere

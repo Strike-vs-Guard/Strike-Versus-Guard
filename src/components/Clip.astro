@@ -1,10 +1,13 @@
 ---
 /**
- * A short flight clip. Shows the poster image with a play button; the video only
- * loads when someone clicks it. Muted, looping, no autoplay.
+ * A short muted, looping clip that loads only when played (no autoplay).
+ * `variant`: "controls" (default) uses the browser's controls; "button" shows the poster with one
+ * round play/pause button over the whole frame (the home page "Proof so far" clips).
  * `aspect` sets the frame (CSS aspect-ratio); the default fits the flight clips, which stack the
  * ground station above the flight. `natural` uses the video's own shape (read from the file at build
  * time) and caps the height, so a lead clip can run at full width without filling the screen.
+ * `flight` fills the frame and shows the bottom (flight) half of a stacked clip.
+ * Starting any clip pauses the others (src/lib/clip-player.ts).
  */
 import { url } from '../lib/url';
 import { videoSize } from '../lib/media';
@@ -12,21 +15,38 @@ interface Props {
   video: string;
   poster?: string;
   title: string;
+  variant?: 'controls' | 'button';
   aspect?: string;
   natural?: boolean;
   /** with `natural`: frame clips wider than 16:9 at 16:9 (they letterbox), so a small grid cell keeps some height */
   capWide?: boolean;
+  /** fill the frame and show the flight (bottom) half of a clip that stacks the ground station above it */
+  flight?: boolean;
 }
-const { video, poster, title, aspect = '960 / 1080', natural = false, capWide = false } = Astro.props;
+const {
+  video,
+  poster,
+  title,
+  variant = 'controls',
+  aspect = '960 / 1080',
+  natural = false,
+  capWide = false,
+  flight = false,
+} = Astro.props;
 const size = natural ? videoSize(video) : null;
 const frame = size
   ? capWide && size.width / size.height > 16 / 9
     ? '16 / 9'
     : `${size.width} / ${size.height}`
   : aspect;
+const button = variant === 'button';
 ---
 
-<div class:list={['clip', { 'clip--natural': natural }]}>
+<div
+  class:list={['clip', `clip--${variant}`, { 'clip--natural': natural, 'clip--flight': flight }]}
+  style={button ? `aspect-ratio: ${frame}` : undefined}
+  data-clip={variant}
+  data-title={title}>
   <video
     src={url(`media/${video}`)}
     poster={poster ? url(`media/${poster}`) : undefined}
@@ -34,27 +54,123 @@ const frame = size
     muted
     loop
     playsinline
-    controls
-    style={`aspect-ratio: ${frame}`}
+    controls={!button}
+    style={button ? undefined : `aspect-ratio: ${frame}`}
     aria-label={`Flight clip: ${title}`}></video>
+  {
+    button && (
+      <button type="button" class="clip__btn" aria-pressed="false" aria-label={`Play: ${title}`}>
+        <span class="clip__icon" aria-hidden="true">
+          <svg class="clip__play" width="18" height="18" viewBox="0 0 18 18">
+            <path d="M5 3l10 6-10 6z" fill="currentColor" />
+          </svg>
+          <svg class="clip__pause" width="18" height="18" viewBox="0 0 18 18">
+            <path d="M5 3h3v12H5zM10 3h3v12h-3z" fill="currentColor" />
+          </svg>
+        </span>
+      </button>
+    )
+  }
 </div>
+
+<script>
+  import { bindToggle, exclusive } from '../lib/clip-player';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-clip]')) {
+    const video = root.querySelector('video');
+    if (!video) continue;
+    const button = root.querySelector<HTMLButtonElement>('.clip__btn');
+    if (button) {
+      const title = root.dataset.title ?? '';
+      bindToggle({ root, video, button, label: (on) => `${on ? 'Pause' : 'Play'}: ${title}` });
+    } else {
+      exclusive(video);
+    }
+  }
+</script>
 
 <style>
   .clip {
     position: relative;
-    background: #0e1114;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
+  }
+  .clip--button {
+    border-radius: var(--radius);
   }
   video {
     display: block;
     width: 100%;
     object-fit: contain;
-    background: #0e1114;
+    background: var(--surface);
   }
   /* full-width lead clip: tall clips letterbox inside a capped height instead of filling the screen */
   .clip--natural video {
     max-height: min(72vh, 680px);
+  }
+  .clip--button video {
+    height: 100%;
+  }
+  .clip--flight video {
+    object-fit: cover;
+    /* each clip stacks the ground station (top) over the flight (bottom): show the flight */
+    object-position: 50% 100%;
+  }
+  .clip__btn {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .clip__btn:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: -4px;
+    border-radius: var(--radius);
+  }
+  .clip__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--text) 70%, transparent);
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.15s ease;
+  }
+  .clip__btn:hover .clip__icon {
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+  }
+  .clip__pause,
+  .is-playing .clip__play {
+    display: none;
+  }
+  .is-playing .clip__pause {
+    display: block;
+  }
+  /* while playing, the pause icon shows only on hover or keyboard focus */
+  .is-playing .clip__icon {
+    opacity: 0;
+  }
+  .is-playing .clip__btn:hover .clip__icon,
+  .is-playing .clip__btn:focus-visible .clip__icon {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .clip__icon {
+      transition: none;
+    }
   }
 </style>
