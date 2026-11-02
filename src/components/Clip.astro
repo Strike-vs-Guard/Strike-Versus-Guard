@@ -14,7 +14,6 @@ const { video, poster, title } = Astro.props;
 
 <div class="clip">
   <video
-    class="media-edge"
     src={url(`media/${video}`)}
     poster={poster ? url(`media/${poster}`) : undefined}
     preload="none"
@@ -29,11 +28,12 @@ const { video, poster, title } = Astro.props;
   .clip {
     position: relative;
     background: #0e1114;
+    border: 1px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
   }
   video {
-    border: 1px solid var(--border);
+    display: block;
     width: 100%;
     aspect-ratio: 960 / 1080;
     object-fit: contain;

@@ -650,8 +650,10 @@ const label = explain
 .pd .pd-row--span{border-bottom:0;border-top:1px dashed var(--muted);margin-top:8px}
 .pd .pd-row--span .pd-num{border-style:dashed;font-size:9.5px;letter-spacing:-.02em}
 @media (max-width:899px){
-  .pd--compact .pd-stage{padding:12px 16px 8px}
-  .pd--compact .pd-fig{max-width:460px}
+  /* stacked: the six rows span the stage; only the drawing is centred */
+  .pd--compact .pd-stage{padding:12px 16px 8px;align-items:stretch}
+  .pd--compact .pd-fig{max-width:460px;align-self:center}
+  .pd--compact .pd-rows{width:100%}
 }
 @media (max-width:639px){
   .pd .pd-row{grid-template-columns:30px minmax(0,1fr);row-gap:2px}

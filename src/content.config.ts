@@ -129,6 +129,9 @@ const programme = defineCollection({
         /** Small label above the headline. */
         eyebrow: z.string(),
         title: z.string(),
+        /** Optional eyebrow and h1 when the section also heads its own page (e.g. /flights/). */
+        pageEyebrow: z.string().optional(),
+        pageTitle: z.string().optional(),
         /** Position on the home page: lower numbers come first. */
         order: z.number().int(),
         /** Optional one-line note shown under the cards. */

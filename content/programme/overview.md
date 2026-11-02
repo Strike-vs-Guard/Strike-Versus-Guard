@@ -1,6 +1,8 @@
 ---
 # The top of the home page. Owned by ST Engineering; all partners review changes.
 eyebrow: Research programme
+pageEyebrow: Programme
+pageTitle: How the programme works
 title: Teams of drones that coordinate, adapt and decide on their own
 order: 1
 image: ./images/flight-cage.jpg

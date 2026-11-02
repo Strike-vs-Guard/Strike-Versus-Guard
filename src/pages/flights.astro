@@ -11,10 +11,10 @@ const flights = await section('flights');
 ---
 
 <Base title="Flights" description="Three Starling 2 Max drones flying with no pilot in CMU's flight cage, and what comes next.">
-  <PageHead eyebrow="Proof" title="Flights so far">
+  <PageHead eyebrow={flights.pageEyebrow ?? flights.eyebrow} title={flights.pageTitle ?? flights.title}>
     <flights.Content />
   </PageHead>
-  <Clips size="large" id="flights" />
+  <Clips id="flights" />
   <Localisation statusOnly />
   <Milestones id="" alt={false} />
 </Base>

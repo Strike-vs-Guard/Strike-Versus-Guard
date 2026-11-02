@@ -1,6 +1,7 @@
 ---
 /**
- * The game (home page): the animated arena on the left; on the right the four steps in a 2×2 grid,
+ * The game (home page): title and intro (the body of content/programme/benchmark.md, with the
+ * blue/red legend), then the animated arena on the left; on the right the four steps in a 2×2 grid,
  * the "What they decide" list (content/programme/overview.md `decisions`) and the note
  * (content/programme/benchmark.md). Holds #benchmark.
  */
@@ -16,6 +17,7 @@ const overview = await section('overview');
     <header class="section__head">
       <p class="eyebrow">{benchmark.eyebrow}</p>
       <h2>{benchmark.title}</h2>
+      <div class="prose"><benchmark.Content /></div>
     </header>
     <Arena steps={benchmark.items} layout="grid">
       {

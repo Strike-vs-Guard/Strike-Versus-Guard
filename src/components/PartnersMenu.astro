@@ -309,7 +309,8 @@ const chip = (p: CollectionEntry<'partners'>) => {
       } else if (e.key === 'ArrowDown' && (document.activeElement === btn || idx > -1)) {
         e.preventDefault();
         if (!isOpen()) open('click');
-        all[Math.min(idx + 1, all.length - 1)].focus();
+        /* an empty list has nothing to move to; the panel stays open and Escape still closes it */
+        if (all.length > 0) all[Math.min(idx + 1, all.length - 1)].focus();
       } else if (e.key === 'ArrowUp' && idx > -1) {
         e.preventDefault();
         if (idx === 0) btn.focus();

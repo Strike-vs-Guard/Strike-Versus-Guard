@@ -1,7 +1,9 @@
 ---
 # Flight clips. Owned by CMU and ST Engineering.
 # Videos live in public/media (keep each under ~10 MB, H.264 MP4, no audio).
-eyebrow: Flights so far
+pageEyebrow: Proof
+pageTitle: Flights so far
+eyebrow: Flights
 title: A team that flies itself
 order: 5
 note: Formation and avoidance flights so far, not yet full Strike vs Guard games. Each clip shows the team's ground station running live (top) and the flight (bottom).

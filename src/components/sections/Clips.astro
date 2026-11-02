@@ -1,44 +1,33 @@
 ---
 /**
- * The four flight clips (content/programme/flights.md).
- * size "compact" (home page): title, one row of clips with their titles, the note and "All flights →".
- * size "large" (Flights page): no head (the page head shows the title and body), two clips per row
- * with full captions. Holds #flights when given id="flights".
+ * The four flight clips (content/programme/flights.md) on the Flights page: eyebrow and h2 from the
+ * file's `eyebrow`/`title`, two clips per row with full captions, then the note.
+ * Holds #flights when given id="flights".
  */
 import Clip from '../Clip.astro';
-import { url } from '../../lib/url';
 import { section } from './content';
 
 interface Props {
-  size?: 'compact' | 'large';
   id?: string;
 }
-const { size = 'compact', id } = Astro.props;
-const compact = size === 'compact';
+const { id } = Astro.props;
 const flights = await section('flights');
 ---
 
-<section id={id} class:list={['section', compact ? 'section--clips' : 'section--clips-large']}>
+<section id={id} class="section section--clips-large" aria-labelledby="clips-title">
   <div class="wrap">
-    {
-      compact && (
-        <header class="section__head section__head--row">
-          <div>
-            <p class="eyebrow">{flights.eyebrow}</p>
-            <h2>{flights.title}</h2>
-          </div>
-          <a class="btn btn--ghost" href={url('flights/')}>All flights →</a>
-        </header>
-      )
-    }
-    <div class:list={['clips', { 'clips--large': !compact }]}>
+    <header class="section__head">
+      <p class="eyebrow">{flights.eyebrow}</p>
+      <h2 id="clips-title">{flights.title}</h2>
+    </header>
+    <div class="clips">
       {
         flights.items.map((c) => (
           <figure class="clip-card">
             {c.video && <Clip video={c.video} poster={c.poster} title={c.title} />}
             <figcaption>
               <strong>{c.title}</strong>
-              {!compact && <span>{c.text}</span>}
+              {c.text && <span>{c.text}</span>}
             </figcaption>
           </figure>
         ))
@@ -51,8 +40,8 @@ const flights = await section('flights');
 <style>
   .clips {
     display: grid;
-    gap: 20px 14px;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr));
+    gap: 32px 28px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   }
   .clip-card figcaption {
     font-family: var(--font-body);
@@ -64,12 +53,8 @@ const flights = await section('flights');
   .clip-card figcaption strong {
     color: var(--text);
   }
-  .clips--large {
-    gap: 32px 28px;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-  }
   @media (min-width: 760px) {
-    .clips--large {
+    .clips {
       grid-template-columns: 1fr 1fr;
     }
   }

@@ -1,7 +1,7 @@
 ---
 /**
  * Partners page: one card per partner in `order:` (ST Engineering, NUS, UPenn, CMU),
- * then the funder card (HTX). Holds the #partners anchor.
+ * then the funder card (HTX). Holds the #partners and #funder anchors.
  */
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
@@ -57,18 +57,22 @@ const funders = all.filter((p) => p.data.role === 'Funding sponsor');
       }
     </ul>
     {
-      funders.map((f) => (
-        <div class="card fcard" id="funder">
-          <a class="logo-well fcard__logo" href={f.data.website} title={f.data.institution}>
-            <Image src={f.data.logo} alt={f.data.logoAlt ?? f.data.institution} height={96} densities={[1, 2]} />
-          </a>
-          <div>
-            <p class="eyebrow">Funded by</p>
-            <p class="fcard__name">{f.data.institution} ({f.data.short})</p>
-            <p class="muted fcard__text">{f.data.summary}</p>
-          </div>
+      funders.length > 0 && (
+        <div id="funder">
+          {funders.map((f) => (
+            <div class="card fcard">
+              <a class="logo-well fcard__logo" href={f.data.website} title={f.data.institution}>
+                <Image src={f.data.logo} alt={f.data.logoAlt ?? f.data.institution} height={96} densities={[1, 2]} />
+              </a>
+              <div>
+                <p class="eyebrow">Funded by</p>
+                <p class="fcard__name">{f.data.institution} ({f.data.short})</p>
+                <p class="muted fcard__text">{f.data.summary}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      ))
+      )
     }
   </div>
 </section>
