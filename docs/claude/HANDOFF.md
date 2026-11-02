@@ -56,6 +56,12 @@ programme lead driving the work is Jeremy (ST Engineering).
 - `overview.md` gains `video:` and `gameNote:`.
 - The panel is saved as `.claude/agents/svg-ux-panel-{first-screen,layout,navigation}.md`.
 
+**Simulation work (3 Nov 2026, on `development`):** from the October monthly report (now approved for
+publication), an "In simulation" section on the NUS, UPenn, CMU and ST pages (clips/stills + 2–3
+sentences), a Programme "In simulation" section (`simulation.md`, `Simulation.astro` via the
+generalised `Clips.astro`), a new localisation `status:` number, and a link checker that resolves
+relative paths.
+
 **Earlier work, already live or on `development`:**
 - Partner pages, Updates, schema/link/size checks, CI, deploy of both branches; Pages source is GitHub Actions.
 - Annotated drone + connection diagram, with `sys:select` shared selection and the polish pass.
@@ -94,6 +100,7 @@ programme lead driving the work is Jeremy (ST Engineering).
 - `StrikeVsGuard_A0_v14_PRINT_outlined.pdf`: the A0 poster. Its text is outlined, so it was used
   visually only.
 - The programme positioning statement (in `STANDARDS.md` §1), provided by Jeremy.
-- Confidential reports (localisation brief 22 Oct 2026, monthly report 29 Oct 2026, D3 FR&PDR July 2026):
-  context only. Extracted text is kept outside the repo in `~/Documents/GitHub/Strike-Versus-Guard-sources/`
-  on Jeremy's laptop. Nothing numeric or unpublished from them goes on the site.
+- Programme reports: the monthly report (29 Oct 2026) is approved for publication (3 Nov 2026); its
+  simulation figures are on the site. The localisation brief (22 Oct 2026) and the D3 FR&PDR (July 2026)
+  stay context only. Extracted text is kept outside the repo in `~/Documents/GitHub/Strike-Versus-Guard-sources/`
+  on Jeremy's laptop. Nothing numeric or unpublished from those two goes on the site.

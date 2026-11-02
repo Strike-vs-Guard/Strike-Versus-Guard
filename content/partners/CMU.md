@@ -25,7 +25,7 @@ labLogo: ./CMU/airlab.png
 logoAlt: Carnegie Mellon University
 website: https://theairlab.org
 order: 5
-updated: 2026-11-02
+updated: 2026-11-03
 ---
 
 ## Our role in Strike vs Guard
@@ -57,6 +57,14 @@ full-size drones.
 ![Starling 2 Max drones flying in the CMU flight cage](./CMU/starling-flight-cage.jpg)
 
 ![The Strike vs Guard team outside the Robotics Innovation Center at CMU](./CMU/team-robotics-innovation-center.jpg)
+
+## In simulation
+
+AirStack already runs real and simulated drones side by side under the same safety filter, so new
+ideas can be tried on simulated Starlings first. The next
+steps are proposals, not yet demonstrated: solving the game mathematically for each side, a fast
+controller learned from human pilots, games that mix real drones with simulated opponents, and a
+safety filter that works from each drone's own map of its surroundings.
 
 ## People
 

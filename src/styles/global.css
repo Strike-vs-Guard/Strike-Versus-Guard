@@ -300,6 +300,14 @@ figcaption {
   background: #fff;
   margin: 1.5em 0;
 }
+.md figure.clip {
+  margin: 1.5em 0;
+}
+.md figure.clip video {
+  width: 100%;
+  border-radius: var(--radius);
+  background: #0e1114;
+}
 .md ul,
 .md ol {
   padding-left: 1.25em;

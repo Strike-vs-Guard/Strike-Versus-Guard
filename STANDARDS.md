@@ -99,6 +99,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | Page sections | `content/programme/*.md` (one file per section, `order:` sets position) | ST Engineering (+ co-owners in CODEOWNERS) |
 | Top of the home page, incl. the `decisions:` list ("What they decide"), the hero `video:`, the one-line `gameNote:` and the Programme page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` | ST Engineering |
 | Home "Proof so far" section head and its `note:`; the Flights page head is `pageEyebrow:`/`pageTitle:` in `flights.md` | `content/programme/proof.md` | ST Engineering |
+| Programme "In simulation" section: one short paragraph and 2–4 clips (`video:`/`poster:` in `public/media/`, `partners:`) | `content/programme/simulation.md` | ST Engineering (+ partners for their clips) |
 | Localisation section and its one-line `status:` | `content/programme/localisation.md` | ST Engineering (CMU advises) |
 | Layers of the system (drone diagram and connection diagram) | `content/programme/stack.md` (`icon:` is the layer id) | ST Engineering |
 | News | `content/updates/YYYY-MM-DD-slug.md` | Any partner |
@@ -110,8 +111,11 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
   (layers 1 to 5 plus Integration across all; Localisation is layer 4, ST Engineering leads, CMU provides
   the simulator and technical advice). A partner's
   `work.<layer>` line (90 characters or fewer) is what puts that partner on a layer in both diagrams.
-- **Confidential sources:** the localisation brief (22 Oct 2026), the monthly report (29 Oct 2026) and
-  the D3 FR&PDR (July 2026) are context only. Nothing numeric or unpublished from them goes on the site.
+- **Sources:** the October 2026 monthly report (29 Oct 2026) is approved for publication by the
+  programme lead (3 Nov 2026): its simulation figures and numbers may go on the site, translated into
+  the §2 wording, with proposals labelled as proposals and nothing under review. The D3 FR&PDR
+  (July 2026) is confidential, and the localisation brief (22 Oct 2026) stays context only: nothing
+  numeric or unpublished from those two goes on the site.
   Extracted text lives outside the repo, in `~/Documents/GitHub/Strike-Versus-Guard-sources/` on Jeremy's laptop.
 - Images must be referenced **relative to the content file** (`./NUS/photo.jpg`), never as `/images/...`.
 - **Size limits:** images 5 MB or less and clips 15 MB or less (H.264 MP4, muted, with a `.jpg`
@@ -142,8 +146,8 @@ under the header.
 6. Team photo with caption, then the colour logo strip: "Funded by" HTX | "Partners" ST Engineering,
    NUS, UPenn, CMU. No lone HTX block.
 
-**Programme (`/programme/`):** positioning statement, two tracks, localisation (with its `status:` line),
-research directions.
+**Programme (`/programme/`):** positioning statement, two tracks, "In simulation" (`simulation.md`
+clips, through the shared `Clips` section), localisation (with its `status:` line), research directions.
 
 **Partners (`/partners/`):** "Each partner writes and maintains its own page."; fully clickable partner
 cards ("<Short> page →"); the full explain-mode drone above the connection diagram
@@ -153,7 +157,7 @@ cards ("<Short> page →"); the full explain-mode drone above the connection dia
 - Header and meta card. "Maintained by <Short> · updated <date> · Edit this page" sits in the
   "At a glance" box; the breadcrumb shows the institution.
 - "In the system": `DroneDiagram` in `partner` mode, with that partner's layers lit.
-- The Markdown body.
+- The Markdown body, which may embed simulation clips as `<figure class="clip">` (see CONTRIBUTING §4).
 - Their updates.
 
 Page titles are distinct: Programme h1 "How the programme works"; Flights h1 "Flights so far".

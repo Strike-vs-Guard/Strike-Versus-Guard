@@ -59,13 +59,15 @@ Your page is linked from the **Partners** menu in the header and from the Partne
 is the only place its text lives, and your page says "Maintained by <you>" with an Edit link.
 
 The site has four pages: Home, Programme, Partners and Flights (plus Updates). The shared files below
-feed them. They are owned by ST Engineering, but anyone may propose changes. Please do not publish
-anything numeric or unpublished from the confidential reports.
+feed them. They are owned by ST Engineering, but anyone may propose changes. The October 2026 monthly
+report is approved for publication; please do not publish anything numeric or unpublished from the
+other programme reports.
 
 | What | File |
 |---|---|
 | Top of the home page: the `decisions:` list ("What they decide"), `video:` (the hero clip, in `public/media/`), `gameNote:` (one line about the game) and the Programme page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` |
 | Home "Proof so far" section head and its honest one-line `note:` | `content/programme/proof.md` |
+| Programme "In simulation" section (one paragraph, 2–4 clips) | `content/programme/simulation.md` (videos in `public/media/`) |
 | Localisation section and its one-line `status:` | `content/programme/localisation.md` |
 | Two tracks (NUS / UPenn) | `content/programme/tracks.md` |
 | The benchmark game and its four steps | `content/programme/benchmark.md` |
@@ -162,6 +164,29 @@ The three newest updates appear on the home page, and each partner page lists it
 - Video: MP4 (H.264), muted, under ~10 MB, in `public/media/`. Ask ST Engineering if you need help
   compressing a clip.
 - Only publish material you have the right to publish. The test site is public, even before merging.
+
+### Adding a simulation clip to your partner page
+
+1. Convert the clip (a GIF works too) to MP4 and grab its first frame as the poster:
+
+   ```bash
+   ffmpeg -i in.gif -vf "scale='min(960,iw)':-2" -c:v libx264 -crf 28 -pix_fmt yuv420p -movflags +faststart -an public/media/sim-nus-selfplay.mp4
+   ffmpeg -i in.gif -frames:v 1 public/media/sim-nus-selfplay.jpg
+   ```
+
+   Name both `sim-<partner>-<slug>` and put them in `public/media/`. Aim for about 3 MB or less
+   (add `-t 12` to keep the first 12 seconds); `npm run check` fails anything over 15 MB.
+2. Paste this into your `.md` file where the clip should appear, with your file names and a one-line
+   caption. Keep the `../../media/` start exactly as written: it works on the live site, the test site
+   and your own computer.
+
+   ```html
+   <figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-nus-selfplay.jpg" aria-label="Simulation clip: the Guard team holds the zone"><source src="../../media/sim-nus-selfplay.mp4" type="video/mp4"></video><figcaption>Five Guard drones (blue) keep three faster Strike drones (red) out of the zone.</figcaption></figure>
+   ```
+
+3. Stills from simulation go in your images folder as `sim-<slug>.jpg` or `.png` (about 1400 px wide
+   and 400 KB at most) and use the normal image line. Check figures for words baked into them
+   (section 5): crop or skip any that use the "Avoid" column.
 
 ## 5. Writing style
 

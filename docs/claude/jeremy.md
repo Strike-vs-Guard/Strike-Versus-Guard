@@ -211,6 +211,16 @@ Docs updated to match. Push to `development` and Jeremy's check come next, then 
 **Outcome:** home about 5 screens (from 6.5). Jeremy checks the test site, merges PR #6, and each partner
 reviews its page.
 
+## 12. Simulation work from the monthly report (3 Nov 2026)
+> "Put in the simulation stuff from the monthly reports." Then: "Do not put in all the content; make
+> something short, led by the visuals."
+
+**What was done:** the October report's figures were mapped to their sections; four GIFs became
+clips and one figure a still. Each partner page gained a short "In simulation" section (1–2 visuals,
+2–3 sentences; CMU's and UPenn's are text only, as the report has no simulation figures for them).
+The Programme page gained "Proven in simulation first" with three clips, and the localisation status
+now carries the 0.081 m simulation number. Items that appear only in the FR&PDR were left out.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)

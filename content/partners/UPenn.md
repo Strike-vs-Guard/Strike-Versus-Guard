@@ -24,7 +24,7 @@ labLogo: ./UPenn/xlab.png
 logoAlt: University of Pennsylvania
 website: https://xlab.upenn.edu
 order: 4
-updated: 2026-11-02
+updated: 2026-11-03
 ---
 
 ## Our role in Strike vs Guard
@@ -48,6 +48,12 @@ flag.
 
 With CMU, we also work on the safety filter that sits under both strategy
 tracks and keeps the drones apart.
+
+## In simulation
+
+UPenn trains its formal-track strategies in its own simulator. Single-drone versions came first, as
+a baseline to compare against. The first runs where teams of drones train against each other have
+now produced candidate strategies, and they have not yet been scored against the rules.
 
 ## People
 

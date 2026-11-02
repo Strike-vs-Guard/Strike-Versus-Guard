@@ -24,7 +24,7 @@ labLogo: ./NUS/marmot-lab.png
 logoAlt: National University of Singapore
 website: https://www.marmotlab.org
 order: 3
-updated: 2026-11-02
+updated: 2026-11-03
 ---
 
 ## Our role in Strike vs Guard
@@ -50,6 +50,18 @@ The NUS team strategy first flew on palm-sized Crazyflie drones, then on
 full-size Starling 2 Max drones running CMU's AirStack.
 
 ![The NUS team strategy flying on Crazyflie drones](./NUS/crazyflie-flight.jpg)
+
+## In simulation
+
+NUS trains its team plays in a simple simulated version of the game: three Strike drones, 1.5 times
+faster, against five Guard drones that hold the zone. Each new generation of players trains against
+the earlier ones, so both sides keep improving. A separate planner flies one drone fast through a
+field of obstacles on routes that are hard to predict, and reaches its goal in over 99 % of runs;
+flying it with a team comes next.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-nus-selfplay.jpg" aria-label="Simulation clip: the Guard team holds the zone"><source src="../../media/sim-nus-selfplay.mp4" type="video/mp4"></video><figcaption>Five Guard drones (blue) keep three faster Strike drones (red) out of the zone (green).</figcaption></figure>
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-nus-obstacles.jpg" aria-label="Simulation clip: one drone plans a route through obstacles"><source src="../../media/sim-nus-obstacles.mp4" type="video/mp4"></video><figcaption>One drone (yellow path) plans a fast route through 70 pillars, seen from four angles.</figcaption></figure>
 
 ## People
 

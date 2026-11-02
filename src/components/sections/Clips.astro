@@ -1,30 +1,44 @@
 ---
 /**
- * The four flight clips (content/programme/flights.md) on the Flights page: eyebrow and h2 from the
- * file's `eyebrow`/`title`, two clips per row with full captions, then the note.
- * Holds #flights when given id="flights".
+ * A section of clips from one content/programme/<id>.md file: eyebrow and h2 from the file's
+ * `eyebrow`/`title`, two clips per row with full captions, then the note. `id` names the file and is
+ * the section anchor (#flights on the Flights page, #simulation on the Programme page).
+ * `body` shows the file's Markdown body under the title; `alt` uses the alternate background;
+ * `aspect` sets the clip frame (default: the tall flight clips).
  */
 import Clip from '../Clip.astro';
 import { section } from './content';
 
 interface Props {
-  id?: string;
+  id: string;
+  body?: boolean;
+  alt?: boolean;
+  aspect?: string;
 }
-const { id } = Astro.props;
-const flights = await section('flights');
+const { id, body = false, alt = false, aspect } = Astro.props;
+const data = await section(id);
+const { Content } = data;
+const titleId = `${id}-title`;
 ---
 
-<section id={id} class="section section--clips-large" aria-labelledby="clips-title">
+<section id={id} class:list={['section', 'section--clips-large', { 'section--alt': alt }]} aria-labelledby={titleId}>
   <div class="wrap">
     <header class="section__head">
-      <p class="eyebrow">{flights.eyebrow}</p>
-      <h2 id="clips-title">{flights.title}</h2>
+      <p class="eyebrow">{data.eyebrow}</p>
+      <h2 id={titleId}>{data.title}</h2>
+      {
+        body && (
+          <div class="prose">
+            <Content />
+          </div>
+        )
+      }
     </header>
     <div class="clips">
       {
-        flights.items.map((c) => (
+        data.items.map((c) => (
           <figure class="clip-card">
-            {c.video && <Clip video={c.video} poster={c.poster} title={c.title} />}
+            {c.video && <Clip video={c.video} poster={c.poster} title={c.title} aspect={aspect} />}
             <figcaption>
               <strong>{c.title}</strong>
               {c.text && <span>{c.text}</span>}
@@ -33,7 +47,7 @@ const flights = await section('flights');
         ))
       }
     </div>
-    {flights.note && <p class="section__note">{flights.note}</p>}
+    {data.note && <p class="section__note">{data.note}</p>}
   </div>
 </section>
 

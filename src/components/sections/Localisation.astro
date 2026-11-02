@@ -2,22 +2,24 @@
 /**
  * Localisation (content/programme/localisation.md).
  * Default: the full section (Programme page). `statusOnly`: just the one-sentence `status:` line
- * (Flights page). A missing file fails the build, as for every other section.
+ * (Flights page). A missing file fails the build, as for every other section. `alt` gives the full
+ * section the alternate background.
  */
 import { url } from '../../lib/url';
 import { section } from './content';
 
 interface Props {
   statusOnly?: boolean;
+  alt?: boolean;
 }
-const { statusOnly = false } = Astro.props;
+const { statusOnly = false, alt = false } = Astro.props;
 const d = await section('localisation');
 const { Content } = d;
 ---
 
 {
   !statusOnly && (
-    <section id="localisation" class="section">
+    <section id="localisation" class:list={['section', { 'section--alt': alt }]}>
       <div class="wrap">
         <header class="section__head">
           <p class="eyebrow">{d.eyebrow}</p>

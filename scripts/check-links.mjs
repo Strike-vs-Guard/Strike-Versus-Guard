@@ -29,11 +29,15 @@ for (const file of walk(dist)) {
     for (const raw of m[1].split(',').map((s) => s.trim().split(/\s+/)[0])) {
       if (!raw || /^(https?:|mailto:|tel:|data:|#)/.test(raw)) continue;
       checked++;
-      if (!raw.startsWith(base)) {
+      // Relative links (e.g. "../../media/clip.mp4" written in a partner's Markdown) are resolved
+      // against the page's own address, as a browser would; absolute ones must carry the base.
+      const pageUrl = base + page.slice(1).replace(/index\.html$/, '');
+      const abs = raw.startsWith('/') ? raw : new URL(raw, 'http://site' + pageUrl).pathname;
+      if (!abs.startsWith(base)) {
         problems.push(`${page}: "${raw}" does not start with the site base "${base}". Use a relative path.`);
         continue;
       }
-      const path = decodeURIComponent(raw.slice(base.length).split(/[?#]/)[0]);
+      const path = decodeURIComponent(abs.slice(base.length).split(/[?#]/)[0]);
       const target = join(dist, path);
       const ok = existsSync(target) && (statSync(target).isFile() || existsSync(join(target, 'index.html')));
       if (!ok) problems.push(`${page}: broken link "${raw}"`);

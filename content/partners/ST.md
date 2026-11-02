@@ -23,7 +23,7 @@ labLogo: ./ST/near-lab.png
 logoAlt: ST Engineering
 website: https://www.stengg.com
 order: 2
-updated: 2026-11-02
+updated: 2026-11-03
 ---
 
 ## Our role in Strike vs Guard
@@ -47,10 +47,21 @@ we run the Singapore flight lab where the drone teams are tested.
 ## Results so far
 
 The first Starling 2 Max flights have taken place in the Singapore lab, with
-more drones on the way. The Starling 2 Max now flies in the AirStack simulator, where camera-only
-localisation has started.
+more drones on the way.
 
 ![Starling drones in the ST Engineering flight lab in Singapore](./ST/singapore-flight-lab.jpg)
+
+## In simulation
+
+We brought the Starling 2 Max into the AirStack simulator (Isaac Sim with Pegasus) and built a
+construction-site world for it, where up to three drones fly at once. Camera-only localisation runs
+there first: over a 162 m flight, its position had an average error of 0.081 m against the drone's
+own flight-controller estimate (not yet against the simulator's true position). With three Starlings
+flying, each kept track of itself without a loss.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-st-three-starlings.jpg" aria-label="Simulation clip: three Starlings in AirStack"><source src="../../media/sim-st-three-starlings.mp4" type="video/mp4"></video><figcaption>Three simulated Starlings: one drone's camera view (left) and all three in the ground station (right).</figcaption></figure>
+
+![Simulated Starling 2 Max drones over the construction-site world in the AirStack simulator](./ST/sim-construction-site.jpg)
 
 ## People
 
