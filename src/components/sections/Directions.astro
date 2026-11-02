@@ -1,6 +1,8 @@
 ---
-/** Research directions and applications (content/programme/directions.md). Holds #directions. */
-import Icon from '../Icon.astro';
+/**
+ * Research directions and applications (content/programme/directions.md). Holds #directions.
+ * A plain numbered list (two columns from 900 px); the application tags read as one sentence.
+ */
 import { section } from './content';
 
 interface Props {
@@ -8,6 +10,11 @@ interface Props {
 }
 const { alt = false } = Astro.props;
 const directions = await section('directions');
+/* Lower-case the first letter of each tag after the first, unless it looks like an acronym ("UAV"). */
+const soft = (t: string) => (/^[A-Z][a-z]/.test(t) ? t[0].toLowerCase() + t.slice(1) : t);
+const tags = directions.tags.map((t, i) => (i === 0 ? t : soft(t)));
+const tagSentence =
+  tags.length < 2 ? tags.join('') : `${tags.slice(0, -1).join(', ')} and ${tags[tags.length - 1]}`;
 ---
 
 <section id="directions" class:list={['section', { 'section--alt': alt }]}>
@@ -16,67 +23,68 @@ const directions = await section('directions');
       <p class="eyebrow">{directions.eyebrow}</p>
       <h2>{directions.title}</h2>
     </header>
-    <ul class="directions">
-      {
-        directions.items.map((d) => (
-          <li>
-            <Icon name={d.icon ?? 'drones'} />
-            <h3>{d.title}</h3>
-            <p class="muted">{d.text}</p>
-          </li>
-        ))
-      }
-    </ul>
     {
-      directions.tags.length > 0 && (
-        <div class="tags">
-          <p class="eyebrow">{directions.tagsLabel}</p>
-          <ul>
-            {directions.tags.map((t) => (
-              <li class="chip">{t}</li>
-            ))}
-          </ul>
-        </div>
+      directions.items.length > 0 && (
+        <ol class="dir-list">
+          {directions.items.map((d, i) => (
+            <li>
+              <span class="dir-list__n" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <h3>{d.title}</h3>
+                {d.text && <p class="muted">{d.text}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+    {
+      tags.length > 0 && (
+        <p class="dir-tags muted">
+          {directions.tagsLabel ?? 'Applications'}: {tagSentence}.
+        </p>
       )
     }
   </div>
 </section>
 
 <style>
-  /* Directions */
-  .directions {
+  .dir-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 32px 28px;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 0 56px;
   }
-  .directions li {
+  @media (min-width: 900px) {
+    .dir-list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .dir-list li {
+    display: grid;
+    grid-template-columns: 3.5ch minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px 0;
     border-top: 1px solid var(--border);
-    padding-top: 18px;
+    max-width: 68ch;
   }
-  .directions :global(svg) {
-    color: var(--text);
-    margin-bottom: 12px;
+  .dir-list__n {
+    font: 500 var(--step--1) var(--font-mono);
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding-top: 0.3em;
   }
-  .directions h3 {
-    margin-bottom: 4px;
+  .dir-list h3 {
+    margin: 0 0 2px;
   }
-  .tags {
-    margin-top: 40px;
-  }
-  .tags ul {
-    list-style: none;
+  .dir-list p {
     margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
   }
-  .tags .chip {
-    font-size: var(--step--1);
-    padding: 4px 12px;
-    color: var(--text);
+  .dir-tags {
+    margin: 32px 0 0;
+    max-width: 68ch;
   }
 </style>

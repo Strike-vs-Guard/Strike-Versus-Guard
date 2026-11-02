@@ -3,6 +3,7 @@
  * Localisation (content/programme/localisation.md).
  * Default: the full section (Programme page): the three questions as a row of cards (`items:`), the
  * rule (`note:`), the body (why, how, status, the plan as targets) and the figure (`image:`, `caption:`).
+ * Ends with the open problems (`open:`, OpenList) when there are any.
  * `statusOnly`: just the one-sentence `status:` line
  * (Flights page). A missing file fails the build, as for every other section. `alt` gives the full
  * section the alternate background.
@@ -10,6 +11,7 @@
 import { Image } from 'astro:assets';
 import { url } from '../../lib/url';
 import { section } from './content';
+import OpenList from './OpenList.astro';
 
 interface Props {
   statusOnly?: boolean;
@@ -47,6 +49,7 @@ const { Content } = d;
             {d.caption && <figcaption>{d.caption}</figcaption>}
           </figure>
         )}
+        <OpenList items={d.open} label={d.openLabel} />
       </div>
     </section>
   )

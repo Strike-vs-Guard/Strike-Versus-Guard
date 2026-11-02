@@ -2,7 +2,7 @@
 /**
  * The test ladder (content/programme/ladder.md) on the Flights page: the file's eyebrow, title and short
  * body (the safety order), then one card per step with its `state:` as a text chip, then the note.
- * Holds #test-ladder.
+ * Anything passed as children (e.g. a photo of the lab) goes at the end. Holds #test-ladder.
  */
 import { section } from './content';
 
@@ -36,6 +36,7 @@ const { Content } = d;
       }
     </ol>
     {d.note && <p class="section__note">{d.note}</p>}
+    <slot />
   </div>
 </section>
 

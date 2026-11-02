@@ -1,23 +1,83 @@
 ---
-/** Flights page: the October 2026 flight day with the four clips, CMU's outdoor flights, the test ladder, localisation status, milestones. */
+/**
+ * Flights page: the head with the cage-floor photo (flights.md `image:`), the October 2026 clips (one lead
+ * clip, then three to a row, each with a stamp line), CMU's outdoor flights (stamped too), the test ladder with an
+ * annotated photo of the Singapore lab, localisation status, milestones.
+ */
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/sections/PageHead.astro';
 import Clips from '../components/sections/Clips.astro';
 import TestLadder from '../components/sections/TestLadder.astro';
 import Localisation from '../components/sections/Localisation.astro';
 import Milestones from '../components/sections/Milestones.astro';
+import AnnotatedPhoto from '../components/AnnotatedPhoto.astro';
 import { section } from '../components/sections/content';
+import labPhoto from '../../content/partners/ST/singapore-flight-lab.jpg';
 
 const flights = await section('flights');
+/* Points on the Singapore lab photo, in percent of the photo (placed by eye on the 1100 × 623 original). */
+const labPoints = [
+  { x: 21.8, y: 17, label: 'Motion-capture cameras', lx: 37, ly: 9.5 },
+  { x: 52.1, y: 48.6, label: 'Start pads', lx: 44, ly: 60 },
+  { x: 62.4, y: 70.9, label: 'Starling 2 Max', lx: 52, ly: 82 },
+];
 ---
 
 <Base title="Flights" description="Three Starling 2 Max drones flying with no pilot in CMU's flight cage, and what comes next.">
   <PageHead eyebrow={flights.pageEyebrow ?? flights.eyebrow} title={flights.pageTitle ?? flights.title}>
     <flights.Content />
   </PageHead>
-  <Clips id="flights" />
-  <Clips id="outdoor" body alt aspect="16 / 9" />
-  <TestLadder />
+  {
+    flights.image && (
+      <div class="wrap fl-photo">
+        <figure>
+          <Image
+            class="media-edge"
+            src={flights.image}
+            alt={flights.imageAlt ?? ''}
+            widths={[600, 1000, 1400, 1800]}
+            sizes="(min-width: 1320px) 1320px, 100vw"
+          />
+          {flights.caption && <figcaption>{flights.caption}</figcaption>}
+        </figure>
+      </div>
+    )
+  }
+  <Clips id="flights" lead log />
+  <Clips id="outdoor" body alt aspect="16 / 9" log />
+  <TestLadder>
+    <div class="fl-lab">
+      <AnnotatedPhoto
+        src={labPhoto}
+        alt="ST Engineering's flight lab in Singapore: motion-capture cameras on tall stands around a grey floor, a row of white start pads, and one Starling 2 Max on the floor."
+        points={labPoints}
+        caption="ST Engineering's flight lab in Singapore, where the ladder ends."
+      />
+    </div>
+  </TestLadder>
   <Localisation statusOnly />
   <Milestones id="" alt={false} />
 </Base>
+
+<style>
+  .fl-photo {
+    padding-top: clamp(24px, 4vw, 40px);
+  }
+  .fl-photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  @media (min-width: 760px) {
+    .fl-photo :global(img) {
+      aspect-ratio: 21 / 9;
+      object-fit: cover;
+      object-position: center 62%;
+    }
+  }
+  .fl-lab {
+    margin-top: clamp(32px, 4vw, 48px);
+  }
+</style>

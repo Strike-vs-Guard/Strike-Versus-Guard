@@ -1,0 +1,49 @@
+---
+/**
+ * Open problems for a programme section: `openLabel` (default "What we haven't solved yet") and the
+ * section's `open:` lines as a plain list with a left rule. Renders nothing when the list is empty.
+ */
+interface Props {
+  items?: string[];
+  label?: string;
+}
+const { items = [], label } = Astro.props;
+const lines = items.filter((s) => s && s.trim());
+---
+
+{
+  lines.length > 0 && (
+    <div class="open-list">
+      <p class="eyebrow">{label ?? "What we haven't solved yet"}</p>
+      <ul>
+        {lines.map((s) => (
+          <li>{s}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  .open-list {
+    margin-top: clamp(32px, 4vw, 48px);
+    max-width: 68ch;
+    padding-left: 18px;
+    border-left: 1px solid var(--border);
+  }
+  .open-list .eyebrow {
+    margin-bottom: 10px;
+  }
+  .open-list ul {
+    margin: 0;
+    padding: 0 0 0 1.1em;
+    display: grid;
+    gap: 6px;
+  }
+  .open-list li {
+    color: var(--text);
+  }
+  .open-list li::marker {
+    color: var(--muted);
+  }
+</style>

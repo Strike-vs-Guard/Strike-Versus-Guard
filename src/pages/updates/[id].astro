@@ -23,10 +23,9 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
           <a href={url('updates/')}>Updates</a> / <time datetime={update.data.date.toISOString().slice(0, 10)}>{fmt(update.data.date)}</time>
         </p>
         <h1>{update.data.title}</h1>
-        <p class="muted">
-          {update.data.author ? `${update.data.author}, ` : ''}{
-            p && p.data.page ? <a href={url(`partners/${p.id}/`)}>{p.data.short}</a> : p?.data.short
-          }
+        <p class="muted post-by">
+          {update.data.author && `By ${update.data.author}, `}
+          {p && p.data.page ? <a href={url(`partners/${p.id}/`)}>{p.data.short}</a> : p?.data.short}
         </p>
       </header>
       {

@@ -3,19 +3,30 @@
  * A short flight clip. Shows the poster image with a play button; the video only
  * loads when someone clicks it. Muted, looping, no autoplay.
  * `aspect` sets the frame (CSS aspect-ratio); the default fits the flight clips, which stack the
- * ground station above the flight.
+ * ground station above the flight. `natural` uses the video's own shape (read from the file at build
+ * time) and caps the height, so a lead clip can run at full width without filling the screen.
  */
 import { url } from '../lib/url';
+import { videoSize } from '../lib/media';
 interface Props {
   video: string;
   poster?: string;
   title: string;
   aspect?: string;
+  natural?: boolean;
+  /** with `natural`: frame clips wider than 16:9 at 16:9 (they letterbox), so a small grid cell keeps some height */
+  capWide?: boolean;
 }
-const { video, poster, title, aspect = '960 / 1080' } = Astro.props;
+const { video, poster, title, aspect = '960 / 1080', natural = false, capWide = false } = Astro.props;
+const size = natural ? videoSize(video) : null;
+const frame = size
+  ? capWide && size.width / size.height > 16 / 9
+    ? '16 / 9'
+    : `${size.width} / ${size.height}`
+  : aspect;
 ---
 
-<div class="clip">
+<div class:list={['clip', { 'clip--natural': natural }]}>
   <video
     src={url(`media/${video}`)}
     poster={poster ? url(`media/${poster}`) : undefined}
@@ -24,7 +35,7 @@ const { video, poster, title, aspect = '960 / 1080' } = Astro.props;
     loop
     playsinline
     controls
-    style={`aspect-ratio: ${aspect}`}
+    style={`aspect-ratio: ${frame}`}
     aria-label={`Flight clip: ${title}`}></video>
 </div>
 
@@ -41,5 +52,9 @@ const { video, poster, title, aspect = '960 / 1080' } = Astro.props;
     width: 100%;
     object-fit: contain;
     background: #0e1114;
+  }
+  /* full-width lead clip: tall clips letterbox inside a capped height instead of filling the screen */
+  .clip--natural video {
+    max-height: min(72vh, 680px);
   }
 </style>

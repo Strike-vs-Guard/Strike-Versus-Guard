@@ -1,14 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { url } from '../../lib/url';
+import UpdateLog from '../../components/UpdateLog.astro';
 
 const updates = (await getCollection('updates', (u) => !u.data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
-const partners = await getCollection('partners');
-const name = (id: string) => partners.find((p) => p.id === id)?.data.short ?? id;
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 
 <Base title="Updates" description="News and progress from the Strike vs Guard programme partners.">
@@ -19,19 +16,7 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
         <h1 class="h1">News and progress</h1>
         <p class="lede muted">Short posts from the programme partners on flights, results and publications.</p>
       </header>
-      <ol class="list">
-        {
-          updates.map((u) => (
-            <li>
-              <p class="eyebrow">
-                <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmt(u.data.date)}</time> · {name(u.data.partner)}
-              </p>
-              <h2><a href={url(`updates/${u.id}/`)}>{u.data.title}</a></h2>
-              <p class="muted">{u.data.summary}</p>
-            </li>
-          ))
-        }
-      </ol>
+      <UpdateLog updates={updates} heading="h2" />
     </div>
   </section>
 </Base>
@@ -40,28 +25,5 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
   .h1 {
     font-family: var(--font-display);
     font-size: var(--step-hero);
-  }
-  .list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    max-width: 72ch;
-  }
-  .list li {
-    padding: 24px 0;
-    border-top: 1px solid var(--border);
-  }
-  .list h2 {
-    font-size: var(--step-3);
-    margin-bottom: 6px;
-  }
-  .list h2 a {
-    text-decoration: none;
-  }
-  .list h2 a:hover {
-    text-decoration: underline;
-  }
-  .list p:last-child {
-    margin: 0;
   }
 </style>

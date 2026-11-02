@@ -1,12 +1,19 @@
 ---
 /**
  * A section of clips from one content/programme/<id>.md file: eyebrow and h2 from the file's
- * `eyebrow`/`title`, two clips per row with full captions, then the note. `id` names the file and is
- * the section anchor (#flights on the Flights page, #simulation on the Programme page).
- * `body` shows the file's Markdown body under the title; `alt` uses the alternate background;
- * `aspect` sets the clip frame (default: the tall flight clips).
+ * `eyebrow`/`title`, the clips with their captions, the note, then the open problems (`open:`).
+ * `id` names the file and is the section anchor (#flights on the Flights page, #simulation on the
+ * Programme page). `body` shows the file's Markdown body under the title; `alt` uses the alternate
+ * background; `aspect` sets the clip frame (default: the tall flight clips).
+ * `lead` (Flights page): the first clip runs at full content width, the rest sit three to a row; every
+ * clip keeps its own shape (tall and wide clips are grouped in the content, so rows stay even), but grid
+ * clips wider than 16:9 sit in a 16:9 frame so the player controls do not cover them.
+ * `log` (Flights page): each caption starts with a mono stamp line (label · when ·
+ * partners) and gives `text` as "What to watch:".
  */
+import { getCollection } from 'astro:content';
 import Clip from '../Clip.astro';
+import OpenList from './OpenList.astro';
 import { section } from './content';
 
 interface Props {
@@ -14,11 +21,19 @@ interface Props {
   body?: boolean;
   alt?: boolean;
   aspect?: string;
+  lead?: boolean;
+  log?: boolean;
 }
-const { id, body = false, alt = false, aspect } = Astro.props;
+const { id, body = false, alt = false, aspect, lead = false, log = false } = Astro.props;
 const data = await section(id);
 const { Content } = data;
 const titleId = `${id}-title`;
+const short = Object.fromEntries((await getCollection('partners')).map((p) => [p.id, p.data.short]));
+const stamp = (c: (typeof data.items)[number]) =>
+  [c.label, c.when, c.partners.map((p) => short[p] ?? p).join(', ')].filter(Boolean).join(' · ');
+const [first, ...rest] = data.items;
+const leadItem = lead && first?.video ? first : undefined;
+const gridItems = leadItem ? rest : data.items;
 ---
 
 <section id={id} class:list={['section', 'section--clips-large', { 'section--alt': alt }]} aria-labelledby={titleId}>
@@ -34,26 +49,43 @@ const titleId = `${id}-title`;
         )
       }
     </header>
-    <div class="clips">
-      {
-        data.items.map((c) => (
-          <figure class="clip-card">
-            {c.video && <Clip video={c.video} poster={c.poster} title={c.title} aspect={aspect} />}
-            <figcaption>
-              <strong>{c.title}</strong>
-              {c.text && <span>{c.text}</span>}
-            </figcaption>
-          </figure>
-        ))
-      }
-    </div>
+    {
+      leadItem && (
+        <figure class="clip-card clip-card--lead">
+          <Clip video={leadItem.video!} poster={leadItem.poster} title={leadItem.title} natural />
+          <figcaption>
+            {log && stamp(leadItem) && <span class="clip-card__stamp">{stamp(leadItem)}</span>}
+            <strong>{leadItem.title}</strong>
+            {leadItem.text && <span>{log ? <><em>What to watch:</em> {leadItem.text}</> : leadItem.text}</span>}
+          </figcaption>
+        </figure>
+      )
+    }
+    {
+      gridItems.length > 0 && (
+        <div class:list={['clips', { 'clips--three': lead }]}>
+          {gridItems.map((c) => (
+            <figure class="clip-card">
+              {c.video && <Clip video={c.video} poster={c.poster} title={c.title} aspect={aspect} natural={lead} capWide />}
+              <figcaption>
+                {log && stamp(c) && <span class="clip-card__stamp">{stamp(c)}</span>}
+                <strong>{c.title}</strong>
+                {c.text && <span>{log ? <><em>What to watch:</em> {c.text}</> : c.text}</span>}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      )
+    }
     {data.note && <p class="section__note">{data.note}</p>}
+    <OpenList items={data.open} label={data.openLabel} />
   </div>
 </section>
 
 <style>
   .clips {
     display: grid;
+    align-items: start;
     gap: 32px 28px;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   }
@@ -67,9 +99,31 @@ const titleId = `${id}-title`;
   .clip-card figcaption strong {
     color: var(--text);
   }
+  .clip-card figcaption em {
+    font-style: normal;
+    color: var(--text);
+  }
+  .clip-card__stamp {
+    font: 500 var(--step--1) var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .clip-card--lead {
+    margin-bottom: clamp(32px, 4vw, 48px);
+  }
+  .clip-card--lead figcaption {
+    max-width: 68ch;
+  }
   @media (min-width: 760px) {
     .clips {
       grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1000px) {
+    .clips--three {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>
