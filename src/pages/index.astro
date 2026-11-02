@@ -49,6 +49,27 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
         <span class="hero__rule" aria-hidden="true"></span>
         <p class="hero__title">{overview.title}</p>
         <div class="prose hero__body"><overview.Content /></div>
+        <div class="hero__actions">
+          <a class="btn" href="#programme">How it works</a>
+          <a class="btn btn--ghost" href="#partners">Meet the partners</a>
+        </div>
+      </div>
+      <div class="hero__side">
+        {
+          overview.image && (
+            <figure class="hero__figure">
+              <Image
+                src={overview.image}
+                alt={overview.imageAlt ?? ''}
+                widths={[560, 900, 1400]}
+                sizes="(min-width: 960px) 560px, 100vw"
+                loading="eager"
+                fetchpriority="high"
+              />
+              {overview.caption && <figcaption>{overview.caption}</figcaption>}
+            </figure>
+          )
+        }
         {
           overview.decisions.length > 0 && (
             <div class="hero__decide">
@@ -61,31 +82,12 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
             </div>
           )
         }
-        <div class="hero__actions">
-          <a class="btn" href="#programme">How it works</a>
-          <a class="btn btn--ghost" href="#partners">Meet the partners</a>
-        </div>
       </div>
-      {
-        overview.image && (
-          <figure class="hero__figure">
-            <Image
-              src={overview.image}
-              alt={overview.imageAlt ?? ''}
-              widths={[560, 900, 1400]}
-              sizes="(min-width: 960px) 560px, 100vw"
-              loading="eager"
-              fetchpriority="high"
-            />
-            {overview.caption && <figcaption>{overview.caption}</figcaption>}
-          </figure>
-        )
-      }
     </div>
     <div class="wrap">
       <dl class="facts">
         <div><dt>Funded by</dt><dd>HTX</dd></div>
-        <div><dt>Partners</dt><dd>ST Engineering · CMU · UPenn · NUS</dd></div>
+        <div><dt>Partners</dt><dd>ST Engineering · NUS · UPenn · CMU</dd></div>
         <div><dt>Hardware</dt><dd>Starling 2 Max · AirStack</dd></div>
         <div><dt>Timeline</dt><dd>2026 to 2029</dd></div>
       </dl>
@@ -353,13 +355,16 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 40px;
     }
-    .hero__figure {
+    .hero__side {
       /* eyebrow line + wordmark margin: puts the photo top level with the wordmark */
       margin-top: 37px;
     }
   }
+  .hero__figure {
+    margin: 0;
+  }
   .hero__decide {
-    margin-top: 20px;
+    margin-top: 22px;
   }
   .hero__decide .eyebrow {
     margin-bottom: 8px;
@@ -411,6 +416,7 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     border: 1px solid var(--border);
     aspect-ratio: 4 / 3;
     object-fit: cover;
+    object-position: 50% 40%;
   }
   @media (max-width: 420px) {
     .hero :global(.wordmark--lg) {
