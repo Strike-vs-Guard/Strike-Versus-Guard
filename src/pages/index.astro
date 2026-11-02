@@ -29,16 +29,19 @@ const partners = (await getCollection('partners')).sort((a, b) => a.data.order -
 const sponsors = partners.filter((p) => p.data.role === 'Funding sponsor');
 const members = partners.filter((p) => p.data.role !== 'Funding sponsor');
 
-// Columns of the "who does what" grid, ordered by the first layer each partner works on,
-// so the filled cells run roughly diagonally from strategy down to integration.
+// Partners in the "who does what" section, ordered by the first layer each works on.
 const LAYER_ORDER = ['strategy', 'safety', 'flight', 'drones', 'integration'] as const;
 type LayerKey = (typeof LAYER_ORDER)[number];
 const firstLayer = (p: (typeof members)[number]) =>
   Math.min(...LAYER_ORDER.map((k, i) => (p.data.work[k] ? i : 99)));
 const cols = [...members].sort((a, b) => firstLayer(a) - firstLayer(b) || a.data.order - b.data.order);
-// Hovering anywhere in a partner's column highlights the whole column.
+// Hovering a partner card highlights that partner's contributions and fades the rest.
 const hoverCss = cols
-  .map((p) => `.mx:has([data-col="${p.id}"]:hover) [data-col="${p.id}"]{background:var(--hot)}`)
+  .map(
+    (p) =>
+      `.who:has(.who__partner[data-col="${p.id}"]:hover,.who__partner[data-col="${p.id}"]:focus-visible) .who__item:not([data-col="${p.id}"]){opacity:.3}` +
+      `.who:has(.who__partner[data-col="${p.id}"]:hover,.who__partner[data-col="${p.id}"]:focus-visible) .who__item[data-col="${p.id}"]{border-color:var(--text)}`,
+  )
   .join('');
 const updates = (await getCollection('updates', (u) => !u.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
@@ -163,57 +166,59 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
       </header>
 
       <Fragment set:html={`<style>${hoverCss}</style>`} />
-      <div class="mx" style={`--cols:${cols.length}`} role="table" aria-label="Which partner works on which layer">
-        <div class="mx__row mx__head" role="row">
-          <div class="mx__corner" role="columnheader"><span class="visually-hidden">Layer</span></div>
+      <div class="who">
+        <ul class="who__partners" aria-label="Partners">
           {
             cols.map((p) => (
-              <a role="columnheader" class="mx__partner" data-col={p.id} href={url(`partners/${p.id}/`)}>
-                <span class="logo-well mx__logo">
-                  <Image src={p.data.logo} alt="" height={96} densities={[1, 2]} />
-                </span>
-                <span class="eyebrow">{p.data.role}</span>
-                <strong class="mx__name">{p.data.lab ? `${p.data.short} ${p.data.lab}` : p.data.short}</strong>
-                {p.data.lead && <span class="mx__lead">{p.data.lead}</span>}
-                <span class="mx__more">
-                  See their work <span aria-hidden="true">→</span>
-                </span>
-              </a>
+              <li>
+                <a class="who__partner" data-col={p.id} href={url(`partners/${p.id}/`)}>
+                  <span class="logo-well who__logo">
+                    <Image src={p.data.logo} alt="" height={96} densities={[1, 2]} />
+                  </span>
+                  <span class="eyebrow">{p.data.role}</span>
+                  <strong class="who__name">{p.data.lab ? `${p.data.short} ${p.data.lab}` : p.data.short}</strong>
+                  {p.data.lead && <span class="who__lead">{p.data.lead}</span>}
+                  <span class="who__more">
+                    See their work <span aria-hidden="true">→</span>
+                  </span>
+                </a>
+              </li>
             ))
           }
-        </div>
-        {
-          stack.items.map((r) => {
-            const key = (r.icon ?? '') as LayerKey;
-            return (
-              <div class:list={['mx__row', { 'mx__row--all': key === 'integration' }]} role="row">
-                <div class="mx__layer" role="rowheader">
-                  <span class="mx__icon">
-                    <Icon name={r.icon ?? 'drones'} size={24} />
-                  </span>
-                  <span>
-                    <span class="eyebrow">{r.label}</span>
-                    <strong class="mx__title">{r.title}</strong>
-                    <span class="mx__text">{r.text}</span>
-                  </span>
-                </div>
-                {cols.map((p) => {
-                  const t = p.data.work[key];
-                  return t ? (
-                    <a role="cell" class="mx__cell" data-col={p.id} href={url(`partners/${p.id}/`)}>
-                      <span class="mx__who">{p.data.short}</span>
-                      <span>{t}</span>
-                    </a>
-                  ) : (
-                    <div role="cell" class="mx__cell mx__cell--empty" data-col={p.id}>
-                      <span class="visually-hidden">Not involved</span>
+        </ul>
+
+        <ol class="who__layers">
+          {
+            stack.items.map((r) => {
+              const key = (r.icon ?? '') as LayerKey;
+              const involved = cols.filter((p) => p.data.work[key]);
+              return (
+                <li class:list={['who__layer', { 'who__layer--all': key === 'integration' }]}>
+                  <div class="who__layer-head">
+                    <span class="who__icon">
+                      <Icon name={r.icon ?? 'drones'} size={24} />
+                    </span>
+                    <div>
+                      <p class="eyebrow">{r.label}</p>
+                      <h3>{r.title}</h3>
+                      <p class="who__text">{r.text}</p>
                     </div>
-                  );
-                })}
-              </div>
-            );
-          })
-        }
+                  </div>
+                  <ul class="who__items">
+                    {involved.map((p) => (
+                      <li>
+                        <a class="who__item" data-col={p.id} href={url(`partners/${p.id}/`)}>
+                          <span class="who__who">{p.data.short}</span>
+                          <span>{p.data.work[key]}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })
+          }
+        </ol>
       </div>
 
       {
@@ -685,73 +690,92 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
   }
 
   /* Who does what */
-  .mx {
-    --hot: color-mix(in srgb, var(--text) 5%, transparent);
+  .who__partners {
+    list-style: none;
+    margin: 0 0 28px;
+    padding: 0;
     display: grid;
-    grid-template-columns: minmax(260px, 1.6fr) repeat(var(--cols, 4), minmax(0, 1fr));
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg);
-    overflow: hidden;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
   }
-  .mx__row {
-    display: contents;
+  .who__partners li {
+    display: flex;
   }
-  .mx__corner {
-    border-bottom: 1px solid var(--border);
-  }
-  .mx__partner {
+  .who__partner {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 16px 14px 14px;
-    border-left: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    padding: 14px 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
     text-decoration: none;
-    transition: background 0.15s ease;
+    transition: border-color 0.15s ease;
   }
-  .mx__logo {
+  .who__partner:hover,
+  .who__partner:focus-visible {
+    border-color: var(--text);
+  }
+  .who__logo {
     height: 76px;
     margin-bottom: 12px;
     border: 1px solid var(--border);
   }
-  .mx__logo :global(img) {
+  .who__logo :global(img) {
     max-height: 48px;
     max-width: 100%;
   }
-  .mx__partner .eyebrow {
+  .who__partner .eyebrow {
     margin: 0;
   }
-  .mx__name {
+  .who__name {
     font-size: var(--step-1);
     line-height: 1.25;
   }
-  .mx__lead {
+  .who__lead {
     font-size: var(--step--1);
     color: var(--muted);
   }
-  .mx__more {
+  .who__more {
     margin-top: auto;
     padding-top: 10px;
     font-size: var(--step--1);
     font-weight: 600;
     color: var(--muted);
   }
-  .mx__partner:hover .mx__more,
-  .mx__partner:focus-visible .mx__more {
+  .who__partner:hover .who__more,
+  .who__partner:focus-visible .who__more {
     color: var(--text);
   }
-  .mx__layer {
-    display: flex;
-    gap: 14px;
-    padding: 18px 16px;
+
+  .who__layers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     border-top: 1px solid var(--border);
   }
-  .mx__head + .mx__row .mx__layer,
-  .mx__head + .mx__row .mx__cell {
-    border-top: 0;
+  .who__layer {
+    display: grid;
+    gap: 14px 32px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--border);
   }
-  .mx__icon {
+  @media (min-width: 860px) {
+    .who__layer {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      align-items: start;
+    }
+  }
+  .who__layer--all {
+    border-top: 1px dashed var(--muted);
+    margin-top: -1px;
+  }
+  .who__layer-head {
+    display: flex;
+    gap: 14px;
+  }
+  .who__icon {
     flex-shrink: 0;
     width: 40px;
     height: 40px;
@@ -761,121 +785,55 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     border: 1px solid var(--border);
     background: var(--surface);
   }
-  .mx__layer .eyebrow {
-    display: block;
+  .who__layer-head .eyebrow {
     margin: 0 0 2px;
   }
-  .mx__title {
-    display: block;
+  .who__layer-head h3 {
     font-family: var(--font-display);
+    font-weight: 700;
     font-size: var(--step-3);
-    line-height: 1.1;
-    margin-bottom: 4px;
+    margin: 0 0 4px;
   }
-  .mx__text {
-    display: block;
+  .who__text {
     font-size: var(--step-0);
     color: var(--muted);
-    line-height: 1.5;
+    margin: 0;
   }
-  .mx__cell {
-    position: relative;
-    padding: 18px 14px;
-    border-top: 1px solid var(--border);
-    border-left: 1px solid var(--border);
+  .who__items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+  }
+  .who__items li {
+    display: flex;
+  }
+  .who__item {
+    flex: 1;
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
     font-size: var(--step-0);
     line-height: 1.5;
     text-decoration: none;
-    transition: background 0.15s ease;
+    transition:
+      opacity 0.2s ease,
+      border-color 0.2s ease;
   }
-  a.mx__cell::before {
-    content: '';
+  .who__item:hover {
+    border-color: var(--text);
+  }
+  .who__who {
     display: block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--text);
-    margin-bottom: 10px;
-  }
-  a.mx__cell:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--muted);
-  }
-  .mx__cell--empty::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--border);
-  }
-  .mx__who {
-    display: none;
-  }
-  .mx__row--all .mx__layer,
-  .mx__row--all .mx__cell {
-    border-top: 1px dashed var(--muted);
-  }
-
-  @media (max-width: 899px) {
-    .mx {
-      display: block;
-      border: 0;
-      background: none;
-      overflow: visible;
-    }
-    .mx__head {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .mx__corner {
-      display: none;
-    }
-    .mx__partner {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--bg);
-    }
-    .mx__row:not(.mx__head) {
-      display: block;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--bg);
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
-    .mx__layer,
-    .mx__cell,
-    .mx__row--all .mx__layer,
-    .mx__row--all .mx__cell {
-      border: 0;
-    }
-    .mx__cell {
-      display: block;
-      border-top: 1px solid var(--border);
-      padding: 12px 16px;
-    }
-    .mx__head + .mx__row .mx__cell {
-      border-top: 1px solid var(--border);
-    }
-    a.mx__cell::before {
-      display: none;
-    }
-    .mx__cell--empty {
-      display: none;
-    }
-    .mx__who {
-      display: block;
-      font: 500 var(--step--1) var(--font-mono);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 2px;
-    }
+    font: 500 var(--step--1) var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
   }
 
   .sponsor {

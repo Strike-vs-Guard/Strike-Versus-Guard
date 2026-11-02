@@ -1,17 +1,24 @@
-# Builds and publishes the website whenever `main` or `development` changes.
+# Builds and publishes the website.
 #
 #   main         →  https://strike-vs-guard.github.io/Strike-Versus-Guard/          (live site)
 #   development  →  https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/  (test site)
 #
-# Both are built in every run and published together, so the repository only
-# ever needs these two branches. No gh-pages branch is used.
+# Every run builds BOTH branches and publishes them together, so the repository
+# only needs these two branches. It runs:
+#   - on a push to main, and
+#   - after the CI check passes on development. That run happens on main's side,
+#     because GitHub only lets the default branch publish to Pages.
 #
 # Requires: Settings → Pages → Build and deployment → Source = "GitHub Actions".
 name: Deploy site
 
 on:
   push:
-    branches: [main, development]
+    branches: [main]
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [development]
   workflow_dispatch:
 
 permissions:
@@ -25,6 +32,8 @@ concurrency:
 
 jobs:
   build:
+    # After CI on development, only publish if the check passed.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     env:
       REPO_PATH: /${{ github.event.repository.name }}/

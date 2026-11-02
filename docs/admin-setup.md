@@ -11,16 +11,17 @@ The repository keeps exactly two branches:
 | `main` | Live site | https://strike-vs-guard.github.io/Strike-Versus-Guard/ |
 | `development` | Where all edits happen; test site | https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/ |
 
-A push to either branch runs *Deploy site* (`.github/workflows/deploy.yml`), which builds **both**
-branches and publishes them together. No `gh-pages` branch is used.
+A push to `main`, or a push to `development` that passes the CI check, runs *Deploy site*
+(`.github/workflows/deploy.yml`). It builds **both** branches and publishes them together. No
+`gh-pages` branch is used. The development-triggered run executes on `main`'s side (via
+`workflow_run`), so the default `github-pages` environment rule ("main only") is fine as it is.
 
 ## Settings
 
 1. **GitHub Pages source:** Settings → Pages → *Build and deployment* → Source: **GitHub Actions**.
    (Not "Deploy from a branch".)
-2. **Pages environment:** Settings → Environments → `github-pages` → *Deployment branches and tags* →
-   allow **`main`** and **`development`**. By default only the default branch may deploy, which would
-   make pushes to `development` fail at the deploy step.
+2. If you see a failing **"pages build and deployment"** job (a Jekyll error about `.astro` files),
+   the Pages source is still set to "Deploy from a branch". Switch it to **GitHub Actions** (step 1).
 3. **Workflow permissions:** Settings → Actions → General → leave *Read repository contents* as the
    default; the workflows request what they need. If the organisation restricts actions, allow `actions/*`.
 4. **Auto-delete branches:** Settings → General → tick **Automatically delete head branches**, so that
