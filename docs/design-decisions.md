@@ -62,3 +62,23 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 - Flight clips are click-to-play (`preload="none"`), muted, with poster frames.
 - Light and dark mode follow the system setting. Layout is checked at 390 px wide with no horizontal
   scroll.
+
+## Relationship to CMU's `svg-website`
+
+CMU maintains a separate site, [`Strike-vs-Guard/svg-website`](https://github.com/Strike-vs-Guard/svg-website),
+served at https://strike-vs-guard.github.io/svg-website/. It is the technical project page and developer
+documentation for the SVG ground-control software in AirStack. It is built with React and Vite, and its docs
+are synced from AirStack with Zensical. The two sites have different jobs:
+
+| | This site (`Strike-Versus-Guard`) | CMU's `svg-website` |
+|---|---|---|
+| Audience | Sponsors, visitors, researchers, all partners | Developers and operators of the ground controller |
+| Content | Programme, both strategy tracks, benchmark, partners, news | CBF filter, geofence, scenarios, experiments C1–C5, setup docs |
+| Editing | Markdown per partner, PR previews | TypeScript data files plus docs synced from AirStack |
+
+This site links to CMU's from the CMU partner page. Ideas adopted from it:
+- a size budget in `npm run check`
+- poster frames with `preload="none"` video
+- deriving the base path from the repository name in the workflows
+
+Both sites deploy to GitHub Pages from separate repositories, so their Pages settings don't interfere.

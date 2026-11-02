@@ -56,6 +56,8 @@ full-size drones.
 
 - Prof Sebastian Scherer, AirLab, Carnegie Mellon University
 
-## Code and publications
+## Code and documentation
 
+- Strike vs Guard ground control, project page and developer docs:
+  <https://strike-vs-guard.github.io/svg-website/>
 - AirStack: <https://github.com/castacks/AirStack>

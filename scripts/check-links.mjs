@@ -40,8 +40,26 @@ for (const file of walk(dist)) {
   }
 }
 
+// Size budget (idea borrowed from CMU's svg-website verify-build): keep pages fast
+// and stay well under GitHub's 100 MB file limit.
+const root = new URL('../', import.meta.url).pathname;
+const budgets = [
+  { dir: 'content', max: 5 * 1024 * 1024, what: 'image' },
+  { dir: 'public/media', max: 15 * 1024 * 1024, what: 'media file' },
+];
+for (const { dir, max, what } of budgets) {
+  for (const f of walk(join(root, dir))) {
+    const size = statSync(f).size;
+    if (size > max) {
+      problems.push(
+        `${f.slice(root.length)}: ${what} is ${(size / 1048576).toFixed(1)} MB (limit ${max / 1048576} MB). Please compress it.`,
+      );
+    }
+  }
+}
+
 if (problems.length) {
-  console.error(`\n✗ ${problems.length} broken internal link(s):\n`);
+  console.error(`\n✗ ${problems.length} problem(s):\n`);
   for (const p of [...new Set(problems)]) console.error('  - ' + p);
   console.error('');
   process.exit(1);
