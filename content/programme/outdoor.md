@@ -6,7 +6,7 @@ order: 13
 note: Real flights at CMU's outdoor test site, from the July 2026 report.
 items:
   - title: Several Starlings at once
-    text: "CMU: Starling 2 Max drones flying together in the outdoor test site."
+    text: "CMU's Starlings flying together at its outdoor test site, on satellite positioning instead of the indoor cameras. Watch them keep their spacing."
     video: cmu-outdoor-flight.mp4
     poster: cmu-outdoor-flight.jpg
     partners: [cmu]

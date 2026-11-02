@@ -56,7 +56,7 @@ const gridItems = leadItem ? rest : data.items;
           <figcaption>
             {log && stamp(leadItem) && <span class="clip-card__stamp">{stamp(leadItem)}</span>}
             <strong>{leadItem.title}</strong>
-            {leadItem.text && <span>{log ? <><em>What to watch:</em> {leadItem.text}</> : leadItem.text}</span>}
+            {leadItem.text && <span>{leadItem.text}</span>}
           </figcaption>
         </figure>
       )
@@ -70,7 +70,7 @@ const gridItems = leadItem ? rest : data.items;
               <figcaption>
                 {log && stamp(c) && <span class="clip-card__stamp">{stamp(c)}</span>}
                 <strong>{c.title}</strong>
-                {c.text && <span>{log ? <><em>What to watch:</em> {c.text}</> : c.text}</span>}
+                {c.text && <span>{c.text}</span>}
               </figcaption>
             </figure>
           ))}
