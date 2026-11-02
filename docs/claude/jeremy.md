@@ -172,6 +172,25 @@ The implementer agent delivered the full spec in §6.
 
 Committed to `development`.
 
+## 10. Site restructure (3 Nov 2026)
+> Asks: a pure-black theme, a shorter home page, a Localisation layer, and the programme split into pages.
+
+**Answers (spec §9):** nothing confidential is published; layer 4 is Localisation (ST Engineering
+leads, CMU provides the simulator and technical advice); pure black with no toggle; the benchmark
+stays on Home; the "What they decide" line is approved.
+
+**What was done:**
+- Fable orchestrated. Sonnet and Opus agents did tasks 1 to 5 in parallel in one working tree, each
+  owning separate files and committing only its own paths.
+- Builds were serialised with `flock /tmp/svg-check.lock npm run check`. A scratchpad Playwright
+  harness (`shot.mjs`, Chrome channel) screenshots 1280 and 390 and reports overflow and console errors.
+- Node 24 is installed under `~/.local` on the laptop (no nvm).
+- The reports were read for context only; their text sits in `~/Documents/GitHub/Strike-Versus-Guard-sources/`,
+  outside the repo.
+
+**Outcome:** four pages (Home, Programme, Partners, Flights) plus Updates, five layers, one theme.
+Docs updated to match. Push to `development` and Jeremy's check come next, then the pull request to `main`.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)

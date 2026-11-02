@@ -21,7 +21,7 @@ content/                     ← everything people edit (Markdown + images)
   partners/CMU.md  CMU/
   partners/ST.md   ST/
   partners/HTX.md  HTX/        sponsor card (no separate page)
-  programme/*.md               shared home-page sections (ST-owned)
+  programme/*.md               shared page sections (ST-owned), incl. localisation.md
   updates/*.md                 news posts
   site.yml                     site title, footer
 public/media/                ← flight clips (MP4) and their poster frames
@@ -31,6 +31,9 @@ src/                         ← layout, styles, components (ST-owned)
   ci.yml                       build + link check on pull requests and development
   deploy.yml                   publishes main (live) and development (/preview/) together
 ```
+
+Pages: Home, Programme (`/programme/`), Partners (`/partners/`), Flights (`/flights/`) and Updates.
+One pure-black theme.
 
 Built with [Astro](https://astro.build) (static output, no server). Hosted on GitHub Pages, deployed by
 GitHub Actions. The repository keeps only two branches: `main` (live) and `development` (edits and test site).

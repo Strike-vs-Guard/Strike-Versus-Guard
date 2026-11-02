@@ -15,10 +15,16 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 
 ## Structure
 
-- One scrolling home page, one page per partner, and an Updates page. A single page can't hold
-  four partners' detail; a large site goes stale.
-- Home page order: hero → two tracks → benchmark → who does what (layers × partners) → flights → proof so far → milestones
-  → research directions → latest updates.
+- Four pages plus Updates (restructured 3 Nov 2026): **Home**, **Programme** (`/programme/`),
+  **Partners** (`/partners/`, with a page per partner) and **Flights** (`/flights/`). The first
+  single long home page had grown too long; each question a visitor asks now has a page.
+- Nav: Programme · Benchmark (a home anchor) · Partners · Flights · Updates.
+- Home page order: hero with a "What they decide" strip → benchmark → drone diagram with five layers
+  → four clips → milestones → latest updates → team photo ("Funded by HTX") last.
+- Five layers: Strategy, Safety, Flight, **Localisation** (ST Engineering leads; CMU provides the
+  simulator and technical advice), Drones, plus Integration across all.
+- The reports behind the localisation work are confidential. They are used for context only, and
+  nothing numeric or unpublished from them is on the site.
 - **One Markdown file per partner** (`content/partners/NUS.md`, `UPenn.md`, `CMU.md`, `ST.md`).
   Front matter feeds the card on the home page; the body becomes the partner page.
 - HTX has a small file that drives its sponsor card. It has no separate page, because a sponsor page
@@ -51,19 +57,19 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 
 ## Visual design: "lab notebook, not mission control"
 
-- Calm and well lit: off-white background, graph-paper dot grid, IBM Plex Sans / Condensed / Mono.
+- Calm: one pure-black theme (no light mode, no toggle; decided by Jeremy, 3 Nov 2026), graph-paper dot grid, IBM Plex Sans / Condensed / Mono.
 - Colour comes from the two teams and the partner logos only. ST red appears in three places: the
   wordmark, one short rule under the hero title, and the "We are here" milestone marker. It is never
   used for buttons, banners or backgrounds. Buttons are ink-coloured.
 - The two strategy tracks are never coloured blue/red, because those colours mean the game's teams.
-- Partner logos sit in white wells (so they work in dark mode). In the footer they are greyscale until
+- Partner logos sit in white wells (so they work on black). In the footer they are greyscale until
   hover, so no single partner's brand colour dominates.
 - Signature visual: an animated diagram of the game in four beats (Divide, Share, Adapt, Recover),
   drawn in SVG. Each beat is synced to a clickable caption. It pauses off-screen and does not auto-play
   for visitors who prefer reduced motion. Teams differ by shape (filled vs outlined rotors), not
   colour alone.
 - Flight clips are click-to-play (`preload="none"`), muted, with poster frames.
-- Light and dark mode follow the system setting. Layout is checked at 390 px wide with no horizontal
+- Layout is checked at 390 px wide with no horizontal
   scroll.
 
 ## Relationship to CMU's `svg-website`

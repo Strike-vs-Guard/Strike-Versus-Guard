@@ -52,14 +52,17 @@ break one):
 - `logo:` / `labLogo:` must point at an image that exists, written relative to the file,
   e.g. `./NUS/nus.png`.
 - `work:` has one line (max 90 characters) for each layer you work on: `strategy`, `safety`, `flight`,
-  `localisation`, `drones`, `integration`. These lines fill the "who does what" grid on the home page.
+  `localisation`, `drones`, `integration`. These lines put you on the layers of the drone diagram and the connection diagram on the Partners page.
 - Dates are `YYYY-MM-DD`.
 
-Other shared files (owned by ST Engineering, but anyone may propose changes):
+The site has four pages: Home, Programme, Partners and Flights (plus Updates). The shared files below
+feed them. They are owned by ST Engineering, but anyone may propose changes. Please do not publish
+anything numeric or unpublished from the confidential reports.
 
 | What | File |
 |---|---|
-| Top of the home page | `content/programme/overview.md` |
+| Top of the home page, including the `decisions:` list ("What they decide") | `content/programme/overview.md` |
+| Localisation section and its one-line `status:` | `content/programme/localisation.md` |
 | Two tracks (NUS / UPenn) | `content/programme/tracks.md` |
 | The benchmark game and its four steps | `content/programme/benchmark.md` |
 | Layers and "who does what" grid (rows; the cells come from partner files) | `content/programme/stack.md` |

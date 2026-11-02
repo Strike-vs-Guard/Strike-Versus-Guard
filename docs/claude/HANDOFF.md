@@ -1,7 +1,7 @@
 # Claude handoff: Strike vs Guard website
 
 > **How to use this file:** paste it into any Claude conversation (or point Claude Code at the repo,
-> whose `CLAUDE.md` links here) to continue the work with full context. Last updated **2 Nov 2026**.
+> whose `CLAUDE.md` links here) to continue the work with full context. Last updated **3 Nov 2026**.
 
 ## 1. One-paragraph summary
 This repo (`Strike-vs-Guard/Strike-Versus-Guard`) is the website of **Strike vs Guard**, a research
@@ -33,39 +33,31 @@ programme lead driving the work is Jeremy (ST Engineering).
 3. **Exactly two branches:** `development` (edit) and `main` (live, via PR only). No feature branches,
    no Dependabot.
 4. **Tokens only:** blue/red belong to the game teams; ST red appears in three places only.
-5. **Prove it before pushing:** `npm run check`, plus Playwright screenshots (light, dark, 390px) for
+5. **Prove it before pushing:** `npm run check`, plus Playwright screenshots (1280 and 390px) for
    anything visual.
 
-## 4. Current state (as of this handoff)
-**Done and live:**
-- Home page: hero, two tracks, the benchmark arena animation, "How it fits together", flights,
-  proof so far, milestones, directions, updates.
-- Partner pages and an Updates page.
-- Schema validation, link and size checks, CI, deploy of main and development together.
-- GitHub Pages source set to **GitHub Actions** (done by Jeremy).
+## 4. Current state (as of 3 Nov 2026)
+**Restructured on `development` (test site), not yet merged to `main`:**
+- Four pages plus Updates: Home, Programme, Partners, Flights (see STANDARDS §5). Nav: Programme ·
+  Benchmark · Partners · Flights · Updates.
+- Five layers (Strategy, Safety, Flight, Localisation, Drones, plus Integration). `work:` accepts
+  `localisation`; ST Engineering leads it, CMU provides the simulator and technical advice.
+- One pure-black theme, no light mode, no toggle (Jeremy, 3 Nov 2026).
+- `decisions:` list in `overview.md` ("What they decide" under the hero photo); `status:` line in
+  `content/programme/localisation.md`.
+- Spec: `docs/superpowers/specs/2026-11-03-site-restructure-design.md`; plan beside it in `plans/`.
 
-**On `development` (test site), not yet merged to `main`:**
-- **Annotated drone + connection diagram ("1 + 3")**:
-  - Home "How it fits together": "What each layer does" uses `DroneDiagram` (explain mode), then
-    "Who works on each layer" uses `ConnectionDiagram`.
-  - Every partner page shows the drone with that partner's layers lit.
-  - Partner order changed to ST, NUS, UPenn, CMU.
-  - UPenn now also on the Drones layer.
-- **Drone polish pass (done, on `development`):** implemented from the three critics' spec:
-  - stacked 1→4 callouts with an Integration bracket
-  - ¾-view airframe; peer-to-peer strategy with a shared-plan glyph; "safe distance"; "AirStack: plan → flight"
-  - shared `sys:select` selection between the drone and the connection diagram (mouse and keyboard
-    now behave the same)
-  - "Show partners ↓" cues; two-way hover peek; slow ring drift
-  - static partner mode showing each partner's own `work` line
-  - layer cards in the connection diagram trimmed to "Layer N · Title · N partners"
-
+**Earlier work, already live or on `development`:**
+- Partner pages, Updates, schema/link/size checks, CI, deploy of both branches; Pages source is GitHub Actions.
+- Annotated drone + connection diagram, with `sys:select` shared selection and the polish pass.
   Small polish left: the "AirStack: plan → flight" label is crossed by the leader line for marker 4,
   and the "safe distance" label sits tight against its marker.
 
 ## 5. Open items / waiting on people
 | Item | Who |
 |---|---|
+| Review the new Localisation line in your partner file (`work.localisation`, drafted for ST Engineering and CMU only) | Partners |
+| The home drone's click now lights locally and links to the Partners page; check it reads well on the test site | Jeremy |
 | Delete leftover branches `claude/brave-bell-onicwy`, `gh-pages`, `dependabot/github_actions/actions/checkout-7`, `dependabot/github_actions/actions/setup-node-7`; close PRs #1 and #2 (bot) | Jeremy (Claude's session can't delete branches) |
 | Two Word documents (`MR-Strike vs Guard-1.0-OCT29.docx`, `D3-Strike_vs_Guard-FR&PDR-1.2-29July26.docx`) were never received; too large with embedded videos. Asked for .txt/PDF exports | Jeremy |
 | UPenn's Drones line "Runs the formal-track strategy on the shared Starling 2 Max drones." is a placeholder | UPenn to confirm |
@@ -91,3 +83,6 @@ programme lead driving the work is Jeremy (ST Engineering).
 - `StrikeVsGuard_A0_v14_PRINT_outlined.pdf`: the A0 poster. Its text is outlined, so it was used
   visually only.
 - The programme positioning statement (in `STANDARDS.md` §1), provided by Jeremy.
+- Confidential reports (localisation brief 22 Oct 2026, monthly report 29 Oct 2026, D3 FR&PDR July 2026):
+  context only. Extracted text is kept outside the repo in `~/Documents/GitHub/Strike-Versus-Guard-sources/`
+  on Jeremy's laptop. Nothing numeric or unpublished from them goes on the site.

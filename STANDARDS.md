@@ -90,15 +90,22 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 |---|---|---|
 | A partner's card, page and `work:` lines | `content/partners/<NAME>.md` + `content/partners/<NAME>/` images | That partner |
 | Funder card | `content/partners/HTX.md` | ST Engineering |
-| Home page sections | `content/programme/*.md` (one file per section, `order:` sets position) | ST Engineering (+ co-owners in CODEOWNERS) |
+| Page sections | `content/programme/*.md` (one file per section, `order:` sets position) | ST Engineering (+ co-owners in CODEOWNERS) |
+| Top of the home page, incl. the `decisions:` list ("What they decide") | `content/programme/overview.md` | ST Engineering |
+| Localisation section and its one-line `status:` | `content/programme/localisation.md` | ST Engineering (CMU advises) |
 | Layers of the system (drone diagram and connection diagram) | `content/programme/stack.md` (`icon:` is the layer id) | ST Engineering |
 | News | `content/updates/YYYY-MM-DD-slug.md` | Any partner |
 | Site title, footer | `content/site.yml` | ST Engineering |
 
 - **The schema is the contract:** `src/content.config.ts` validates every file at build time. Add a
   field to the schema before using it. Never weaken a rule to make a broken file pass.
-- **Layer ids are fixed:** `strategy`, `safety`, `flight`, `drones`, `integration`. A partner's
+- **Layer ids are fixed:** `strategy`, `safety`, `flight`, `localisation`, `drones`, `integration`
+  (layers 1 to 5 plus Integration across all; Localisation is layer 4, ST Engineering leads, CMU provides
+  the simulator and technical advice). A partner's
   `work.<layer>` line (90 characters or fewer) is what puts that partner on a layer in both diagrams.
+- **Confidential sources:** the localisation brief (22 Oct 2026), the monthly report (29 Oct 2026) and
+  the D3 FR&PDR (July 2026) are context only. Nothing numeric or unpublished from them goes on the site.
+  Extracted text lives outside the repo, in `~/Documents/GitHub/Strike-Versus-Guard-sources/` on Jeremy's laptop.
 - Images must be referenced **relative to the content file** (`./NUS/photo.jpg`), never as `/images/...`.
 - **Size limits:** images 5 MB or less and clips 15 MB or less (H.264 MP4, muted, with a `.jpg`
   poster). Both are enforced by `npm run check`.
@@ -107,24 +114,35 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 
 ## 5. Page structure (current)
 
-**Home page (`src/pages/index.astro`), top to bottom:**
-1. Hero: wordmark, positioning statement, flight-cage photo, facts row.
-2. `#programme`: two tracks, one stack.
-3. `#benchmark`: animated arena (Divide · Share · Adapt · Recover).
-4. `#partners`: How it fits together.
-   - "What each layer does": `DroneDiagram` in `explain` mode.
-   - "Who works on each layer": `ConnectionDiagram`.
-   - Funded by HTX, then the team photo.
-5. `#flights`: clips, then "Proof so far".
-6. Milestones (move `current: true` each year).
-7. Research directions and applications.
-8. Latest updates.
+Nav: **Programme · Benchmark** (home anchor) **· Partners · Flights · Updates**.
+
+**Home (`src/pages/index.astro`), top to bottom:**
+1. Hero: wordmark, positioning statement, flight-cage photo, and the "What they decide" strip under the photo.
+2. `#benchmark`: animated arena (Divide · Share · Adapt · Recover).
+3. Drone diagram with the five layers (`DroneDiagram`). Clicking the drone lights it locally and links to the Partners page.
+4. The four flight clips.
+5. Milestones (move `current: true` each year).
+6. Latest updates.
+7. Team photo last, with "Funded by HTX".
+
+**Programme (`/programme/`):** positioning statement, two tracks, localisation (with its `status:` line),
+research directions.
+
+**Partners (`/partners/`):** "Five layers, four partners, one team"; partner cards; the connection
+diagram (`ConnectionDiagram`); proof so far.
 
 **Partner page (`src/pages/partners/[id].astro`):**
 - Header and meta card.
 - "In the system": `DroneDiagram` in `partner` mode, with that partner's layers lit.
 - The Markdown body.
 - Their updates.
+
+**Flights (`/flights/`):** the October 2026 flight day story with the clips, the localisation status
+line, and milestones.
+
+**Updates:** unchanged.
+
+The page sections live as section components under `src/components/sections/`.
 
 **Shared components:**
 
