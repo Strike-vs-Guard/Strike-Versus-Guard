@@ -62,6 +62,13 @@ sentences), a Programme "In simulation" section (`simulation.md`, `Simulation.as
 generalised `Clips.astro`), a new localisation `status:` number, and a link checker that resolves
 relative paths.
 
+**FR&PDR and localisation brief (3 Nov 2026, on `development`):** both approved for selected publication.
+Programme: "How a command travels" (`command.md`, `CommandPath.astro`) and localisation as three
+question cards, the rule, the plan as targets and a simulation figure. Flights: CMU outdoors
+(`outdoor.md`) and the test ladder M1–M6 as of July 2026 (`ladder.md`, `TestLadder.astro`). Partner
+pages: July results and 1–2 clips/stills each. Year 1 milestone names the March 2027 CMU demonstration
+as a target. New item fields: `passes:`, `state:`.
+
 **Earlier work, already live or on `development`:**
 - Partner pages, Updates, schema/link/size checks, CI, deploy of both branches; Pages source is GitHub Actions.
 - Annotated drone + connection diagram, with `sys:select` shared selection and the polish pass.
@@ -101,6 +108,7 @@ relative paths.
   visually only.
 - The programme positioning statement (in `STANDARDS.md` §1), provided by Jeremy.
 - Programme reports: the monthly report (29 Oct 2026) is approved for publication (3 Nov 2026); its
-  simulation figures are on the site. The localisation brief (22 Oct 2026) and the D3 FR&PDR (July 2026)
-  stay context only. Extracted text is kept outside the repo in `~/Documents/GitHub/Strike-Versus-Guard-sources/`
-  on Jeremy's laptop. Nothing numeric or unpublished from those two goes on the site.
+  simulation figures are on the site. Selected content from the July 2026 FR&PDR and the localisation
+  brief (22 Oct 2026) was approved the same day, with the exclusions in STANDARDS §4 (no budgets, IDs,
+  markings, contact scenario, extra names or papers under review). Extracted text is kept outside the
+  repo in `~/Documents/GitHub/Strike-Versus-Guard-sources/` on Jeremy's laptop.

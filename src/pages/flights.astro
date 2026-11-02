@@ -1,8 +1,9 @@
 ---
-/** Flights page: the October 2026 flight day with the four clips, localisation status, milestones. */
+/** Flights page: the October 2026 flight day with the four clips, CMU's outdoor flights, the test ladder, localisation status, milestones. */
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/sections/PageHead.astro';
 import Clips from '../components/sections/Clips.astro';
+import TestLadder from '../components/sections/TestLadder.astro';
 import Localisation from '../components/sections/Localisation.astro';
 import Milestones from '../components/sections/Milestones.astro';
 import { section } from '../components/sections/content';
@@ -15,6 +16,8 @@ const flights = await section('flights');
     <flights.Content />
   </PageHead>
   <Clips id="flights" />
+  <Clips id="outdoor" body alt aspect="16 / 9" />
+  <TestLadder />
   <Localisation statusOnly />
   <Milestones id="" alt={false} />
 </Base>

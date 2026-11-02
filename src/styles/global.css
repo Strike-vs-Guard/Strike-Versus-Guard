@@ -305,6 +305,8 @@ figcaption {
 }
 .md figure.clip video {
   width: 100%;
+  /* square sim clips would otherwise fill a whole screen; they letterbox instead */
+  max-height: min(520px, 75vh);
   border-radius: var(--radius);
   background: #0e1114;
 }

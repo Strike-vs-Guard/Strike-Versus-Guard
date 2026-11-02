@@ -100,7 +100,9 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | Top of the home page, incl. the `decisions:` list ("What they decide"), the hero `video:`, the one-line `gameNote:` and the Programme page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` | ST Engineering |
 | Home "Proof so far" section head and its `note:`; the Flights page head is `pageEyebrow:`/`pageTitle:` in `flights.md` | `content/programme/proof.md` | ST Engineering |
 | Programme "In simulation" section: one short paragraph and 2–4 clips (`video:`/`poster:` in `public/media/`, `partners:`) | `content/programme/simulation.md` | ST Engineering (+ partners for their clips) |
-| Localisation section and its one-line `status:` | `content/programme/localisation.md` | ST Engineering (CMU advises) |
+| Programme "How a command travels" strip: one box per item, `passes:` labels the arrow after it | `content/programme/command.md` | ST Engineering (+ CMU) |
+| Localisation section: the three questions (`items:`), the rule (`note:`), the plan as targets, the figure, and the one-line `status:` | `content/programme/localisation.md` | ST Engineering (CMU advises) |
+| Flights "Test ladder" (`items:` with `state:` chips; the safety order in the body) and "Outdoors" clip | `content/programme/ladder.md`, `content/programme/outdoor.md` | ST Engineering; CMU for `outdoor.md` |
 | Layers of the system (drone diagram and connection diagram) | `content/programme/stack.md` (`icon:` is the layer id) | ST Engineering |
 | News | `content/updates/YYYY-MM-DD-slug.md` | Any partner |
 | Site title, footer | `content/site.yml` | ST Engineering |
@@ -116,6 +118,11 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
   the §2 wording, with proposals labelled as proposals and nothing under review. The D3 FR&PDR
   (July 2026) is confidential, and the localisation brief (22 Oct 2026) stays context only: nothing
   numeric or unpublished from those two goes on the site.
+  **Update, 3 Nov 2026:** the programme lead approved publishing selected content from the July FR&PDR
+  and the localisation brief. The exclusions still hold: no budgets, prices or cost ceilings; no
+  contract or deliverable IDs; no classification markings; nothing about the physical-contact scenario
+  and no kinetic wording; no names beyond the three PIs already on the site; no papers under review.
+  Every adversarial term is translated per §2, and targets and pass marks stay labelled as targets.
   Extracted text lives outside the repo, in `~/Documents/GitHub/Strike-Versus-Guard-sources/` on Jeremy's laptop.
 - Images must be referenced **relative to the content file** (`./NUS/photo.jpg`), never as `/images/...`.
 - **Size limits:** images 5 MB or less and clips 15 MB or less (H.264 MP4, muted, with a `.jpg`
@@ -146,8 +153,10 @@ under the header.
 6. Team photo with caption, then the colour logo strip: "Funded by" HTX | "Partners" ST Engineering,
    NUS, UPenn, CMU. No lone HTX block.
 
-**Programme (`/programme/`):** positioning statement, two tracks, "In simulation" (`simulation.md`
-clips, through the shared `Clips` section), localisation (with its `status:` line), research directions.
+**Programme (`/programme/`):** positioning statement, two tracks, "How a command travels"
+(`command.md`, `CommandPath`), "In simulation" (`simulation.md` clips, through the shared `Clips`
+section), localisation (three question cards, the plan as targets, a figure, and its `status:` line),
+research directions.
 
 **Partners (`/partners/`):** "Each partner writes and maintains its own page."; fully clickable partner
 cards ("<Short> page →"); the full explain-mode drone above the connection diagram
@@ -162,8 +171,8 @@ cards ("<Short> page →"); the full explain-mode drone above the connection dia
 
 Page titles are distinct: Programme h1 "How the programme works"; Flights h1 "Flights so far".
 
-**Flights (`/flights/`):** the October 2026 flight day story with the clips, the localisation status
-line, and milestones.
+**Flights (`/flights/`):** the October 2026 flight day story with the clips, CMU's outdoor flights
+(`outdoor.md`), the test ladder (`ladder.md`, `TestLadder`), the localisation status line, and milestones.
 
 **Updates:** unchanged.
 

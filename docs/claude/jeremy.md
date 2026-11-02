@@ -221,6 +221,16 @@ clips and one figure a still. Each partner page gained a short "In simulation" s
 The Programme page gained "Proven in simulation first" with three clips, and the localisation status
 now carries the 0.081 m simulation number. Items that appear only in the FR&PDR were left out.
 
+## 13. More from the FR&PDR and the localisation brief (3 Nov 2026)
+> The programme lead approved selected content from the July FR&PDR and the localisation brief, with
+> hard exclusions (budgets, IDs, markings, the contact scenario, extra names, papers under review).
+
+**What was done:** Programme gained "How a command travels" (strategy → AirStack → safety filter → PX4,
+drawn as boxes, as the deck slide is built from shapes) and a richer localisation section (three
+question cards, the rule, a targets table, a simulation figure). Flights gained CMU outdoors and the
+M1–M6 test ladder (as of July 2026). Each partner page gained July results with 1–2 visuals; figures
+with banned words baked in were cropped or skipped.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)

@@ -61,7 +61,21 @@ full-size drones.
 ## In simulation
 
 AirStack already runs real and simulated drones side by side under the same safety filter, so new
-ideas can be tried on simulated Starlings first. The next
+ideas can be tried on simulated Starlings first.
+
+From the July 2026 report: the safety filter works on velocity commands. It was first tested in a
+point-mass simulation across drone sizes, safety distances, numbers of drones and speeds, then in the
+AirStack simulator with a two-drone close-proximity test and a five-drone mission. AirStack can use two
+simulators: AirSim starts in 6.75 s against 70.5 s for Isaac Sim, so AirSim serves fast iteration and
+Isaac Sim the high-fidelity checks before real flights. To make the simulated Starling match the real
+one, CMU measured its motor thrust and motor response time (74 ms) on a test stand; the real drone flies
+for 43 minutes on two 4 Ah batteries.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-cmu-safety-filter.jpg" aria-label="Simulation clip: the safety filter in a point-mass simulation"><source src="../../media/sim-cmu-safety-filter.mp4" type="video/mp4"></video><figcaption>Point-mass simulation: green arrows are the commands each drone (blue) was given; red arrows show where the filter changed one to keep the drones' safety rings apart.</figcaption></figure>
+
+![A Starling 2 Max motor and propeller mounted on a test stand that measures thrust](./CMU/starling-thrust-stand.jpg)
+
+The next
 steps are proposals, not yet demonstrated: solving the game mathematically for each side, a fast
 controller learned from human pilots, games that mix real drones with simulated opponents, and a
 safety filter that works from each drone's own map of its surroundings.

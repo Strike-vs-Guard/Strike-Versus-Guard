@@ -113,6 +113,10 @@ const item = (image: any) =>
       current: z.boolean().default(false),
       /** Short icon key, used by a few sections. */
       icon: z.string().optional(),
+      /** What this step hands to the next one, shown on the arrow after it (command.md). */
+      passes: z.string().max(40).optional(),
+      /** Short status shown as a chip, e.g. "Done" or "Ready to test" (ladder.md). */
+      state: z.string().max(24).optional(),
     })
     .strict();
 

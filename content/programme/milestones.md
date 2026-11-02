@@ -8,7 +8,7 @@ items:
   - label: Year 1
     when: 2026 to 2027
     title: Shared system and first teams
-    text: Build the shared system and fly the first drone teams, in simulation and on real drones.
+    text: "Build the shared system and fly the first drone teams, in simulation and on real drones. Target: the first outdoor demonstration, planned for March 2027 at CMU."
     current: true
   - label: Year 2
     when: 2027 to 2028

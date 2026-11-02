@@ -1,8 +1,9 @@
 ---
-/** Programme page: positioning statement, the two tracks, simulation, localisation, research directions. */
+/** Programme page: positioning statement, the two tracks, how a command travels, simulation, localisation, research directions. */
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/sections/PageHead.astro';
 import Tracks from '../components/sections/Tracks.astro';
+import CommandPath from '../components/sections/CommandPath.astro';
 import Simulation from '../components/sections/Simulation.astro';
 import Localisation from '../components/sections/Localisation.astro';
 import Directions from '../components/sections/Directions.astro';
@@ -11,12 +12,13 @@ import { section } from '../components/sections/content';
 const overview = await section('overview');
 ---
 
-<Base title="Programme" description="Two strategy tracks on one shared stack, the shared simulator, camera-only localisation, and the research directions the programme opens up.">
+<Base title="Programme" description="Two strategy tracks on one shared stack, how a command reaches the motors, the shared simulator, camera-only localisation, and the research directions the programme opens up.">
   <PageHead eyebrow={overview.pageEyebrow ?? overview.eyebrow} title={overview.pageTitle ?? overview.title}>
     <overview.Content />
   </PageHead>
   <Tracks />
-  <Simulation />
-  <Localisation alt />
-  <Directions />
+  <CommandPath />
+  <Simulation alt />
+  <Localisation />
+  <Directions alt />
 </Base>

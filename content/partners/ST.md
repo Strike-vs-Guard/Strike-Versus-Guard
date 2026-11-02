@@ -51,6 +51,26 @@ more drones on the way.
 
 ![Starling drones in the ST Engineering flight lab in Singapore](./ST/singapore-flight-lab.jpg)
 
+The lab is a netted flight volume in ST Engineering's hangar, tracked by OptiTrack cameras at up to
+240 Hz, with a wired network for tracking and a separate Wi-Fi network for commands. We commissioned it
+first on palm-sized Crazyflie 2.1 drones, with a go/no-go preflight dashboard that is checked before
+every flight.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-crazyflie-preflight.jpg" aria-label="Flight clip: a Crazyflie in the Singapore lab with the preflight dashboard"><source src="../../media/st-crazyflie-preflight.mp4" type="video/mp4"></video><figcaption>Commissioning on a Crazyflie: the preflight dashboard (left), the tracked position (top right) and the flight (bottom right).</figcaption></figure>
+
+![The netted flight volume in the Singapore hangar, with OptiTrack cameras on stands and the floor axes marked](./ST/hangar-flight-volume.jpg)
+
+The Starling bring-up follows six steps (status as of July 2026):
+
+| Step | What it checks | Status |
+|---|---|---|
+| M1 | Rehearsal on three simulated drones, including a geofence breach and recovery | Done |
+| M2 | Ground station: network, motion capture, clock sync | In progress |
+| M3 | Drone link to the ground station, propellers off | Done |
+| M4 | Tracking fused into the drone's estimate, propellers off | Ready to test |
+| M5 | Hand-carry check through the flight volume | Ready to test |
+| M6 | First flight: take-off, hover, landing | Ready to test |
+
 ## In simulation
 
 We brought the Starling 2 Max into the AirStack simulator (Isaac Sim with Pegasus) and built a
@@ -58,6 +78,11 @@ construction-site world for it, where up to three drones fly at once. Camera-onl
 there first: over a 162 m flight, its position had an average error of 0.081 m against the drone's
 own flight-controller estimate (not yet against the simulator's true position). With three Starlings
 flying, each kept track of itself without a loss.
+
+We also rebuilt CMU's AirStack independently on the Starling 2 Max, to prove that a second partner can
+run it. That work found two bugs in the shared stack, which we fixed: a camera start-up race in the
+simulator that made simulated drones fly erratically, and a fault that stopped the ground controller
+after a single failed command.
 
 <figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-st-three-starlings.jpg" aria-label="Simulation clip: three Starlings in AirStack"><source src="../../media/sim-st-three-starlings.mp4" type="video/mp4"></video><figcaption>Three simulated Starlings: one drone's camera view (left) and all three in the ground station (right).</figcaption></figure>
 

@@ -59,9 +59,16 @@ the earlier ones, so both sides keep improving. A separate planner flies one dro
 field of obstacles on routes that are hard to predict, and reaches its goal in over 99 % of runs;
 flying it with a team comes next.
 
+From the July 2026 report: on SMAC, a standard three-against-three benchmark from multi-agent
+research, the learned plays win close to 100 % of games when the players start from fixed positions.
+In a first, preliminary Strike vs Guard test, two Guard drones against one Strike drone, they held the
+zone in about 20 % of games: the skills fail in situations unlike the ones they trained on.
+
 <figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-nus-selfplay.jpg" aria-label="Simulation clip: the Guard team holds the zone"><source src="../../media/sim-nus-selfplay.mp4" type="video/mp4"></video><figcaption>Five Guard drones (blue) keep three faster Strike drones (red) out of the zone (green).</figcaption></figure>
 
 <figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-nus-obstacles.jpg" aria-label="Simulation clip: one drone plans a route through obstacles"><source src="../../media/sim-nus-obstacles.mp4" type="video/mp4"></video><figcaption>One drone (yellow path) plans a fast route through 70 pillars, seen from four angles.</figcaption></figure>
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-nus-two-guards.jpg" aria-label="Simulation clip: two Guard drones keep one Strike drone away from the zone"><source src="../../media/sim-nus-two-guards.mp4" type="video/mp4"></video><figcaption>Preliminary test: two Guard drones (blue) keep one Strike drone (red) away from the zone (green). One of the games they won.</figcaption></figure>
 
 ## People
 
