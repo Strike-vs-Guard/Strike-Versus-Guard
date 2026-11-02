@@ -27,6 +27,8 @@ const directions = await section('directions');
 const team = await section('partners');
 
 const partners = (await getCollection('partners')).sort((a, b) => a.data.order - b.data.order);
+const sponsors = partners.filter((p) => p.data.role === 'Funding sponsor');
+const members = partners.filter((p) => p.data.role !== 'Funding sponsor');
 const updates = (await getCollection('updates', (u) => !u.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -68,8 +70,7 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     <div class="wrap">
       <dl class="facts">
         <div><dt>Funded by</dt><dd>HTX</dd></div>
-        <div><dt>Led by</dt><dd>ST Engineering AI.R.STC</dd></div>
-        <div><dt>With</dt><dd>CMU · UPenn · NUS</dd></div>
+        <div><dt>Partners</dt><dd>ST Engineering · CMU · UPenn · NUS</dd></div>
         <div><dt>Hardware</dt><dd>Starling 2 Max · AirStack</dd></div>
         <div><dt>Timeline</dt><dd>2026 to 2029</dd></div>
       </dl>
@@ -283,7 +284,7 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
       </header>
       <ul class="partners">
         {
-          partners.map((p) => (
+          members.map((p) => (
             <li class="card partner">
               <div class="logo-well partner__logo">
                 <Image src={p.data.logo} alt={p.data.logoAlt ?? p.data.institution} height={96} densities={[1, 2]} />
@@ -304,6 +305,18 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
           ))
         }
       </ul>
+      {
+        sponsors.length > 0 && (
+          <div class="sponsor">
+            <p class="eyebrow">Funded by</p>
+            {sponsors.map((s) => (
+              <a class="logo-well sponsor__logo" href={s.data.website} title={s.data.institution}>
+                <Image src={s.data.logo} alt={s.data.logoAlt ?? s.data.institution} height={96} densities={[1, 2]} />
+              </a>
+            ))}
+          </div>
+        )
+      }
       {
         team.image && (
           <figure class="team-photo">
@@ -698,7 +711,23 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     padding: 0;
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  }
+  .sponsor {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .sponsor .eyebrow {
+    margin: 0;
+  }
+  .sponsor__logo {
+    height: 64px;
+    border: 1px solid var(--border);
+  }
+  .sponsor__logo :global(img) {
+    max-height: 40px;
   }
   .partner {
     padding: 16px 16px 20px;

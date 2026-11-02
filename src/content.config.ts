@@ -47,7 +47,7 @@ const partners = defineCollection({
         /** Principal investigator or lead, e.g. "Prof Guillaume Sartoretti". */
         lead: z.string().optional(),
         /** Role in the programme, shown as a small label on the card. */
-        role: z.enum(['Funding sponsor', 'Programme lead', 'Research partner']),
+        role: z.enum(['Funding sponsor', 'Lead partner', 'Partner']),
         /** What this partner contributes, in a few words (shown on the card). */
         contribution: z.string().max(70),
         /** One or two sentences for the home page card. Keep it under ~40 words. */

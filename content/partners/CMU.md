@@ -7,7 +7,7 @@ short: CMU
 institution: Carnegie Mellon University
 lab: AirLab
 lead: Prof Sebastian Scherer
-role: Research partner
+role: Partner
 contribution: AirStack flight software, safety filter and flight testing
 summary: >-
   CMU's AirLab provides AirStack, the shared flight software that both strategy

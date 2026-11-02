@@ -7,7 +7,7 @@ short: UPenn
 institution: University of Pennsylvania
 lab: xLab
 lead: Prof Rahul Mangharam
-role: Research partner
+role: Partner
 contribution: Formal strategy track using signal temporal logic
 summary: >-
   UPenn's xLab leads the formal approach: team behaviour is specified directly

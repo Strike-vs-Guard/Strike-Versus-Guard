@@ -8,7 +8,7 @@ institution: National University of Singapore
 lab: MARMot Lab
 labFull: Multi-Agent Robotic Motion Lab
 lead: Prof Guillaume Sartoretti
-role: Research partner
+role: Partner
 contribution: Learning-based strategy track
 summary: >-
   The NUS MARMot Lab leads the learning-based approach: agents discover their
