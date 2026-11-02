@@ -4,6 +4,7 @@ import { getEntry, getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import { url, isPreview, previewPr } from '../lib/url';
 import Wordmark from '../components/Wordmark.astro';
+import PartnersMenu from '../components/PartnersMenu.astro';
 
 interface Props {
   title?: string;
@@ -15,15 +16,15 @@ const partners = (await getCollection('partners')).sort((a, b) => a.data.order -
 const { title, description = site.description } = Astro.props;
 const pageTitle = title ? `${title} · ${site.title}` : `${site.title}: ${site.tagline}`;
 const path = Astro.url.pathname;
-const nav = [
-  { href: url('programme/'), label: 'Programme' },
-  { href: url('#benchmark'), label: 'Benchmark' },
-  { href: url('partners/'), label: 'Partners' },
+const navBefore = [{ href: url('programme/'), label: 'Programme' }];
+const navAfter = [
   { href: url('flights/'), label: 'Flights' },
   { href: url('updates/'), label: 'Updates' },
 ];
 /* A page is current when its path starts with the nav link's path (anchors on the home page never are). */
 const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href);
+const funder = partners.find((p) => p.data.role === 'Funding sponsor');
+const logoPartners = partners.filter((p) => p !== funder);
 ---
 
 <!doctype html>
@@ -64,9 +65,19 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
         <nav aria-label="Main">
           <ul class="site-nav">
             {
-              nav.map((n) => (
+              navBefore.map((n) => (
                 <li>
-                  <a href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>
+                  <a class="nav-link" href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>
+                    {n.label}
+                  </a>
+                </li>
+              ))
+            }
+            <PartnersMenu partners={partners} current={isCurrent(url('partners/'))} path={path} />
+            {
+              navAfter.map((n) => (
+                <li>
+                  <a class="nav-link" href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>
                     {n.label}
                   </a>
                 </li>
@@ -83,31 +94,47 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
 
     <footer class="site-footer">
       <div class="wrap">
-        <ul class="logo-strip" aria-label="Programme partners">
+        <div class="logo-strip">
           {
-            partners.map((p) => (
-              <li>
-                <a
-                  href={p.data.page ? url(`partners/${p.id}/`) : p.data.website}
-                  title={p.data.institution}
-                  class="logo-strip__item"
-                >
-                  <Image
-                    src={p.data.logo}
-                    alt={p.data.logoAlt ?? p.data.institution}
-                    height={56}
-                    densities={[1, 2]}
-                  />
-                </a>
-              </li>
-            ))
+            funder && (
+              <div class="logo-strip__group">
+                <p class="eyebrow" id="logo-strip-funder">Funded by</p>
+                <ul class="logo-strip__row" aria-labelledby="logo-strip-funder">
+                  <li>
+                    <a href={funder.data.website ?? url('partners/#funder')} title={funder.data.institution} class="logo-strip__item">
+                      <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.institution} height={60} densities={[1, 2]} />
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            )
           }
-        </ul>
+          <span class="logo-strip__divider" aria-hidden="true"></span>
+          <div class="logo-strip__group">
+            <p class="eyebrow" id="logo-strip-partners">Partners</p>
+            <ul class="logo-strip__row" aria-labelledby="logo-strip-partners">
+              {
+                logoPartners.map((p) => (
+                  <li>
+                    <a
+                      href={p.data.page ? url(`partners/${p.id}/`) : p.data.website}
+                      title={p.data.institution}
+                      class="logo-strip__item"
+                    >
+                      <Image src={p.data.logo} alt={p.data.logoAlt ?? p.data.institution} height={60} densities={[1, 2]} />
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
         <div class="site-footer__cols">
           <p class="site-footer__note">{site.footerNote}</p>
           <ul class="site-footer__links">
             <li><a href={url('programme/')}>Programme</a></li>
             <li><a href={url('flights/')}>Flights</a></li>
+            <li><a href={url('partners/')}>Partners</a></li>
             {
               partners
                 .filter((p) => p.data.page)
@@ -157,6 +184,8 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     border-bottom: 1px solid var(--border);
   }
   .site-header__inner {
+    /* The Partners panel is positioned against this row. */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -169,14 +198,14 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
   }
   .site-nav {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 4px;
     list-style: none;
     margin: 0;
     padding: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
   }
-  .site-nav a {
+  .site-nav :global(.nav-link) {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
@@ -186,8 +215,8 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     color: var(--muted);
     white-space: nowrap;
   }
-  .site-nav a:hover,
-  .site-nav a[aria-current='page'] {
+  .site-nav :global(.nav-link:hover),
+  .site-nav :global(.nav-link[aria-current='page']) {
     color: var(--text);
   }
   @media (max-width: 720px) {
@@ -199,6 +228,7 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     }
     .site-nav {
       margin-inline: -10px;
+      gap: 0;
     }
   }
 
@@ -208,47 +238,88 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     padding-block: 48px 32px;
     font-size: var(--step-0);
   }
+  /* Logos in colour, in equal white wells: the funder, a divider, then the partners. */
   .logo-strip {
-    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 24px;
     margin: 0 0 40px;
+  }
+  .logo-strip__group .eyebrow {
+    margin-bottom: 10px;
+  }
+  .logo-strip__row {
+    list-style: none;
+    margin: 0;
     padding: 0;
     display: flex;
-    flex-wrap: wrap;
     gap: 12px;
-    justify-content: center;
   }
-  @media (max-width: 560px) {
-    .logo-strip__item {
-      width: calc(50% - 6px);
-    }
+  .logo-strip__divider {
+    width: 1px;
+    background: var(--border);
   }
   .logo-strip__item {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 168px;
-    height: 76px;
-    padding: 10px 16px;
+    width: 200px;
+    height: 88px;
+    padding: 14px 20px;
     background: var(--well);
     border-radius: 8px;
     border: 1px solid var(--border);
   }
   .logo-strip__item :global(img) {
     max-height: 52px;
-    max-width: 132px;
+    max-width: 100%;
     width: auto;
     height: auto;
     object-fit: contain;
-    filter: grayscale(1);
-    opacity: 0.7;
-    transition:
-      filter 0.2s ease,
-      opacity 0.2s ease;
   }
-  .logo-strip__item:hover :global(img),
-  .logo-strip__item:focus-visible :global(img) {
-    filter: none;
-    opacity: 1;
+  @media (max-width: 1200px) {
+    .logo-strip__item {
+      width: 168px;
+      height: 76px;
+      padding: 12px 16px;
+    }
+    .logo-strip__item :global(img) {
+      max-height: 46px;
+    }
+  }
+  @media (max-width: 1040px) {
+    .logo-strip {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .logo-strip__divider {
+      width: 100%;
+      height: 1px;
+    }
+    .logo-strip__group {
+      text-align: center;
+    }
+    .logo-strip__row {
+      justify-content: center;
+    }
+  }
+  @media (max-width: 760px) {
+    .logo-strip {
+      align-items: stretch;
+    }
+    .logo-strip__group {
+      text-align: left;
+    }
+    .logo-strip__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .logo-strip__item {
+      width: auto;
+      height: 72px;
+    }
   }
   .site-footer__cols {
     display: grid;
