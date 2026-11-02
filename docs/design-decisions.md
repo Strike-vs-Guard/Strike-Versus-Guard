@@ -35,7 +35,7 @@ editing workflow, and the visual design. The decisions below reconcile their pro
   - Considered and set aside: Hugo (no validation), Eleventy (no validation), Jekyll (Ruby setup,
     restricted plugins), MkDocs (looks like documentation).
 - Pinned to **Astro 7.4.4** because `npm audit` reports advisories for all earlier releases. It
-  requires Node.js ≥ 22.23.4, so `.nvmrc` pins Node 22 LTS, and a Codespaces dev container covers
+  requires Node.js ≥ 22.23.4, so `.nvmrc` pins Node 24 LTS (a plain "22" let CI pick 22.23.3, which Astro rejects), and a Codespaces dev container covers
   partners who can't install it.
 - **Two branches only:** `main` is the live site and `development` is where edits happen. Each deploy
   builds both branches and publishes them together through GitHub Pages' Actions deployment: `main` at

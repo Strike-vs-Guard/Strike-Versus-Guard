@@ -39,20 +39,20 @@ jobs:
       REPO_PATH: /${{ github.event.repository.name }}/
     steps:
       - name: Check out main (live site)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: main
           path: live
 
       - name: Check out development (test site)
         id: dev
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         continue-on-error: true
         with:
           ref: development
           path: preview
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: live/.nvmrc
 
@@ -81,7 +81,7 @@ jobs:
           if [ -d preview/dist ]; then mkdir -p _site/preview && cp -r preview/dist/. _site/preview/; fi
           touch _site/.nojekyll
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
 

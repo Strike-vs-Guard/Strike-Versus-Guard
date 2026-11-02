@@ -93,7 +93,7 @@ Other shared files (owned by ST Engineering, but anyone may propose changes):
 
 ## 2b. Edit on your own computer (live preview while you type)
 
-You need [Git](https://git-scm.com/) and [Node.js 22](https://nodejs.org/) (LTS; check with `node -v`).
+You need [Git](https://git-scm.com/) and [Node.js 24 LTS](https://nodejs.org/) (22.23.4 or newer also works; check with `node -v`).
 
 ```bash
 git clone https://github.com/Strike-vs-Guard/Strike-Versus-Guard.git

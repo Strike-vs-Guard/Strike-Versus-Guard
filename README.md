@@ -42,4 +42,4 @@ GitHub Actions. The repository keeps only two branches: `main` (live) and `devel
 | `npm run check` | Build the whole site and check every internal link (same as CI) |
 | `npm run preview` | Serve the built site from `dist/` |
 
-Requires Node.js 22 LTS (see `.nvmrc`), or use the included Codespaces / dev container.
+Requires Node.js 24 LTS, or 22.23.4 or newer (see `.nvmrc`), or use the included Codespaces / dev container.
