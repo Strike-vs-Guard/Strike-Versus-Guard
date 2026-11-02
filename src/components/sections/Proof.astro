@@ -48,7 +48,7 @@ const now = items[cur];
 
     <div class="pclips">
       {
-        flights.items.map((c) => (
+        flights.items.slice(0, 4).map((c) => (
           <figure class="pclip">
             {c.video && (
               <div class="pclip__media" data-pclip>
