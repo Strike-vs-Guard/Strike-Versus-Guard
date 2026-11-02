@@ -13,26 +13,26 @@ items:
   - label: Layer 1
     title: Strategy
     icon: strategy
-    text: Decide what each drone does, with team skills learned by practice or written as rules.
+    text: Team skills decide what each drone does. Learned by practice or written as rules.
   - label: Layer 2
     title: Safety
     icon: safety
-    text: A safety filter checks every command so that drones never collide, whatever the strategy picks.
+    text: Checks every command and blocks any that would cause a collision.
   - label: Layer 3
     title: Flight
     icon: flight
-    text: Turn team plans into flight on real drones through AirStack.
+    text: AirStack turns the team's plan into each drone's flight.
   - label: Layer 4
     title: Drones
     icon: drones
-    text: Starling 2 Max drones, flown in Pittsburgh and Singapore.
+    text: Starling 2 Max quadcopters, flown in Pittsburgh and Singapore.
   - label: Across all layers
     title: Integration
     icon: integration
-    text: Bring every layer together into one system and test it as a team.
+    text: Joins layers 1–4 into one system and tests it on real drones.
 ---
 
 Instead of hand-writing a playbook for each scenario, the team draws on a
-library of skills that adapts to the other side, with a separate safety layer
-underneath. Four partners work across these layers as one team. Select a partner
-to see their work.
+library of skills that adapts to the other side, with a safety layer between
+the team's decisions and the drones. Four partners work across these layers as
+one team. Select a partner to see their work.

@@ -7,6 +7,8 @@ import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import { url } from '../../lib/url';
+import { getSystemData } from '../../lib/system';
+import DroneDiagram from '../../components/DroneDiagram.astro';
 
 export async function getStaticPaths() {
   const partners = await getCollection('partners', (p) => p.data.page);
@@ -16,6 +18,9 @@ export async function getStaticPaths() {
 const { partner } = Astro.props;
 const d = partner.data;
 const { Content } = await render(partner);
+const system = await getSystemData();
+const worksOn = system.layers.filter((l) => (d.work as Record<string, string | undefined>)[l.id]);
+const listWords = (a: string[]) => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
 const all = (await getCollection('partners', (p) => p.data.page)).sort((a, b) => a.data.order - b.data.order);
 const updates = (await getCollection('updates', (u) => !u.data.draft && u.data.partner === partner.id)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
@@ -78,6 +83,21 @@ const layerNames: Record<string, string> = {
         </aside>
       </div>
     </header>
+
+    {
+      worksOn.length > 0 && (
+        <section class="pp-system" aria-labelledby="pp-system-h">
+          <div class="wrap">
+            <p class="eyebrow">In the system</p>
+            <h2 id="pp-system-h" class="pp-system__h">
+              {d.lab ? `${d.short} ${d.lab}` : d.short} works on {worksOn.length} of the {system.layers.length} layers:{' '}
+              {listWords(worksOn.map((l) => l.title))}.
+            </h2>
+            <DroneDiagram data={system} mode="partner" partner={partner.id} />
+          </div>
+        </section>
+      )
+    }
 
     <div class="wrap pp-body">
       <div class="md prose"><Content /></div>
@@ -188,6 +208,15 @@ const layerNames: Record<string, string> = {
     margin: 0;
     display: grid;
     gap: 4px;
+  }
+  .pp-system {
+    padding-block: clamp(36px, 5vw, 56px) 8px;
+  }
+  .pp-system__h {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    max-width: 40ch;
+    margin: 0 0 18px;
   }
   .pp-body {
     padding-block: clamp(40px, 6vw, 72px);

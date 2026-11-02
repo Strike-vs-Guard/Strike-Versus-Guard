@@ -8,6 +8,9 @@ import PartnerChips from '../components/PartnerChips.astro';
 import Clip from '../components/Clip.astro';
 import Icon from '../components/Icon.astro';
 import { url } from '../lib/url';
+import { getSystemData } from '../lib/system';
+import DroneDiagram from '../components/DroneDiagram.astro';
+import ConnectionDiagram from '../components/ConnectionDiagram.astro';
 
 const section = async (id: string) => {
   const entry = await getEntry('programme', id);
@@ -27,22 +30,8 @@ const directions = await section('directions');
 
 const partners = (await getCollection('partners')).sort((a, b) => a.data.order - b.data.order);
 const sponsors = partners.filter((p) => p.data.role === 'Funding sponsor');
-const members = partners.filter((p) => p.data.role !== 'Funding sponsor');
 
-// Partners in the "who does what" section, ordered by the first layer each works on.
-const LAYER_ORDER = ['strategy', 'safety', 'flight', 'drones', 'integration'] as const;
-type LayerKey = (typeof LAYER_ORDER)[number];
-const firstLayer = (p: (typeof members)[number]) =>
-  Math.min(...LAYER_ORDER.map((k, i) => (p.data.work[k] ? i : 99)));
-const cols = [...members].sort((a, b) => firstLayer(a) - firstLayer(b) || a.data.order - b.data.order);
-// Hovering a partner card highlights that partner's contributions and fades the rest.
-const hoverCss = cols
-  .map(
-    (p) =>
-      `.who:has(.who__partner[data-col="${p.id}"]:hover,.who__partner[data-col="${p.id}"]:focus-visible) .who__item:not([data-col="${p.id}"]){opacity:.3}` +
-      `.who:has(.who__partner[data-col="${p.id}"]:hover,.who__partner[data-col="${p.id}"]:focus-visible) .who__item[data-col="${p.id}"]{border-color:var(--text)}`,
-  )
-  .join('');
+const system = await getSystemData();
 const updates = (await getCollection('updates', (u) => !u.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -165,60 +154,18 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
         <div class="prose"><stack.Content /></div>
       </header>
 
-      <Fragment set:html={`<style>${hoverCss}</style>`} />
-      <div class="who">
-        <ul class="who__partners" aria-label="Partners">
-          {
-            cols.map((p) => (
-              <li>
-                <a class="who__partner" data-col={p.id} href={url(`partners/${p.id}/`)}>
-                  <span class="logo-well who__logo">
-                    <Image src={p.data.logo} alt="" height={96} densities={[1, 2]} />
-                  </span>
-                  <span class="eyebrow">{p.data.role}</span>
-                  <strong class="who__name">{p.data.lab ? `${p.data.short} ${p.data.lab}` : p.data.short}</strong>
-                  {p.data.lead && <span class="who__lead">{p.data.lead}</span>}
-                  <span class="who__more">
-                    See their work <span aria-hidden="true">→</span>
-                  </span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+      <div class="sys-part">
+        <h3 class="sys-part__h">What each layer does, top to bottom</h3>
+        <p class="sys-part__hint">Select a layer to see who works on it below ↓</p>
+      </div>
+      <DroneDiagram data={system} mode="explain" target="#who-links" scrollTo="#who" />
 
-        <ol class="who__layers">
-          {
-            stack.items.map((r) => {
-              const key = (r.icon ?? '') as LayerKey;
-              const involved = cols.filter((p) => p.data.work[key]);
-              return (
-                <li class:list={['who__layer', { 'who__layer--all': key === 'integration' }]}>
-                  <div class="who__layer-head">
-                    <span class="who__icon">
-                      <Icon name={r.icon ?? 'drones'} size={24} />
-                    </span>
-                    <div>
-                      <p class="eyebrow">{r.label}</p>
-                      <h3>{r.title}</h3>
-                      <p class="who__text">{r.text}</p>
-                    </div>
-                  </div>
-                  <ul class="who__items">
-                    {involved.map((p) => (
-                      <li>
-                        <a class="who__item" data-col={p.id} href={url(`partners/${p.id}/`)}>
-                          <span class="who__who">{p.data.short}</span>
-                          <span>{p.data.work[key]}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              );
-            })
-          }
-        </ol>
+      <div class="sys-part sys-part--rule" id="who">
+        <h3 class="sys-part__h">Who works on each layer</h3>
+        <p class="sys-part__hint">Select a partner or a layer to trace the links.</p>
+      </div>
+      <div id="who-links">
+        <ConnectionDiagram data={system} />
       </div>
 
       {
@@ -689,151 +636,31 @@ const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.shor
     color: var(--text);
   }
 
-  /* Who does what */
-  .who__partners {
-    list-style: none;
-    margin: 0 0 28px;
-    padding: 0;
-    display: grid;
-    gap: 12px;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
-  }
-  .who__partners li {
+  /* How it fits together: the two parts */
+  .sys-part {
     display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 14px;
+    margin: 8px 0 18px;
   }
-  .who__partner {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 14px 14px 16px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg);
-    text-decoration: none;
-    transition: border-color 0.15s ease;
-  }
-  .who__partner:hover,
-  .who__partner:focus-visible {
-    border-color: var(--text);
-  }
-  .who__logo {
-    height: 76px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border);
-  }
-  .who__logo :global(img) {
-    max-height: 48px;
-    max-width: 100%;
-  }
-  .who__partner .eyebrow {
-    margin: 0;
-  }
-  .who__name {
-    font-size: var(--step-1);
-    line-height: 1.25;
-  }
-  .who__lead {
-    font-size: var(--step--1);
-    color: var(--muted);
-  }
-  .who__more {
-    margin-top: auto;
-    padding-top: 10px;
-    font-size: var(--step--1);
-    font-weight: 600;
-    color: var(--muted);
-  }
-  .who__partner:hover .who__more,
-  .who__partner:focus-visible .who__more {
-    color: var(--text);
-  }
-
-  .who__layers {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .sys-part--rule {
+    margin-top: 48px;
+    padding-top: 28px;
     border-top: 1px solid var(--border);
+    /* with the page's 72px scroll-padding this lands ~80px down, clear of the sticky header */
+    scroll-margin-top: 8px;
   }
-  .who__layer {
-    display: grid;
-    gap: 14px 32px;
-    padding: 22px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  @media (min-width: 860px) {
-    .who__layer {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-      align-items: start;
-    }
-  }
-  .who__layer--all {
-    border-top: 1px dashed var(--muted);
-    margin-top: -1px;
-  }
-  .who__layer-head {
-    display: flex;
-    gap: 14px;
-  }
-  .who__icon {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--border);
-    background: var(--surface);
-  }
-  .who__layer-head .eyebrow {
-    margin: 0 0 2px;
-  }
-  .who__layer-head h3 {
+  .sys-part__h {
     font-family: var(--font-display);
     font-weight: 700;
     font-size: var(--step-3);
-    margin: 0 0 4px;
-  }
-  .who__text {
-    font-size: var(--step-0);
-    color: var(--muted);
     margin: 0;
   }
-  .who__items {
-    list-style: none;
+  .sys-part__hint {
     margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
-  }
-  .who__items li {
-    display: flex;
-  }
-  .who__item {
-    flex: 1;
-    display: block;
-    padding: 12px 14px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg);
-    font-size: var(--step-0);
-    line-height: 1.5;
-    text-decoration: none;
-    transition:
-      opacity 0.2s ease,
-      border-color 0.2s ease;
-  }
-  .who__item:hover {
-    border-color: var(--text);
-  }
-  .who__who {
-    display: block;
-    font: 500 var(--step--1) var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 2px;
+    font-size: var(--step-0);
   }
 
   .sponsor {

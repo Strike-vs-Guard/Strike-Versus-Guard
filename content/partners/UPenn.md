@@ -18,6 +18,7 @@ summary: >-
 work:
   strategy: "Leads the formal track: team behaviour specified in signal temporal logic."
   safety: "Co-develops the safety filter with CMU."
+  drones: "Runs the formal-track strategy on the shared Starling 2 Max drones."
 logo: ./UPenn/penn.png
 labLogo: ./UPenn/xlab.png
 logoAlt: University of Pennsylvania

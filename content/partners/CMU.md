@@ -23,7 +23,7 @@ logo: ./CMU/cmu.png
 labLogo: ./CMU/airlab.png
 logoAlt: Carnegie Mellon University
 website: https://theairlab.org
-order: 3
+order: 5
 updated: 2026-11-02
 ---
 
