@@ -97,7 +97,8 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | A partner's card, page and `work:` lines | `content/partners/<NAME>.md` + `content/partners/<NAME>/` images | That partner |
 | Funder card | `content/partners/HTX.md` | ST Engineering |
 | Page sections | `content/programme/*.md` (one file per section, `order:` sets position) | ST Engineering (+ co-owners in CODEOWNERS) |
-| Top of the home page, incl. the `decisions:` list ("What they decide"), the hero `video:` and the one-line `gameNote:` | `content/programme/overview.md` | ST Engineering |
+| Top of the home page, incl. the `decisions:` list ("What they decide"), the hero `video:`, the one-line `gameNote:` and the Programme page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` | ST Engineering |
+| Home "Proof so far" section head and its `note:`; the Flights page head is `pageEyebrow:`/`pageTitle:` in `flights.md` | `content/programme/proof.md` | ST Engineering |
 | Localisation section and its one-line `status:` | `content/programme/localisation.md` | ST Engineering (CMU advises) |
 | Layers of the system (drone diagram and connection diagram) | `content/programme/stack.md` (`icon:` is the layer id) | ST Engineering |
 | News | `content/updates/YYYY-MM-DD-slug.md` | Any partner |

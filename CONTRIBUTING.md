@@ -64,7 +64,8 @@ anything numeric or unpublished from the confidential reports.
 
 | What | File |
 |---|---|
-| Top of the home page: the `decisions:` list ("What they decide"), `video:` (the hero clip, in `public/media/`) and `gameNote:` (one line about the game) | `content/programme/overview.md` |
+| Top of the home page: the `decisions:` list ("What they decide"), `video:` (the hero clip, in `public/media/`), `gameNote:` (one line about the game) and the Programme page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` |
+| Home "Proof so far" section head and its honest one-line `note:` | `content/programme/proof.md` |
 | Localisation section and its one-line `status:` | `content/programme/localisation.md` |
 | Two tracks (NUS / UPenn) | `content/programme/tracks.md` |
 | The benchmark game and its four steps | `content/programme/benchmark.md` |
