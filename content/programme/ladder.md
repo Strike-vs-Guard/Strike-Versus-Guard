@@ -22,7 +22,7 @@ items:
   - label: M2
     title: Ground station
     text: Network, motion-capture set-up and clock sync on the ground workstation.
-    state: In progress
+    state: Done
   - label: M3
     title: Drone link, propellers off
     text: PX4 on the drone streams its full telemetry to the ground station over the lab Wi-Fi.

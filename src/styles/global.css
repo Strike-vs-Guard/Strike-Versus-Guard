@@ -61,7 +61,7 @@
   --border: #26384d;
   --grid: #1f2d3d;
   --brand-red: #ff5a6e;
-  --link: #6fa3f5;
+  --link: var(--text);
   --strike: #f2766a;
   --guard: #6fa3f5;
   --well-border: transparent;
@@ -78,7 +78,7 @@
     --border: #26384d;
     --grid: #1f2d3d;
     --brand-red: #ff5a6e;
-    --link: #6fa3f5;
+    --link: var(--text);
     --strike: #f2766a;
     --guard: #6fa3f5;
     --well-border: transparent;

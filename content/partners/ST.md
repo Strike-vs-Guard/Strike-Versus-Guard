@@ -89,7 +89,7 @@ Bringing up the Starling takes six steps (status as of November 2026):
 | Step | What it checks | Status |
 |---|---|---|
 | M1 | Rehearsal on three simulated drones, including a geofence breach and recovery | Done |
-| M2 | Ground station: network, motion capture, clock sync | In progress |
+| M2 | Ground station: network, motion capture, clock sync | Done |
 | M3 | Drone link to the ground station, propellers off | Done |
 | M4 | Tracking fused into the drone's estimate, propellers off | Done |
 | M5 | Hand-carry check through the flight volume | Done |
