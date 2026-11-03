@@ -84,6 +84,21 @@ How to run: start all three in one message; give each the preview URL and the vo
 STANDARDS §2; ask for a ranked list under 550 words; the lead reconciles and shows Jeremy before
 building. Findings that two share come first.
 
+## Round-5 panel (3 Nov 2026)
+
+Three reviewers, again ad-hoc and not saved as agent files, read the test site after the lab's
+nine-point feedback. Reuse this brief for a site-wide redesign.
+
+| Reviewer | Lens |
+|---|---|
+| Design system | Tokens in light and dark, type scale, contrast, logo wells, what brand colour may colour, 390 px |
+| Content architecture | Nav and page names, where each question is answered once, per-partner ownership, what a partner edits, empty states |
+| Drone interaction | What the interactive drone does and why: each effect must explain a part or a layer; no decoration (no count-ins, no scan sweeps), reduced motion |
+
+How to run: start all three in one message with the preview URL, STANDARDS §2/§3/§5 and the lab's
+feedback; ask for a ranked list under 550 words; the lead reconciles into one draft (a private
+claude.ai page) and Jeremy picks before anything is built. Result: the v3 spec.
+
 ### Draft-building harness used in phase 3
 Proposal agents wrote **fragments** (one `<section class="PREFIX">` with scoped CSS and an IIFE
 script). They used placeholders `{{DATA_JSON}}`, `{{LOGO_<id>}}` and `{{LAB_<id>}}`, which a small

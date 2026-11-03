@@ -1,7 +1,7 @@
 # Claude handoff: Strike vs Guard website
 
 > **How to use this file:** paste it into any Claude conversation (or point Claude Code at the repo,
-> whose `CLAUDE.md` links here) to continue the work with full context. Last updated **3 Nov 2026** (rounds 3 and 4).
+> whose `CLAUDE.md` links here) to continue the work with full context. Last updated **3 Nov 2026** (rounds 3 to 5).
 
 ## 1. One-paragraph summary
 This repo (`Strike-vs-Guard/Strike-Versus-Guard`) is the website of **Strike vs Guard**, a research
@@ -32,17 +32,16 @@ programme lead driving the work is Jeremy (ST Engineering).
    and CMU are partners. HTX is the funder ("Funded by HTX"). Order: **ST Engineering, NUS, UPenn, CMU**.
 3. **Exactly two branches:** `development` (edit) and `main` (live, via PR only). No feature branches,
    no Dependabot.
-4. **Tokens only:** blue/red belong to the game teams; ST red appears in three places only.
+4. **Tokens only:** Strike/Guard colours belong to the game figures; brand red/blue are type, rules and bands only. Test light and dark.
 5. **Prove it before pushing:** `npm run check`, plus Playwright screenshots (1280 and 390px) for
    anything visual.
 
 ## 4. Current state (as of 3 Nov 2026)
 **Restructured on `development` (test site), not yet merged to `main`:**
-- Four pages plus Updates: Home, Programme, Partners, Flights (see STANDARDS §5). Nav (now): Programme ·
-  Partners ▾ · Flights · Updates.
+- Four pages plus Updates: Home, Programme, Partners, Flights (see STANDARDS §5). (Superseded by round 5 below.)
 - Five layers (Strategy, Safety, Flight, Localisation, Drones, plus Integration). `work:` accepts
   `localisation`; ST Engineering leads it, CMU provides the simulator and technical advice.
-- One pure-black theme, no light mode, no toggle (Jeremy, 3 Nov 2026).
+- One pure-black theme (superseded by round 5: light default plus dark toggle).
 - `decisions:` list in `overview.md` ("What they decide" under the hero photo); `status:` line in
   `content/programme/localisation.md`.
 - Spec: `docs/superpowers/specs/2026-11-03-site-restructure-design.md`; plan beside it in `plans/`.
@@ -84,6 +83,20 @@ or corner marks; Flights = lead clip + grid with stamps and "watch" cues + annot
 sized by visual weight (`src/lib/logo.ts`). Voice rules: STANDARDS §2. Panel brief:
 `docs/claude/AGENTS_AND_SKILLS.md`.
 
+**Round 5, lab feedback (3 Nov 2026, `development`, PR #6):** nine points from the lab, a panel (design
+system / content architecture / drone interaction) and an approved draft (private claude.ai page
+Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-design.md`.
+
+| Area | State |
+|---|---|
+| Theme | Light default, dark navy-black, header toggle; tokens in STANDARDS §3; Archivo 700 headlines; larger wordmark |
+| Nav | Updates · Research · Partners ▾ · Flights · Publications · Contribute |
+| Pages | Research replaces Programme (`/programme/` redirects); new Publications and Contribute; Partners keeps only the connection diagram |
+| Home | Hero (title above a 2:1 clip panel), logo row, updates strip, glance + latest, partner cards, five themes, interactive drone, flights, publications, people |
+| Drone | Effects list in STANDARDS §5; ring drift only while Safety is lit; no count-ins or scan sweeps |
+| Content model | `content/updates/<partner>/` with `gallery:` and `link:`; `publications:` per partner; `glance.md`; `themes.md`; site `start`/`end` (June 2026 – June 2029) |
+| Content added | People photos for all partners; IROS 2026 posts and posters; UPenn STL-SVPIO paper; A0 poster (top half only); ladder M6 done |
+
 **Earlier work, already live or on `development`:**
 - Partner pages, Updates, schema/link/size checks, CI, deploy of both branches; Pages source is GitHub Actions.
 - Annotated drone + connection diagram, with `sys:select` shared selection and the polish pass.
@@ -93,7 +106,12 @@ sized by visual weight (`src/lib/logo.ts`). Voice rules: STANDARDS §2. Panel br
 ## 5. Open items / waiting on people
 | Item | Who |
 |---|---|
-| Check the test site (rounds 2 to 4: shorter home, hero clip, Partners menu, people rows, first-person pages, Flights page), then merge PR #6 (open, `development` into `main`) | Jeremy |
+| Check the test site (rounds 2 to 5: light/dark toggle, new home order, Research, Publications, Contribute, people rows, first-person pages), then merge PR #6 (open, `development` into `main`) | Jeremy |
+| Confirm your people, roles and photos (photos came from the labs' profile pictures) | Each partner |
+| Supply the NUS workshop paper (not found publicly; NUS shows "None yet") | NUS |
+| Derek (ST) is listed without surname or role: give his full name and role | ST Engineering |
+| Decide whether the full A0 poster may go up (only the top half is published; the lower half has wording the site avoids) | Jeremy |
+| Confirm the captions of CMU's clips used in the hero and Flights | CMU |
 | Check your first-person page, your people row and your roles. William Teo's role is unknown (left blank); Chen Jiaying's role was taken from nearlab.ai | ST Engineering, Jeremy |
 | Check the spelling of Yikuan Fang and Rahul Mangharam | CMU, UPenn |
 | Confirm the captions of CMU's clips and the Starling photo credit | CMU |

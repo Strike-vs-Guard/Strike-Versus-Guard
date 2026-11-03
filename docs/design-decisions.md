@@ -15,10 +15,10 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 
 ## Structure
 
-- Four pages plus Updates (restructured 3 Nov 2026): **Home**, **Programme** (`/programme/`),
+- Pages (restructured 3 Nov 2026, extended in round 5): **Home**, **Updates**, **Research** (`/research/`, formerly Programme),
   **Partners** (`/partners/`, with a page per partner) and **Flights** (`/flights/`). The first
   single long home page had grown too long; each question a visitor asks now has a page.
-- Nav: Programme · Partners ▾ · Flights · Updates. The Partners menu lists each partner's page.
+- Nav (round 5): Updates · Research · Partners ▾ · Flights · Publications · Contribute, plus a theme toggle. The Partners menu lists each partner's page.
 - Home page order (round 2, 3 Nov 2026): hero with flight clip and game note → the game and what the
   drones decide → proof bar and clips → compact drone → updates → team photo and colour logo strip.
   Home is about 5 screens at 1280, down from 6.5.
@@ -42,6 +42,15 @@ editing workflow, and the visual design. The decisions below reconcile their pro
   test with", "Who builds which part", "We try it in simulation first"); a shorter footer note;
   Research directions as a plain numbered list. The hero title stays as it was. Voice rules are in
   STANDARDS §2.
+- **Round 5 (3 Nov 2026), lab feedback.** Nine points from the lab, a three-lens panel (design system,
+  content architecture, drone interaction) and an approved draft led to: Programme renamed **Research**
+  (`/programme/` redirects); new pages **Publications** and **Contribute**; nav Updates · Research ·
+  Partners ▾ · Flights · Publications · Contribute; home reordered updates-first (hero with a 2:1 clip
+  panel, logo row, updates strip, glance + latest, partner cards, five research themes, the
+  interactive drone, flights, publications, people); the Partners page keeps only the connection
+  diagram; updates move to one folder per partner with `gallery:` and `link:`; `publications:` per
+  partner; `glance.md` and `themes.md`; people photos for all partners; programme dates June 2026 –
+  June 2029. Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-design.md`.
 - Five layers: Strategy, Safety, Flight, **Localisation** (ST Engineering leads; CMU provides the
   simulator and technical advice), Drones, plus Integration across all.
 - The reports behind the localisation work are confidential. They are used for context only, and
@@ -78,10 +87,8 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 
 ## Visual design: "lab notebook, not mission control"
 
-- Calm: one pure-black theme (no light mode, no toggle; decided by Jeremy, 3 Nov 2026), no dot grid (removed in round 4), IBM Plex Sans / Condensed / Mono.
-- Colour comes from the two teams and the partner logos only. ST red appears in three places: the
-  wordmark, one short rule under the hero title, and the "We are here" milestone marker. It is never
-  used for buttons, banners or backgrounds. Buttons are ink-coloured.
+- Calm: **light by default, dark navy-black with a header toggle** (round 5, replacing the single pure-black theme), no dot grid, Archivo 700 headlines, IBM Plex Sans body, Plex Mono for dates and numbers only. Brand red and blue are type, rules and bands; Strike and Guard colours stay in game figures. Logos sit in white wells (1 px border in light).
+- Colour comes from the two teams (inside game figures) and the partner logos. Brand red appears as type, rules and bands: the wordmark, one short rule under the hero title, the "We are here" marker. It is never used for buttons or alarms. Buttons are ink-coloured.
 - The two strategy tracks are never coloured blue/red, because those colours mean the game's teams.
 - Partner logos sit in equal white wells, in colour (Jeremy, 3 Nov 2026; the greyscale rule is
   withdrawn). The footer shows 2×2 partner wells with lab logos, beside "Funded by" HTX.
@@ -90,7 +97,7 @@ editing workflow, and the visual design. The decisions below reconcile their pro
 - The drone drawing lost its dot grid and corner marks; they added noise, not meaning.
 - The Flights page leads with one big clip and a grid of the rest, each with a mono stamp and a
   "watch" cue, plus an annotated photo of the Singapore lab.
-- Content width is 1320 px with a fluid gutter, so wide screens are used. Photos and video get a 1 px
+- Content width is 1200 px (round 5; was 1320) with a fluid gutter, so wide screens are used. Photos and video get a 1 px
   edge.
 - Signature visual: an animated diagram of the game in four beats (Divide, Share, Adapt, Recover),
   drawn in SVG. Each beat is synced to a clickable caption. It pauses off-screen and does not auto-play

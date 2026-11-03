@@ -21,8 +21,8 @@ content/                     ← everything people edit (Markdown + images)
   partners/CMU.md  CMU/
   partners/ST.md   ST/
   partners/HTX.md  HTX/        sponsor card (no separate page)
-  programme/*.md               shared page sections (ST-owned), incl. localisation.md
-  updates/*.md                 news posts
+  programme/*.md               shared page sections (ST-owned), incl. glance.md, themes.md, localisation.md
+  updates/<partner>/*.md       news posts, one folder per partner (st, nus, upenn, cmu) + images/
   site.yml                     site title, footer
 public/media/                ← flight clips (MP4) and their poster frames
 src/                         ← layout, styles, components (ST-owned)
@@ -32,8 +32,8 @@ src/                         ← layout, styles, components (ST-owned)
   deploy.yml                   publishes main (live) and development (/preview/) together
 ```
 
-Pages: Home, Programme (`/programme/`), Partners (`/partners/`, also a header menu that lists every partner's page), Flights (`/flights/`) and Updates.
-One pure-black theme. Each partner edits its own Markdown file, including its `people:` list and its updates (`author:`).
+Pages: Home, Updates, Research (`/research/`; `/programme/` redirects), Partners (`/partners/`, also a header menu that lists every partner's page), Flights, Publications and Contribute.
+Light theme by default, dark (navy-black) with a toggle in the header. Each partner edits its own Markdown file, including its `people:`, `publications:` and its own update folder `content/updates/<partner>/` (`author:`).
 
 Built with [Astro](https://astro.build) (static output, no server). Hosted on GitHub Pages, deployed by
 GitHub Actions. The repository keeps only two branches: `main` (live) and `development` (edits and test site).

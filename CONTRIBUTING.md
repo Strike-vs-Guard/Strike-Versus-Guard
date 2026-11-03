@@ -60,25 +60,27 @@ break one):
 Your page is linked from the **Partners** menu in the header and from the Partners page. Your file
 is the only place its text lives, and your page says "Maintained by <you>" with an Edit link.
 
-The site has four pages: Home, Programme, Partners and Flights (plus Updates). The shared files below
+The site has Home, Research (was Programme; `/programme/` redirects), Partners, Flights, Publications, Contribute and Updates. The shared files below
 feed them. They are owned by ST Engineering, but anyone may propose changes. The October 2026 monthly
 report is approved for publication; please do not publish anything numeric or unpublished from the
 other programme reports.
 
 | What | File |
 |---|---|
-| Top of the home page: the `decisions:` list ("What they decide"), `video:` (the hero clip, in `public/media/`), `gameNote:` (one line about the game) and the Programme page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` |
+| Top of the home page: the `decisions:` list ("What they decide"), `video:` (the hero clip, in `public/media/`), `gameNote:` (one line about the game) and the Research page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` |
 | Home "Proof so far" section head and its one-line `note:` | `content/programme/proof.md` |
-| Programme "In simulation" section (one paragraph, 2–4 clips) | `content/programme/simulation.md` (videos in `public/media/`) |
+| Research "In simulation" section (one paragraph, 2–4 clips) | `content/programme/simulation.md` (videos in `public/media/`) |
 | Localisation section and its one-line `status:` | `content/programme/localisation.md` |
 | Two tracks (NUS / UPenn) | `content/programme/tracks.md` |
 | The benchmark game and its four steps | `content/programme/benchmark.md` |
 | Layers and "who does what" grid (rows; the cells come from partner files) | `content/programme/stack.md` |
 | Flight clips | `content/programme/flights.md`, `content/programme/progress.md` (videos in `public/media/`) |
 | Milestones (move `current: true` each year) | `content/programme/milestones.md` |
+| Home "At a glance" status lines (`state:` = Done, In progress, Not yet; `note:` is the "as of" date) | `content/programme/glance.md` |
+| Home "Research themes" (five rows) | `content/programme/themes.md` |
 | Research directions | `content/programme/directions.md` |
 | News posts | `content/updates/<partner>/YYYY-MM-DD-short-title.md` (one folder per partner: `st`, `nus`, `upenn`, `cmu`) |
-| Site title and footer | `content/site.yml` |
+| Site title, footer, programme `start:` / `end:` | `content/site.yml` |
 
 ---
 
@@ -190,14 +192,52 @@ linkLabel: Read the paper
 The full post in Markdown.
 ```
 
-The three newest updates appear on the home page, and each partner page lists its own updates.
-Updates are a dated log, so:
+The three newest updates appear on the home page, the Updates page has a filter by partner, and each partner page lists its own updates ("No posts yet. Post one →" until you add one).
+`gallery:` is a strip of photos shown under the post (`src:` relative to the post, `alt:` required,
+`caption:` optional; same image rules as section 4). `link:` and `linkLabel:` add one external link
+(paper, poster PDF, code). Both are optional. Updates are a dated log, so:
 
 - Put your name in `author:`.
 - Write in the first person ("we flew…", "I tried…"), with dates and numbers.
 - End with what is still open.
 
 ---
+
+## 3a. Adding a publication
+
+Publications are listed in your partner file and shown on the **Publications** page (one section per
+partner) and in your own page. Add them under `publications:`:
+
+```yaml
+publications:
+  - title: A paper title
+    authors: Zheng, Zang, Amine, Vasile, Mangharam
+    venue: IROS 2026
+    year: 2026
+    status: accepted            # published | accepted | preprint | workshop (default: published)
+    link: https://arxiv.org/abs/0000.00000    # optional
+    pdf: https://example.org/paper.pdf        # optional
+    image: ./UPenn/paper-first-page.jpg       # optional first page or poster, relative to this file
+```
+
+| Field | Rule |
+|---|---|
+| `title`, `authors`, `venue`, `year` | Required. `year` is a number |
+| `status` | One of the four words above. Papers under review are not listed |
+| `link`, `pdf` | Full `https://` addresses |
+| `image` | Optional; same size limits as other images |
+
+With no entries the page shows "None yet (as of <date>)". Check the Publications page on the test site.
+
+## 3b. The Contribute page and the theme
+
+The **Contribute** page (header, last item) shows the same steps as this file in short form: "Which
+file is mine?", add a person or photo, post an update, add a publication. Point new colleagues there.
+
+The site has a light and a dark theme, and a sun/moon button in the header switches them. Nothing to
+do as a partner. Just check your images look right on both: logos get a white well automatically;
+diagrams and figures should work on a white page and on a dark navy page (avoid transparent PNGs with
+black text).
 
 ## 4. Images and video
 

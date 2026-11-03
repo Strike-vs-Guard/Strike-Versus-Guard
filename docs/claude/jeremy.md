@@ -264,6 +264,36 @@ A three-reviewer panel (editor, art director, outside professor; ad-hoc, brief i
   104 px, partner-page well 128 px.
 - STANDARDS §2 now holds the voice rules. "Programme lead" is used only as Jeremy's role.
 
+## 16. Round 5: lab feedback, light/dark, Research (3 Nov 2026)
+> Nine points from the lab after they saw the test site, then "follow the panel" and picks from the
+> draft (https://claude.ai/artifact/Kxx7DfmQ51Hv3EoeFyBgFj).
+
+**What the lab asked for:** a light site (dark as a toggle), a bigger wordmark, updates first on home,
+the Programme page called Research, publications, an easier way for partners to contribute, partner
+pages that are obviously the partner's own, faces for every partner, and a drone that does something.
+
+**What was done:**
+- A three-lens panel (design system, content architecture, drone interaction) fed one draft; Jeremy
+  chose from it. Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-design.md`.
+- Theme: light default, dark navy-black (not pure black), sun/moon toggle; Archivo 700 headlines;
+  brand red/blue only as type, rules and bands; white logo wells with a 1 px border in light.
+- Nav is Updates · Research · Partners ▾ · Flights · Publications · Contribute. `/programme/`
+  redirects to `/research/`.
+- Home: hero (title above a 2:1 clip panel), logo row, updates strip, glance + latest, partner cards,
+  five research themes, interactive drone, flights, publications, people.
+- Drone effects restored on home; rule: ring drift only while Safety is lit, no count-ins or scan sweeps.
+  The Partners page keeps the connection diagram only.
+- Content model: `content/updates/<partner>/` (with `gallery:`, `link:`), `publications:` per partner,
+  `glance.md`, `themes.md`, site `start`/`end` (June 2026 – June 2029). STANDARDS §4 old updates path fixed.
+- Content: people photos for all partners from the labs' profile pictures; IROS 2026 posts and
+  posters; UPenn's STL-SVPIO paper; the A0 poster, top half only.
+- Wording rule added (STANDARDS §2): research themes are named by content.
+
+**Decisions on gaps:** the NUS workshop paper was not found publicly, so NUS shows none. "Derek" (ST)
+is listed without surname or role. The full A0 poster waits for Jeremy.
+
+**Outcome:** Jeremy checks the test site and merges PR #6; partners confirm people, roles and photos.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)
