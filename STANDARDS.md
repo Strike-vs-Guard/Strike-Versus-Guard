@@ -86,7 +86,7 @@ sets `data-theme` before first paint (no flash). Partners need do nothing for it
 | `--border` | #E3E6EA | #26384D | rules, the 1 px edge on every photo and video |
 | brand red | #B3122E | #FF5A6E | **type, rules and bands only**: wordmark, one rule under the hero title, the "We are here" marker |
 | brand blue | #1A3E62 | #1A3E62 | bands and links only |
-| `--link` | #1A3E62 | #6FA3F5 | brand blue as text (links, the theme status word); #1A3E62 on #0B1622 is 1.7:1, `--text` is 7.2:1 |
+| `--link` | #1A3E62 | `--text` | brand blue as link text in light; plain text colour in dark (guard blue stays in game figures) |
 | `--band` / `--band-text` / `--band-muted` / `--band-accent` | #1A3E62 / #E8EDF2 / #B4C2D0 / #FF8A98 | same | bands that stay dark in both themes: footer, partner-page file line (text 9.3:1, muted 6.1:1, accent 4.9:1) |
 | `--media` | #0B1622 | #0B1622 | behind and over video only: hero panel, play-button discs |
 | `--strike` | #D9542C | #F2766A | **only** the Strike team inside game figures |
