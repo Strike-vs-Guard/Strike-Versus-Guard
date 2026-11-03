@@ -20,5 +20,4 @@ items:
     title: Bring-up of the Singapore lab.
   - state: Not yet
     title: A full game on real drones.
-  - state: Not yet
 ---
