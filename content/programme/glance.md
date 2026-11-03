@@ -21,5 +21,4 @@ items:
   - state: Not yet
     title: A full game on real drones.
   - state: Not yet
-    title: Publications from the programme itself.
 ---
