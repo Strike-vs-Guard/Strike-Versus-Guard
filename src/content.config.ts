@@ -89,6 +89,25 @@ const partners = defineCollection({
          * People on this partner's team, shown as a row with faces on the partner page.
          * `photo` is optional and relative to this file, e.g. ./ST/people/jeremy-chia.jpg
          */
+        /** Publications from this partner's work on the programme. */
+        publications: z
+          .array(
+            z
+              .object({
+                title: z.string(),
+                authors: z.string(),
+                venue: z.string(),
+                year: z.number().int(),
+                /** published | accepted | preprint | workshop */
+                status: z.enum(['published', 'accepted', 'preprint', 'workshop']).default('published'),
+                link: url.optional(),
+                pdf: url.optional(),
+                /** Optional first-page or poster image, relative to this file. */
+                image: image().optional(),
+              })
+              .strict(),
+          )
+          .default([]),
         people: z
           .array(
             z
@@ -205,7 +224,7 @@ const programme = defineCollection({
 
 /** News and progress posts: content/updates/YYYY-MM-DD-short-title.md */
 const updates = defineCollection({
-  loader: glob({ pattern: '[!_]*.md', base: './content/updates' }),
+  loader: glob({ pattern: '**/[!_]*.md', base: './content/updates' }),
   schema: ({ image }) =>
     z
       .object({
@@ -219,6 +238,11 @@ const updates = defineCollection({
         imageAlt: z.string().optional(),
         /** Set to true to keep a post out of the live site while you work on it. */
         draft: z.boolean().default(false),
+        /** Optional photos shown as a strip in the post (relative to the post file). */
+        gallery: z.array(z.object({ src: image(), alt: z.string(), caption: z.string().optional() }).strict()).default([]),
+        /** Optional external link (paper, poster PDF, code). */
+        link: url.optional(),
+        linkLabel: z.string().optional(),
       })
       .strict(),
 });
@@ -231,6 +255,9 @@ const site = defineCollection({
     tagline: z.string(),
     description: z.string(),
     contactEmail: z.string().email().optional(),
+    /** Programme start and end, e.g. "June 2026" and "June 2029". */
+    start: z.string().optional(),
+    end: z.string().optional(),
     repository: url,
     footerNote: z.string(),
   }),
