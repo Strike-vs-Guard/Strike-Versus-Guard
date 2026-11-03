@@ -27,10 +27,18 @@ website: https://www.marmotlab.org
 order: 3
 updated: 2026-11-03
 people:
-  - name: Tanishq Duhan
   - name: Prof Guillaume Sartoretti
+    photo: ./NUS/people/guillaume-sartoretti.jpg
     lead: true
+  - name: Tanishq Duhan
+    photo: ./NUS/people/tanishq-duhan.jpg
   - name: Jeric Lew
+    photo: ./NUS/people/jeric-lew.jpg
+  - name: He Chengyang
+    photo: ./NUS/people/he-chengyang.jpg
+  - name: Swaminathan S K
+    photo: ./NUS/people/swaminathan-s-k.jpg
+publications: []
 ---
 
 ## What we're trying

@@ -4,7 +4,7 @@
 eyebrow: Localisation
 title: Knowing where every drone is
 order: 9
-status: In the AirStack simulator, camera-only localisation followed a 162 m flight with an average error of 0.081 m against the drone's own estimate; a real Starling comes next.
+status: In the AirStack simulator, camera-only localisation followed a 162 m flight without losing track; a real Starling comes next.
 items:
   - label: "1 · Each drone, by itself"
     title: Where am I?

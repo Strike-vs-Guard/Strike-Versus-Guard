@@ -14,8 +14,7 @@ items:
       and picks it.
     image: ./images/nus-learned-plays.png
     alt: Four team plays the Guard drones discovered for the same situation, with a bar showing each play's predicted chance of success. The first play is selected.
-    plus: It found plays we hadn't thought of
-    minus: We can't always say why it chose one
+    plus: It found plays we hadn't thought of, like the four in the picture, but we can't always say why it picks one.
   - label: Track B · Formal
     title: Behaviour specified in signal temporal logic
     partners: [upenn]
@@ -25,8 +24,7 @@ items:
       rules and assigns roles within the team.
     image: ./images/upenn-mission-rules.png
     alt: Three rules (reach the flag, avoid opponents, beat the clock) and the resulting plan, where one drone holds a button to open a gate while two others reach the flag.
-    plus: We can check the behaviour against the rules we wrote
-    minus: The rules have to be right first
+    plus: In the capture-the-flag game we can check every move against the rules we wrote, but the check is only as good as those rules.
 ---
 
 We're building the team strategy two ways at once. At NUS the drones learn their

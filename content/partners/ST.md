@@ -34,6 +34,21 @@ people:
   - name: Chen Jiaying
     role: Principal AI Engineer
     photo: ./ST/people/chen-jiaying.jpg
+  - name: Derek
+    photo: ./ST/people/derek.jpg
+publications:
+  - title: Pairwise Approximation Can Select the Wrong Multi-Robot Plan
+    authors: William Teo (MARMoT Lab, NUS; NEAR Lab, ST Engineering)
+    venue: IROS 2026 Workshop on Intelligent Information Gathering
+    year: 2026
+    status: workshop
+    image: ./ST/pubs/pairwise-approximation-poster.jpg
+  - title: "When Is It Worth Looking Again? Cost-Aware Active Information Gathering for ObjectNav"
+    authors: Jiaying Chen, Chia Hwe Huang
+    venue: IROS 2026 (workshop poster)
+    year: 2026
+    status: workshop
+    image: ./ST/pubs/worth-looking-again-poster.jpg
 ---
 
 ## What we build
@@ -69,7 +84,7 @@ flight.
 
 ![The netted flight volume in the Singapore hangar, with OptiTrack cameras on stands and the floor axes marked](./ST/hangar-flight-volume.jpg)
 
-Bringing up the Starling takes six steps (status as of July 2026):
+Bringing up the Starling takes six steps (status as of July 2026; M6 has flown since):
 
 | Step | What it checks | Status |
 |---|---|---|
@@ -78,15 +93,14 @@ Bringing up the Starling takes six steps (status as of July 2026):
 | M3 | Drone link to the ground station, propellers off | Done |
 | M4 | Tracking fused into the drone's estimate, propellers off | Ready to test |
 | M5 | Hand-carry check through the flight volume | Ready to test |
-| M6 | First flight: take-off, hover, landing | Ready to test |
+| M6 | First flight: take-off, hover, landing | Done |
 
 ## In the simulator
 
 We brought the Starling 2 Max into the AirStack simulator (Isaac Sim with Pegasus) and built a
 construction-site world for it, where up to three drones fly at once. Camera-only localisation runs
-there first. Over a 162 m flight its position was off by 0.081 m on average, but that's measured
-against the drone's own flight-controller estimate, not yet the simulator's true position. With three
-Starlings flying, each kept track of itself without a loss.
+there first; with three Starlings flying, each kept track of itself without a loss. We still score it
+against the drone's own estimate, not the simulator's true position.
 
 We also rebuilt CMU's AirStack ourselves on the Starling 2 Max, to check that a second partner can
 run it. Doing that turned up two bugs in the shared stack, which we fixed: a camera start-up race in

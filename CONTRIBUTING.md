@@ -77,7 +77,7 @@ other programme reports.
 | Flight clips | `content/programme/flights.md`, `content/programme/progress.md` (videos in `public/media/`) |
 | Milestones (move `current: true` each year) | `content/programme/milestones.md` |
 | Research directions | `content/programme/directions.md` |
-| News posts | `content/updates/YYYY-MM-DD-short-title.md` |
+| News posts | `content/updates/<partner>/YYYY-MM-DD-short-title.md` (one folder per partner: `st`, `nus`, `upenn`, `cmu`) |
 | Site title and footer | `content/site.yml` |
 
 ---
@@ -165,7 +165,9 @@ Then continue from step 6 above. Please don't create other branches; the reposit
 
 ## 3. Adding a news update
 
-Create `content/updates/2026-11-15-first-outdoor-test.md`:
+Each partner has its own folder of updates: `content/updates/st/`, `content/updates/nus/`,
+`content/updates/upenn/` and `content/updates/cmu/`. Create a file in yours, e.g.
+`content/updates/nus/2026-11-15-first-outdoor-test.md`, with photos in `content/updates/nus/images/`:
 
 ```markdown
 ---
@@ -177,6 +179,12 @@ summary: One or two sentences shown on the home page.
 image: ./images/outdoor.jpg     # optional, relative to this file
 imageAlt: Three drones over a field
 draft: false            # true keeps it off the live site
+gallery:                # optional strip of photos, relative to this file
+  - src: ./images/team.jpg
+    alt: Five people beside the flight cage
+    caption: The team after the last flight.
+link: https://arxiv.org/abs/0000.00000   # optional paper, poster or code link
+linkLabel: Read the paper
 ---
 
 The full post in Markdown.

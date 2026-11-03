@@ -27,10 +27,20 @@ website: https://xlab.upenn.edu
 order: 4
 updated: 2026-11-03
 people:
-  - name: Wei Wang
-  - name: Billy Zheng
   - name: Prof Rahul Mangharam
     lead: true
+  - name: Hongrui (Billy) Zheng
+    photo: ./UPenn/people/hongrui-zheng.jpg
+  - name: Wei Wang
+    photo: ./UPenn/people/wei-wang.jpg
+publications:
+  - title: "STL-SVPIO: Signal Temporal Logic guided Stein Variational Path Integral Optimization"
+    authors: Hongrui Zheng, Zirui Zang, Ahmad Amine, Cristian Ioan Vasile, Rahul Mangharam
+    venue: IROS 2026
+    year: 2026
+    status: published
+    link: https://arxiv.org/abs/2603.13333
+    pdf: https://arxiv.org/pdf/2603.13333
 ---
 
 ## What we write down

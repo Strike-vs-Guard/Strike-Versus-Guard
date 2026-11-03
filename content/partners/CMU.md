@@ -28,8 +28,17 @@ order: 5
 updated: 2026-11-03
 people:
   - name: Prof Sebastian Scherer
+    photo: ./CMU/people/sebastian-scherer.jpg
     lead: true
   - name: Yikuan Fang
+    photo: ./CMU/people/yikuan-fang.jpg
+  - name: Cao Muqing
+    photo: ./CMU/people/cao-muqing.jpg
+  - name: Henry Tung
+    photo: ./CMU/people/henry-tung.jpg
+  - name: Younkyung (Cindy) Woo
+    photo: ./CMU/people/younkyung-woo.jpg
+publications: []
 ---
 
 ## What we fly

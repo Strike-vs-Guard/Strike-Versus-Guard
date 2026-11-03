@@ -4,7 +4,7 @@
 eyebrow: Test ladder
 title: Six steps before a Starling flies in Singapore
 order: 12
-note: Status as of July 2026. Each step must pass before the next one starts.
+note: Status as of July 2026, except M6, flown since. Each step must pass before the next one starts.
 # The annotated photo under the ladder. `points:` are in percent of the photo from the top left
 # (placed by eye on the 1100 x 623 original); `lx`/`ly` place each label.
 image: ../partners/ST/singapore-flight-lab.jpg
@@ -37,8 +37,8 @@ items:
     state: Ready to test
   - label: M6
     title: First flight
-    text: Take-off, hover and landing inside the netted volume under AirStack command.
-    state: Ready to test
+    text: First Starling flights in Singapore, flown.
+    state: Done
 ---
 
 ST Engineering is bringing up AirStack on the Starling 2 Max in its Singapore hangar one step at a time.
