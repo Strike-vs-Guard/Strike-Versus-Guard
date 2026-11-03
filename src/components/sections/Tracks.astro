@@ -1,5 +1,8 @@
 ---
-/** Two tracks, one stack (content/programme/tracks.md). Holds the #programme anchor. */
+/**
+ * Two tracks, one stack (content/programme/tracks.md). Holds the #programme anchor, and one anchor per
+ * track (`icon:` if set, else #learning and #formal) for the Research page and the home themes rows.
+ */
 import { Image } from 'astro:assets';
 import PartnerChips from '../PartnerChips.astro';
 import Icon from '../Icon.astro';
@@ -17,8 +20,8 @@ const tracks = await section('tracks');
     </header>
     <div class="tracks">
       {
-        tracks.items.map((t) => (
-          <article class="card track">
+        tracks.items.map((t, i) => (
+          <article class="card track" id={t.icon ?? ['learning', 'formal'][i]}>
             <p class="eyebrow">{t.label}</p>
             <h3>{t.title}</h3>
             <PartnerChips ids={t.partners} />

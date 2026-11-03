@@ -1,0 +1,83 @@
+---
+/**
+ * Publications, by partner in partner order: each partner's `publications:` (content/partners/<NAME>.md)
+ * with title, authors, venue, year, status as plain text, links and the image when there is one.
+ * A partner with none shows "None yet (as of <build date>)".
+ */
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/sections/PageHead.astro';
+import PubList from '../components/sections/PubList.astro';
+import { url } from '../lib/url';
+import { fmtDate } from '../lib/text';
+import { partnersInOrder } from '../components/sections/data';
+
+const { partners } = await partnersInOrder();
+const today = new Date();
+const asOf = fmtDate(today, 'short');
+---
+
+<Base title="Publications" description="Papers and posters from the Strike vs Guard partner labs, by partner.">
+  <PageHead eyebrow="Strike vs Guard" title="Publications" />
+  <div class="wrap pubs">
+    {
+      partners.map((p) => {
+        const list = [...p.data.publications].sort((a, b) => b.year - a.year);
+        return (
+          <section class="pubs__sec" id={p.id} aria-labelledby={`pubs-${p.id}`}>
+            <h2 id={`pubs-${p.id}`}>
+              {p.data.page ? <a href={url(`partners/${p.id}/`)}>{p.data.short}</a> : p.data.short}
+            </h2>
+            {list.length > 0 ? (
+              <PubList pubs={list.map((pub) => ({ pub }))} images />
+            ) : (
+              <p class="pubs__none">
+                None yet (as of <time datetime={today.toISOString().slice(0, 10)}>{asOf}</time>).
+              </p>
+            )}
+          </section>
+        );
+      })
+    }
+    <p class="pubs__how">
+      Partners add their own: <a href={url('contribute/#publication')}>how to add a publication →</a>
+    </p>
+  </div>
+</Base>
+
+<style>
+  .pubs {
+    padding-block: clamp(32px, 5vw, 56px) var(--section);
+  }
+  .pubs__sec + .pubs__sec {
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+  .pubs__sec {
+    scroll-margin-top: 80px;
+  }
+  .pubs__sec h2 {
+    font-size: var(--step-4);
+    margin: 0 0 16px;
+  }
+  .pubs__sec h2 a {
+    text-decoration: none;
+  }
+  .pubs__sec h2 a:hover {
+    text-decoration: underline;
+  }
+  .pubs__none {
+    font-size: var(--step-1);
+    color: var(--muted);
+    margin: 0;
+  }
+  .pubs__none time {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+  .pubs__how {
+    margin-top: 56px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: var(--step-0);
+    color: var(--muted);
+  }
+</style>

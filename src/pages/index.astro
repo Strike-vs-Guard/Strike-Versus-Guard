@@ -1,96 +1,96 @@
 ---
-/** Home page: clip hero and facts, the game, proof so far, the compact drone, updates, team photo. */
+/**
+ * Home (v3, spec 2026-11-03): title above a rounded 2:1 clip panel → logo row → updates strip →
+ * At a glance + Latest → partner cards → research themes → the annotated drone (Layers) → flights
+ * (lead + 3) → publications → people. The footer is in Base.
+ */
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import { url } from '../lib/url';
 import { section } from '../components/sections/content';
-import Benchmark from '../components/sections/Benchmark.astro';
-import Proof from '../components/sections/Proof.astro';
+import LogoRow from '../components/sections/LogoRow.astro';
+import UpdatesStrip from '../components/sections/UpdatesStrip.astro';
+import Glance from '../components/sections/Glance.astro';
+import PartnerCards from '../components/sections/PartnerCards.astro';
+import Themes from '../components/sections/Themes.astro';
 import Layers from '../components/sections/Layers.astro';
-import UpdatesTeaser from '../components/sections/UpdatesTeaser.astro';
-import TeamPhoto from '../components/sections/TeamPhoto.astro';
+import Clips from '../components/sections/Clips.astro';
+import PublicationsTeaser from '../components/sections/PublicationsTeaser.astro';
+import People from '../components/sections/People.astro';
 
 const overview = await section('overview');
 const flights = await section('flights');
 /* the still photo: the clip's poster, and what reduced-motion visitors see instead of the clip */
-const still = overview.image ? await getImage({ src: overview.image, width: 1280, format: 'webp' }) : undefined;
+const still = overview.image ? await getImage({ src: overview.image, width: 1600, format: 'webp' }) : undefined;
 const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?? overview.caption ?? '';
 ---
 
 <Base>
-  <!-- ───────────────────────── Hero ───────────────────────── -->
+  <!-- ───────────────────────── Hero: title above a rounded 2:1 clip panel ───────────────────────── -->
   <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap">
-      <div class="hero__grid">
-        <div class="hero__text">
-          <p class="eyebrow">{overview.eyebrow} · Decentralised multi&#8209;drone autonomy</p>
-          <h1 id="hero-title">{overview.title}</h1>
-          <span class="hero__rule" aria-hidden="true"></span>
-          <div class="hero__lede"><overview.Content /></div>
-          {overview.gameNote && <p class="hero__game">{overview.gameNote}</p>}
-          <div class="hero__actions">
-            <a class="btn" href={url('programme/')}>How it works</a>
-            <a class="btn btn--ghost" href={url('partners/')}>Meet the partners</a>
-          </div>
-        </div>
-        {
-          (overview.video || still) && (
-            <figure class="hero__media">
-              <div class:list={['hero__frame', { 'has-video': !!overview.video }]} data-hero-clip>
-                {overview.video && (
-                  <video
-                    class="hero__video"
-                    src={url(`media/${overview.video}`)}
-                    poster={still?.src}
-                    muted
-                    loop
-                    playsinline
-                    preload="none"
-                    aria-label={`Flight clip: ${clipTitle}`}
-                  />
-                )}
-                {still && (
-                  <img
-                    class="hero__still"
-                    src={still.src}
-                    alt={overview.imageAlt ?? ''}
-                    width={still.attributes.width}
-                    height={still.attributes.height}
-                    loading="eager"
-                    decoding="async"
-                  />
-                )}
-                {overview.video && (
-                  <button type="button" class="hero__toggle" aria-label="Play the flight clip" hidden>
-                    <svg class="hero__i-play" width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
-                      <path d="M5 3l10 6-10 6z" fill="currentColor" />
-                    </svg>
-                    <svg class="hero__i-pause" width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
-                      <path d="M5 3h3v12H5zM10 3h3v12h-3z" fill="currentColor" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-              {overview.caption && <figcaption>{overview.caption}</figcaption>}
-            </figure>
-          )
-        }
+    <div class="wrap hero__text">
+      <h1 id="hero-title">{overview.title}</h1>
+      <div class="hero__sum"><overview.Content /></div>
+      <div class="hero__btns">
+        <a class="btn" href="#updates">Latest updates</a>
+        <a class="btn btn--ghost" href={url('partners/')}>Meet the partners</a>
       </div>
-      <dl class="facts">
-        <div><dt>Funded by</dt><dd>HTX</dd></div>
-        <div><dt>Partners</dt><dd>ST Engineering · NUS · UPenn · CMU</dd></div>
-        <div><dt>Hardware</dt><dd>Starling 2 Max · AirStack</dd></div>
-        <div><dt>Timeline</dt><dd>2026 to 2029</dd></div>
-      </dl>
     </div>
+    {
+      (overview.video || still) && (
+        <figure class="wrap hero__fig">
+          <div class:list={['hero__panel', { 'has-video': !!overview.video }]} data-hero-clip>
+            {overview.video && (
+              <video
+                class="hero__video"
+                src={url(`media/${overview.video}`)}
+                poster={still?.src}
+                muted
+                loop
+                playsinline
+                preload="none"
+                aria-label={`Flight clip: ${clipTitle}`}
+              />
+            )}
+            {still && (
+              <img
+                class="hero__still"
+                src={still.src}
+                alt={overview.imageAlt ?? ''}
+                width={still.attributes.width}
+                height={still.attributes.height}
+                loading="eager"
+                decoding="async"
+              />
+            )}
+            {overview.video && (
+              <button type="button" class="hero__toggle" aria-label="Play the flight clip" hidden>
+                <svg class="hero__i-play" width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
+                  <path d="M5 3l10 6-10 6z" fill="currentColor" />
+                </svg>
+                <svg class="hero__i-pause" width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
+                  <path d="M5 3h3v12H5zM10 3h3v12h-3z" fill="currentColor" />
+                </svg>
+              </button>
+            )}
+          </div>
+          {overview.caption && <figcaption>{overview.caption}</figcaption>}
+        </figure>
+      )
+    }
   </section>
 
+  <LogoRow />
+  <UpdatesStrip />
+
   <div class="home">
-    <Benchmark />
-    <Proof />
+    <Glance />
+    <PartnerCards heading="Partners" funderLine={false} />
+    <Themes />
     <Layers />
-    <UpdatesTeaser limit={3} />
-    <TeamPhoto />
+    <Clips id="flights" lead log limit={4} skip={overview.video ? [overview.video] : []} more={{ href: url('flights/'), label: 'All flights →' }} />
+    <PublicationsTeaser />
+    <People />
   </div>
 </Base>
 
@@ -103,22 +103,22 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
   import { bindToggle } from '../lib/clip-player';
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  for (const frame of document.querySelectorAll<HTMLElement>('[data-hero-clip]')) {
-    const video = frame.querySelector('video');
-    const button = frame.querySelector<HTMLButtonElement>('.hero__toggle');
+  for (const panel of document.querySelectorAll<HTMLElement>('[data-hero-clip]')) {
+    const video = panel.querySelector('video');
+    const button = panel.querySelector<HTMLButtonElement>('.hero__toggle');
     if (!video || !button) continue;
     video.addEventListener('playing', () => video.classList.add('is-started'));
     bindToggle({
-      root: frame,
+      root: panel,
       video,
       button,
       pressed: false,
       label: (on) => (on ? 'Pause the flight clip' : 'Play the flight clip'),
-      beforePlay: () => frame.classList.add('is-on'),
+      beforePlay: () => panel.classList.add('is-on'),
     });
     button.hidden = false;
     if (!reduce) {
-      frame.classList.add('is-on');
+      panel.classList.add('is-on');
       video.play().catch(() => {});
     }
   }
@@ -129,116 +129,85 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
   .home > :global(.section ~ .section) {
     border-top: 1px solid var(--border);
   }
-  /* Hero */
-  .hero {
-    padding-block: clamp(28px, 3.6vw, 52px) 0;
-  }
-  .hero__grid {
-    display: grid;
-    gap: 28px;
-    align-items: center;
-  }
-  @media (min-width: 960px) {
-    .hero__grid {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-      gap: clamp(28px, 4vw, 56px);
-    }
-  }
-  @media (max-width: 959px) {
-    .hero__media {
-      order: -1;
-    }
+  /* Hero: title, positioning statement and buttons above the panel */
+  .hero__text {
+    padding-top: clamp(44px, 6vw, 72px);
   }
   .hero h1 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(2.25rem, 3.6vw, 3.25rem);
-    letter-spacing: -0.015em;
-    line-height: 1.04;
-    margin: 0 0 18px;
-  }
-  .hero__rule {
-    display: block;
-    width: 56px;
-    height: 3px;
-    background: var(--accent);
-    margin: 0 0 18px;
-  }
-  .hero__lede {
-    max-width: 68ch;
-  }
-  .hero__lede :global(p) {
-    margin-bottom: 14px;
-  }
-  .hero__lede :global(strong) {
-    font-weight: 600;
-  }
-  .hero__game {
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    line-height: 1.55;
-    color: var(--text);
-    max-width: 68ch;
-    margin-bottom: 22px;
-    border-left: 2px solid var(--border);
-    padding-left: 12px;
-  }
-  .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .hero__media {
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1.06;
+    max-width: 14em;
     margin: 0;
   }
-  .hero__frame {
-    position: relative;
-    aspect-ratio: 16 / 9;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: var(--surface);
+  .hero__sum {
+    margin-top: 18px;
+    max-width: 760px;
   }
-  .hero__frame video,
-  .hero__frame img {
+  .hero__sum :global(p) {
+    font-size: var(--step-0);
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0;
+  }
+  .hero__sum :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .hero__btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+  }
+  .hero__fig {
+    margin: 40px auto 0;
+  }
+  .hero__panel {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0b1622;
+  }
+  .hero__panel video,
+  .hero__panel img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border: 0;
   }
   /* each clip stacks the ground station (top) over the flight (bottom): show the flight */
-  .hero__frame video.is-started {
+  .hero__panel video.is-started {
     object-position: 50% 100%;
   }
-  .hero__frame.has-video .hero__still {
+  .hero__panel.has-video .hero__still {
     display: none;
   }
   @media (prefers-reduced-motion: reduce) {
-    .hero__frame.has-video:not(.is-on) .hero__video {
+    .hero__panel.has-video:not(.is-on) .hero__video {
       display: none;
     }
-    .hero__frame.has-video:not(.is-on) .hero__still {
+    .hero__panel.has-video:not(.is-on) .hero__still {
       display: block;
     }
   }
   .hero__toggle {
     position: absolute;
-    right: 10px;
-    bottom: 10px;
+    right: 16px;
+    bottom: 16px;
     width: 44px;
     height: 44px;
-    border-radius: 50%;
-    border: 1px solid color-mix(in srgb, var(--text) 70%, transparent);
-    background: color-mix(in srgb, var(--bg) 55%, transparent);
-    color: var(--text);
+    border-radius: var(--radius);
+    border: 1px solid rgb(255 255 255 / 0.45);
+    background: rgb(11 22 34 / 0.45);
+    color: #fff;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     padding: 0;
   }
   .hero__toggle:hover {
-    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    background: rgb(11 22 34 / 0.7);
   }
   .hero__toggle[hidden] {
     display: none;
@@ -250,60 +219,15 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
   .is-playing .hero__i-pause {
     display: block;
   }
-  .hero__media figcaption {
-    font-family: var(--font-body);
-    letter-spacing: 0;
-    line-height: 1.5;
-  }
-  .facts {
-    display: grid;
-    grid-template-columns: 0.8fr 1.6fr 1.2fr 1fr;
-    margin: clamp(28px, 3.5vw, 44px) 0 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-  .facts > div {
-    padding: 16px 20px 16px 0;
-  }
-  .facts > div + div {
-    padding-left: 20px;
-    border-left: 1px solid var(--border);
-  }
-  .facts dt {
-    font: 500 0.75rem var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+  .hero__fig figcaption {
+    margin-top: 10px;
+    font-size: var(--step--1);
     color: var(--muted);
-    margin-bottom: 4px;
   }
-  .facts dd {
-    margin: 0;
-    font-size: var(--step-0);
-    font-weight: 600;
-  }
-  @media (max-width: 900px) {
-    .facts {
-      grid-template-columns: 1fr 1fr;
-    }
-    .facts > div:nth-child(3) {
-      padding-left: 0;
-      border-left: 0;
-    }
-    .facts > div:nth-child(n + 3) {
-      border-top: 1px solid var(--border);
-    }
-  }
-  @media (max-width: 640px) {
-    .facts {
-      grid-template-columns: 1fr;
-    }
-    .facts > div,
-    .facts > div + div {
-      padding: 12px 0;
-      border-left: 0;
-    }
-    .facts > div + div {
-      border-top: 1px solid var(--border);
+  @media (max-width: 720px) {
+    /* 16:9 shows exactly the flight half of a stacked clip */
+    .hero__panel {
+      aspect-ratio: 16 / 9;
     }
   }
 </style>

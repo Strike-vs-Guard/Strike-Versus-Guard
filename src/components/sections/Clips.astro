@@ -10,6 +10,8 @@
  * clips wider than 16:9 sit in a 16:9 frame so the player controls do not cover them.
  * `log` (Flights page): each caption starts with a mono stamp line (label · when ·
  * partners) and gives `text` as "What to watch:".
+ * `skip` leaves out clips by video file name (the home page skips the hero clip); `limit` caps the number
+ * of clips (lead included); `more` adds a link beside the title, e.g. "All flights →".
  */
 import { getCollection } from 'astro:content';
 import Clip from '../Clip.astro';
@@ -23,31 +25,38 @@ interface Props {
   aspect?: string;
   lead?: boolean;
   log?: boolean;
+  skip?: string[];
+  limit?: number;
+  more?: { href: string; label: string };
 }
-const { id, body = false, alt = false, aspect, lead = false, log = false } = Astro.props;
+const { id, body = false, alt = false, aspect, lead = false, log = false, skip = [], limit, more } = Astro.props;
 const data = await section(id);
 const { Content } = data;
 const titleId = `${id}-title`;
 const short = Object.fromEntries((await getCollection('partners')).map((p) => [p.id, p.data.short]));
 const stamp = (c: (typeof data.items)[number]) =>
   [c.label, c.when, c.partners.map((p) => short[p] ?? p).join(', ')].filter(Boolean).join(' · ');
-const [first, ...rest] = data.items;
+const items = data.items.filter((c) => !c.video || !skip.includes(c.video)).slice(0, limit);
+const [first, ...rest] = items;
 const leadItem = lead && first?.video ? first : undefined;
-const gridItems = leadItem ? rest : data.items;
+const gridItems = leadItem ? rest : items;
 ---
 
 <section id={id} class:list={['section', 'section--clips-large', { 'section--alt': alt }]} aria-labelledby={titleId}>
   <div class="wrap">
-    <header class="section__head">
-      <p class="eyebrow">{data.eyebrow}</p>
-      <h2 id={titleId}>{data.title}</h2>
-      {
-        body && (
-          <div class="prose">
-            <Content />
-          </div>
-        )
-      }
+    <header class:list={['section__head', { 'section__head--row': !!more }]}>
+      <div>
+        <p class="eyebrow">{data.eyebrow}</p>
+        <h2 id={titleId}>{data.title}</h2>
+        {
+          body && (
+            <div class="prose">
+              <Content />
+            </div>
+          )
+        }
+      </div>
+      {more && <a class="arrow-link" href={more.href}>{more.label}</a>}
     </header>
     {
       leadItem && (

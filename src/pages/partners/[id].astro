@@ -1,17 +1,19 @@
 ---
 /**
  * One page per partner, built from content/partners/<PARTNER>.md.
- * The layout is shared; each partner only edits their own Markdown file.
+ * The layout is shared; each partner only edits their own Markdown file. The top line names that file
+ * with an Edit link; then the head, people, the partner's own text, "Updates from <Short>" (always shown;
+ * empty → "No posts yet. Post one →") and its publications. The layer drawing lives on the home page.
  */
-import { getCollection, render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { logoSize } from '../../lib/logo';
 import Base from '../../layouts/Base.astro';
 import { url } from '../../lib/url';
-import { getSystemData } from '../../lib/system';
-import DroneDiagram from '../../components/DroneDiagram.astro';
-import { fmtDate, listWords } from '../../lib/text';
+import { fmtDate } from '../../lib/text';
+import PubList from '../../components/sections/PubList.astro';
+import { allUpdates, postPartner } from '../../components/sections/data';
 
 export async function getStaticPaths() {
   const partners = await getCollection('partners', (p) => p.data.page);
@@ -21,14 +23,14 @@ export async function getStaticPaths() {
 const { partner } = Astro.props;
 const d = partner.data;
 const { Content } = await render(partner);
-const system = await getSystemData();
-const worksOn = system.layers.filter((l) => (d.work as Record<string, string | undefined>)[l.id]);
 const all = (await getCollection('partners', (p) => p.data.page)).sort((a, b) => a.data.order - b.data.order);
-const updates = (await getCollection('updates', (u) => !u.data.draft && u.data.partner === partner.id)).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
-const repo = 'https://github.com/Strike-vs-Guard/Strike-Versus-Guard';
-const fileName = partner.filePath?.split('/').pop();
+const updates = (await allUpdates()).filter((u) => postPartner(u) === partner.id);
+const site = (await getEntry('site', 'main'))!.data;
+const repo = site.repository.replace(/\/$/, '');
+const fileName = partner.filePath?.split('/').pop() ?? `${partner.id}.md`;
+const filePath = `content/partners/${fileName}`;
+const editUrl = `${repo}/edit/development/${filePath}`;
+const pubs = [...d.publications].sort((a, b) => b.year - a.year);
 /* Head logos: base 76 px, capped at the well's 94 px inner height (src/lib/logo.ts). */
 const logo = (img: ImageMetadata) => logoSize(img, 76, 94);
 const people = d.people ?? [];
@@ -54,6 +56,14 @@ const layerNames: Record<string, string> = {
 
 <Base title={`${d.short}${d.lab ? ' ' + d.lab : ''}`} description={d.summary}>
   <article class="partner-page">
+    <p class="pp-own">
+      <span class="wrap pp-own__in">
+        <span>
+          This is {d.short}'s own page and file: <code>{filePath}</code>
+        </span>
+        <a href={editUrl}>Edit<span class="visually-hidden"> {d.short}'s file</span></a>
+      </span>
+    </p>
     <header class="pp-head">
       <div class="wrap pp-head__grid">
         <div>
@@ -103,7 +113,7 @@ const layerNames: Record<string, string> = {
               <dt>Page</dt>
               <dd>
                 Maintained by {d.short} · updated {fmtDate(d.updated, 'long')} ·{' '}
-                <a href={`${repo}/edit/development/content/partners/${fileName}`}>Edit this page</a>
+                <a href={editUrl}>Edit this page</a>
               </dd>
             </div>
           </dl>
@@ -137,39 +147,44 @@ const layerNames: Record<string, string> = {
       )
     }
 
-    {
-      worksOn.length > 0 && (
-        <section class="pp-system" aria-labelledby="pp-system-h">
-          <div class="wrap">
-            <p class="eyebrow">In the system</p>
-            <h2 id="pp-system-h" class="pp-system__h">
-              {d.lab ? `${d.short} ${d.lab}` : d.short} works on {worksOn.length} of the {system.layers.length} layers:{' '}
-              {listWords(worksOn.map((l) => l.title))}.
-            </h2>
-            <DroneDiagram data={system} mode="partner" partner={partner.id} />
-          </div>
-        </section>
-      )
-    }
-
     <div class="wrap pp-body">
       <div class="md prose"><Content /></div>
 
-      {
-        updates.length > 0 && (
-          <section class="pp-updates">
-            <h2>Updates from {d.short}</h2>
+      <section class="pp-updates" id="updates" aria-labelledby="pp-updates-h">
+        <h2 id="pp-updates-h">Updates from {d.short}</h2>
+        {
+          updates.length > 0 ? (
             <ul>
               {updates.map((u) => (
                 <li>
-                  <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmtDate(u.data.date, 'long')}</time>
-                  <a href={url(`updates/${u.id}/`)}>{u.data.title}</a>
+                  <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmtDate(u.data.date, 'short')}</time>
+                  <span class="pp-updates__main">
+                    <a href={url(`updates/${u.id}/`)}>{u.data.title}</a>
+                    {u.data.author && <span class="muted"> · {u.data.author}</span>}
+                  </span>
                 </li>
               ))}
             </ul>
-          </section>
-        )
-      }
+          ) : (
+            <p class="pp-none">
+              No posts yet. <a href={url('contribute/#update')}>Post one →</a>
+            </p>
+          )
+        }
+      </section>
+
+      <section class="pp-pubs" id="publications" aria-labelledby="pp-pubs-h">
+        <h2 id="pp-pubs-h">Publications</h2>
+        {
+          pubs.length > 0 ? (
+            <PubList pubs={pubs.map((pub) => ({ pub }))} images />
+          ) : (
+            <p class="pp-none">
+              None yet. <a href={url('contribute/#publication')}>Add one →</a>
+            </p>
+          )
+        }
+      </section>
 
       <footer class="pp-foot">
         <nav aria-label="Other partners" class="pp-others">
@@ -189,6 +204,33 @@ const layerNames: Record<string, string> = {
 </Base>
 
 <style>
+  .pp-own {
+    margin: 0;
+    background: var(--brand-blue);
+    color: #e8edf2;
+    font-size: var(--step-0);
+  }
+  .pp-own__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 16px;
+    min-height: 44px;
+    padding-block: 4px;
+  }
+  .pp-own code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    overflow-wrap: anywhere;
+  }
+  .pp-own a {
+    color: #fff;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
   .pp-head {
     padding-block: clamp(40px, 6vw, 72px);
     border-bottom: 1px solid var(--border);
@@ -325,23 +367,25 @@ const layerNames: Record<string, string> = {
     border: 1px solid var(--text);
     border-radius: 999px;
   }
-  .pp-system {
-    padding-block: clamp(36px, 5vw, 56px) 8px;
-  }
-  .pp-system__h {
-    font-family: var(--font-display);
-    font-size: var(--step-3);
-    max-width: 40ch;
-    margin: 0 0 18px;
-  }
   .pp-body {
     padding-block: clamp(40px, 6vw, 72px);
   }
-  .pp-updates {
+  .pp-updates,
+  .pp-pubs {
     margin-top: 48px;
-    max-width: 68ch;
+    max-width: 880px;
+    scroll-margin-top: 80px;
   }
-  .pp-updates h2 {
+  .pp-none {
+    font-size: var(--step-1);
+    margin: 0;
+  }
+  .pp-updates__main {
+    flex: 1;
+    min-width: 0;
+  }
+  .pp-updates h2,
+  .pp-pubs h2 {
     font-size: var(--step-4);
   }
   .pp-updates ul {

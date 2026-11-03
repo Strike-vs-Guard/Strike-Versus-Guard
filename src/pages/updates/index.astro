@@ -1,29 +1,165 @@
 ---
-import { getCollection } from 'astro:content';
+/**
+ * Updates: every post, newest first, as rows (date · partner · author · title, then the summary).
+ * Partner filter (by the post's folder, content/updates/<partner>/): links to ?partner=<id>; a small script shows only that partner's rows (without
+ * JavaScript every row stays visible). A partner with no posts gets "No posts from <Short> yet. Post one →".
+ */
 import Base from '../../layouts/Base.astro';
-import UpdateLog from '../../components/UpdateLog.astro';
+import PageHead from '../../components/sections/PageHead.astro';
+import { url } from '../../lib/url';
+import { fmtDate } from '../../lib/text';
+import { allUpdates, isoDay, partnersInOrder, postPartner } from '../../components/sections/data';
 
-const updates = (await getCollection('updates', (u) => !u.data.draft)).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+const updates = await allUpdates();
+const { all } = await partnersInOrder();
+const short = (id: string) => all.find((p) => p.id === id)?.data.short ?? id;
+/* Filter: the four partners, plus the funder only if it has posted. */
+const filters = all.filter((p) => p.data.page || updates.some((u) => postPartner(u) === p.id));
 ---
 
-<Base title="Updates" description="News and progress from the Strike vs Guard programme partners.">
-  <section class="section">
-    <div class="wrap">
-      <header class="section__head">
-        <p class="eyebrow">Updates</p>
-        <h1 class="h1">News and progress</h1>
-        <p class="lede muted">Short posts from the programme partners on flights, results and publications.</p>
-      </header>
-      <UpdateLog updates={updates} heading="h2" />
-    </div>
-  </section>
+<Base title="Updates" description="News and progress from the Strike vs Guard partner labs, signed by the people who wrote them.">
+  <PageHead eyebrow="Updates" title="News and progress" />
+  <div class="wrap up" data-updates>
+    <nav class="up__filter" aria-label="Show updates from">
+      <a href={url('updates/')} data-filter="" aria-current="page">All</a>
+      {
+        filters.map((p) => (
+          <a href={url(`updates/?partner=${p.id}`)} data-filter={p.id}>
+            {p.data.short}
+          </a>
+        ))
+      }
+    </nav>
+    <ol class="up__list">
+      {
+        updates.map((u) => (
+          <li class="up__row" data-partner={postPartner(u)}>
+            <p class="up__meta">
+              <time datetime={isoDay(u.data.date)}>{fmtDate(u.data.date, 'short')}</time>
+              <span> · {short(u.data.partner)}</span>
+              {u.data.author && <span> · {u.data.author}</span>}
+            </p>
+            <h2 class="up__title">
+              <a href={url(`updates/${u.id}/`)}>{u.data.title}</a>
+            </h2>
+            <p class="up__sum">{u.data.summary}</p>
+          </li>
+        ))
+      }
+    </ol>
+    {
+      filters.map((p) => (
+        <p class="up__empty" data-empty={p.id} hidden>
+          No posts from {p.data.short} yet. <a href={url('contribute/#update')}>Post one →</a>
+        </p>
+      ))
+    }
+  </div>
 </Base>
 
+<script>
+  /* Partner filter: ?partner=<id> shows that partner's rows only and marks its link as current. */
+  for (const root of document.querySelectorAll<HTMLElement>('[data-updates]')) {
+    const want = new URLSearchParams(location.search).get('partner') ?? '';
+    const links = [...root.querySelectorAll<HTMLAnchorElement>('[data-filter]')];
+    if (!want || !links.some((a) => a.dataset.filter === want)) {
+      for (const p of root.querySelectorAll<HTMLElement>('[data-empty]')) p.hidden = true;
+      continue;
+    }
+    for (const a of links) {
+      if (a.dataset.filter === want) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    }
+    let shown = 0;
+    for (const row of root.querySelectorAll<HTMLElement>('[data-partner]')) {
+      row.hidden = row.dataset.partner !== want;
+      if (!row.hidden) shown++;
+    }
+    for (const p of root.querySelectorAll<HTMLElement>('[data-empty]')) p.hidden = p.dataset.empty !== want || shown > 0;
+  }
+</script>
+
 <style>
-  .h1 {
-    font-family: var(--font-display);
-    font-size: var(--step-hero);
+  .up {
+    padding-block: clamp(32px, 5vw, 56px) var(--section);
+  }
+  .up__filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin-bottom: 24px;
+  }
+  .up__filter a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: var(--step-0);
+    text-decoration: none;
+  }
+  .up__filter a:hover {
+    border-color: var(--muted);
+  }
+  .up__filter a[aria-current='page'] {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .up__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 880px;
+  }
+  .up__row {
+    padding: 18px 0;
+    border-top: 1px solid var(--border);
+  }
+  .up__row:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  .up__row[hidden] {
+    display: none;
+  }
+  .up__meta {
+    margin: 0;
+    font-size: var(--step-0);
+    color: var(--muted);
+  }
+  .up__meta time {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    color: var(--text);
+  }
+  .up__title {
+    font-family: var(--font-body);
+    font-size: var(--step-2);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.35;
+    margin: 4px 0;
+  }
+  .up__title a {
+    text-decoration: none;
+  }
+  .up__title a:hover,
+  .up__title a:focus-visible {
+    text-decoration: underline;
+  }
+  .up__sum {
+    margin: 0;
+    font-size: var(--step-0);
+    color: var(--muted);
+    max-width: 80ch;
+  }
+  .up__empty {
+    font-size: var(--step-1);
+    margin: 16px 0 0;
+  }
+  .up__empty[hidden] {
+    display: none;
   }
 </style>

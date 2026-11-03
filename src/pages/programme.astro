@@ -1,24 +1,21 @@
 ---
-/** Programme page: positioning statement, the two tracks, how a command travels, simulation, localisation, research directions. */
-import Base from '../layouts/Base.astro';
-import PageHead from '../components/sections/PageHead.astro';
-import Tracks from '../components/sections/Tracks.astro';
-import CommandPath from '../components/sections/CommandPath.astro';
-import Simulation from '../components/sections/Simulation.astro';
-import Localisation from '../components/sections/Localisation.astro';
-import Directions from '../components/sections/Directions.astro';
-import { section } from '../components/sections/content';
-
-const overview = await section('overview');
+/** The old Programme page moved to Research: send visitors there, keeping any #anchor. */
+import { url } from '../lib/url';
+const to = url('research/');
 ---
 
-<Base title="Programme" description="Two strategy tracks on one shared stack, how a command reaches the motors, the shared simulator, camera-only localisation, and the research directions the programme opens up.">
-  <PageHead eyebrow={overview.pageEyebrow ?? overview.eyebrow} title={overview.pageTitle ?? overview.title}>
-    <overview.Content />
-  </PageHead>
-  <Tracks />
-  <CommandPath />
-  <Simulation alt />
-  <Localisation />
-  <Directions alt />
-</Base>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <link rel="canonical" href={to} />
+    <title>Research · Strike vs Guard</title>
+    <script is:inline define:vars={{ to }}>location.replace(to + location.hash);</script>
+  </head>
+  <body>
+    <p>This page has moved to <a href={to}>Research</a>.</p>
+  </body>
+</html>

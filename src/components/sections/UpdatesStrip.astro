@@ -1,0 +1,109 @@
+---
+/** Home: a band with the three latest updates on one line each (date · partner · title), then "All updates →". */
+import { url } from '../../lib/url';
+import { fmtDate } from '../../lib/text';
+import { allUpdates, shortNames, isoDay } from './data';
+
+const updates = (await allUpdates()).slice(0, 3);
+const short = await shortNames();
+---
+
+{
+  updates.length > 0 && (
+    <div class="ustrip" role="region" aria-label="Latest updates">
+      <div class="wrap ustrip__in">
+        <ul>
+          {updates.map((u) => (
+            <li>
+              <a href={url(`updates/${u.id}/`)}>
+                <time class="ustrip__dt" datetime={isoDay(u.data.date)}>{fmtDate(u.data.date, 'short')}</time>
+                <span class="ustrip__pt"> · {short(u.data.partner)} · </span>
+                <span class="ustrip__hl">{u.data.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a class="arrow-link" href={url('updates/')}>All updates →</a>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .ustrip {
+    background: var(--surface);
+    border-block: 1px solid var(--border);
+  }
+  .ustrip__in {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .ustrip ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 28px;
+    flex: 1;
+    min-width: 0;
+  }
+  .ustrip li {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--step-0);
+    line-height: 1.4;
+  }
+  .ustrip li + li {
+    border-left: 1px solid var(--border);
+    padding-left: 28px;
+  }
+  .ustrip li a {
+    text-decoration: none;
+    display: block;
+    padding-block: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ustrip li a:hover .ustrip__hl {
+    text-decoration: underline;
+  }
+  .ustrip__dt {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    color: var(--muted);
+  }
+  .ustrip__pt {
+    color: var(--muted);
+  }
+  .ustrip__hl {
+    font-weight: 600;
+  }
+  @media (max-width: 960px) {
+    .ustrip__in {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      padding-block: 6px;
+    }
+    .ustrip ul {
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+    }
+    .ustrip li {
+      flex: none;
+    }
+    .ustrip li + li {
+      border-left: 0;
+      padding-left: 0;
+      border-top: 1px solid var(--border);
+    }
+    .ustrip li a {
+      padding-block: 10px;
+      white-space: normal;
+    }
+  }
+</style>
