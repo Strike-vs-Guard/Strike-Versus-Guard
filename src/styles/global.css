@@ -1,40 +1,80 @@
-/* Strike vs Guard: "lab notebook, not mission control". One theme: pure black, no light mode.
-   Colour comes from the two teams and the partner logos, never from alarm states.
-   ST red is used sparingly: the wordmark, one rule under the hero title, and the
-   "we are here" milestone marker. */
+/* Strike vs Guard: "lab notebook, not mission control".
+   Light is the default; dark (navy-black) follows the system or the header toggle, which stores
+   localStorage.theme. An inline script in Base.astro sets data-theme before first paint.
+   Brand red and blue are for type, rules and bands only. Strike/Guard colours only inside game figures. */
 
 :root {
-  --bg: #000000;
-  --surface: #111417;
-  --text: #e6e8eb;
-  --muted: #9ba4af;
-  --border: #343b44;
-  --grid: #1f252b;
-  --accent: #ff4d5e;
-  --guard: #6fa3f5;
-  --guard-tint: rgba(111, 163, 245, 0.09);
-  --strike: #f2766a;
-  --zone: rgba(155, 164, 175, 0.07);
+  --bg: #ffffff;
+  --surface: #f2f6fa;
+  --text: #12212f;
+  --muted: #5a6470;
+  --border: #e3e6ea;
+  --grid: #e6eaee;
+  --brand-red: #b3122e;
+  --brand-blue: #1a3e62;
+  --strike: #d9542c;
+  --guard: #2d6fd0;
+  --guard-tint: color-mix(in srgb, var(--guard) 9%, transparent);
+  --zone: color-mix(in srgb, var(--muted) 8%, transparent);
   --well: #ffffff;
+  --well-border: var(--border);
+  --halo: rgb(255 255 255 / 0.85);
   --shadow: none;
+  --shadow-pop: 0 12px 32px rgb(10 25 40 / 0.14);
+  /* older name for the ST red, kept for existing components */
+  --accent: var(--brand-red);
 
-  --font-display: 'IBM Plex Sans Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --font-display: 'Archivo', 'IBM Plex Sans', system-ui, sans-serif;
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   --step--1: 0.8125rem; /* 13 */
   --step-0: 0.9375rem; /* 15 */
   --step-1: 1.0625rem; /* 17 body */
-  --step-2: 1.3125rem; /* 21 */
+  --step-2: 1.3125rem; /* 21 h3 */
   --step-3: 1.6875rem; /* 27 */
-  --step-4: 2.125rem; /* 34 */
+  --step-4: clamp(1.75rem, 3.2vw, 2.125rem); /* 34 h2 */
   --step-5: clamp(2.125rem, 4.2vw, 2.6875rem); /* 43 */
-  --step-hero: clamp(2.6875rem, 6vw, 4.25rem); /* 68 */
+  --step-hero: clamp(2.375rem, 5.6vw, 4rem); /* 64 h1 */
 
-  --radius: 10px;
+  --radius: 3px;
   --gutter: clamp(16px, 4vw, 64px);
-  --max: 1320px;
+  --max: 1200px;
+  --section: clamp(96px, 10vw, 112px);
+  color-scheme: light;
+}
+/* Dark: chosen with the toggle, or the system setting when nothing is stored. Keep the two lists equal. */
+:root[data-theme='dark'] {
+  --bg: #0b1622;
+  --surface: #12243a;
+  --text: #e8edf2;
+  --muted: #9aaabb;
+  --border: #26384d;
+  --grid: #1f2d3d;
+  --brand-red: #ff5a6e;
+  --strike: #f2766a;
+  --guard: #6fa3f5;
+  --well-border: transparent;
+  --halo: rgb(0 0 0 / 0.7);
+  --shadow-pop: 0 16px 40px rgb(0 0 0 / 0.55);
   color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0b1622;
+    --surface: #12243a;
+    --text: #e8edf2;
+    --muted: #9aaabb;
+    --border: #26384d;
+    --grid: #1f2d3d;
+    --brand-red: #ff5a6e;
+    --strike: #f2766a;
+    --guard: #6fa3f5;
+    --well-border: transparent;
+    --halo: rgb(0 0 0 / 0.7);
+    --shadow-pop: 0 16px 40px rgb(0 0 0 / 0.55);
+    color-scheme: dark;
+  }
 }
 
 *,
@@ -86,7 +126,7 @@ a:hover {
 :focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--radius);
 }
 
 h1,
@@ -97,14 +137,28 @@ h4 {
   margin: 0 0 0.5em;
   text-wrap: balance;
 }
-h2 {
+/* One headline scale everywhere: h1 step-hero, h2 step-4, h3 step-2 (Archivo 700); body step-1. */
+h1,
+h2,
+h3 {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--step-5);
   letter-spacing: -0.01em;
+}
+h1 {
+  font-size: var(--step-hero);
+  line-height: 1.05;
+}
+h2 {
+  font-size: var(--step-4);
 }
 h3 {
   font-size: var(--step-2);
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+h4 {
+  font-size: var(--step-1);
   font-weight: 600;
 }
 p {
@@ -147,7 +201,7 @@ p {
 }
 
 .section {
-  padding-block: clamp(64px, 8vw, 128px);
+  padding-block: var(--section);
 }
 .section--alt {
   background: var(--surface);
@@ -170,9 +224,7 @@ p {
   margin: 0;
 }
 .section__note {
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  letter-spacing: 0.04em;
+  font-size: var(--step-0);
   color: var(--muted);
   margin-top: 24px;
 }
@@ -183,7 +235,7 @@ p {
   gap: 0.5em;
   min-height: 44px;
   padding: 0.6em 1.15em;
-  border-radius: 999px;
+  border-radius: var(--radius);
   font: 600 var(--step-0) / 1 var(--font-body);
   text-decoration: none;
   border: 1px solid var(--text);
@@ -209,7 +261,12 @@ p {
   min-height: 44px;
   font-weight: 600;
   font-size: var(--step-0);
+  color: var(--brand-red);
+  text-decoration: none;
   white-space: nowrap;
+}
+.arrow-link:hover {
+  text-decoration: underline;
 }
 
 .card {
@@ -223,19 +280,19 @@ p {
   box-shadow: none;
 }
 
-/* Logos always sit in a white well so they read correctly in dark mode too. */
 /*
  * Logo wells (STANDARDS §3): white, logos in colour. Logos are sized by visual weight, not by
  * height: each <img> gets --logo-k = 1/√(width÷height) from its component (0.9× that for square
  * solid-colour tiles), so height = --logo-base × --logo-k, capped at the well's inner height
  * --logo-max. Every logo then covers about the same area. Each use sets --logo-base and --logo-max.
+ * White in both themes; a 1 px --border edge in light mode only (--well-border).
  */
 .logo-well {
   --logo-base: 48px;
   --logo-max: 56px;
   background: var(--well);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: 1px solid var(--well-border);
+  border-radius: var(--radius);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -271,7 +328,7 @@ p {
   letter-spacing: 0.04em;
   padding: 2px 8px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius);
   color: var(--muted);
   text-decoration: none;
   white-space: nowrap;
@@ -293,10 +350,17 @@ figure > video,
   border: 1px solid var(--border);
 }
 figcaption {
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
+  font-size: var(--step-0);
+  line-height: 1.5;
   color: var(--muted);
   margin-top: 10px;
+}
+/* a date or number stamp inside a caption */
+.stamp,
+figcaption time {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--step--1);
   letter-spacing: 0.02em;
 }
 
@@ -323,7 +387,7 @@ figcaption {
 .md img {
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--well);
   margin: 1.5em 0;
 }
 .md figure.clip {
@@ -348,7 +412,7 @@ figcaption {
   font-size: 0.9em;
   background: var(--zone);
   padding: 0.1em 0.35em;
-  border-radius: 4px;
+  border-radius: var(--radius);
 }
 .md table {
   border-collapse: collapse;

@@ -94,11 +94,8 @@ const button = variant === 'button';
     position: relative;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .clip--button {
     border-radius: var(--radius);
+    overflow: hidden;
   }
   video {
     display: block;
@@ -143,15 +140,17 @@ const button = variant === 'button';
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    border: 1px solid color-mix(in srgb, var(--text) 70%, transparent);
-    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    /* sits on video, so it is the same in both themes: white glyph on a dark disc */
+    color: #fff;
+    border: 1px solid rgb(255 255 255 / 0.7);
+    background: rgb(11 22 34 / 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: opacity 0.15s ease;
   }
   .clip__btn:hover .clip__icon {
-    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    background: rgb(11 22 34 / 0.75);
   }
   .clip__pause,
   .is-playing .clip__play {

@@ -303,6 +303,7 @@ const strikes = ['s1', 's2'];
       gap: 48px;
     }
   }
+  /* The board keeps a faint dot grid (--grid, light #E6EAEE / dark #1F2D3D); teams in --strike / --guard. */
   /* grid layout (home): drawing capped, steps 2×2 under a rule, extra content below */
   @media (min-width: 900px) {
     .arena--grid {
@@ -340,19 +341,14 @@ const strikes = ['s1', 's2'];
   .arena--grid .arena__num {
     display: inline-grid;
     place-items: center;
-    width: 26px;
-    height: 26px;
+    min-width: 1.5em;
     padding: 0;
-    margin-top: 1px;
-    border: 1px solid var(--muted);
-    border-radius: 50%;
-    font-size: 0.75rem;
-    color: var(--text);
+    margin-top: 2px;
+    font-size: var(--step--1);
+    color: var(--muted);
   }
   .arena--grid .arena__step[aria-pressed='true'] .arena__num {
-    background: var(--text);
-    border-color: var(--text);
-    color: var(--surface);
+    color: var(--text);
   }
   .arena--grid .arena__step-body strong {
     font-size: 1.25rem;
@@ -401,9 +397,7 @@ const strikes = ['s1', 's2'];
     stroke-dasharray: 6 6;
   }
   .arena__zone text {
-    font: 500 12px var(--font-mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font: 600 13px var(--font-body);
     fill: var(--muted);
   }
   .arena__intent {
@@ -464,9 +458,7 @@ const strikes = ['s1', 's2'];
     opacity: 0.6;
   }
   .arena__offline {
-    font: 500 11px var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font: 600 12px var(--font-body);
     fill: var(--muted);
     opacity: 0;
   }
@@ -531,9 +523,9 @@ const strikes = ['s1', 's2'];
     color: var(--muted);
     background: none;
     border: 1px solid var(--border);
-    border-radius: 999px;
+    border-radius: var(--radius);
     padding: 4px 12px;
-    min-height: 32px;
+    min-height: 44px;
     cursor: pointer;
   }
   .arena__toggle:hover {

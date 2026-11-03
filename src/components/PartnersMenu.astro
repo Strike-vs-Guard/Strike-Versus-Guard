@@ -45,6 +45,7 @@ const chip = (p: CollectionEntry<'partners'>) => {
     </svg>
   </button>
   <div class="pm__panel" id={panelId} hidden>
+    <p class="pm__head">Each partner has its own page</p>
     <ul class="pm__list">
       {
         rows.map((p) => {
@@ -68,18 +69,19 @@ const chip = (p: CollectionEntry<'partners'>) => {
         })
       }
     </ul>
-    <hr class="pm__rule" />
-    {
-      funder && (
-        <a class="pm__row pm__row--muted" href={url('partners/#funder')}>
-          <span class="pm__chip">
-            <Image alt="" {...chip(funder)} densities={[1, 2]} />
-          </span>
-          <span>Funded by {funder.data.short}</span>
-        </a>
-      )
-    }
-    <a class="pm__all" href={url('partners/')}>All partners: who does what →</a>
+    <div class="pm__foot">
+      {
+        funder && (
+          <a class="pm__row pm__row--muted" href={url('partners/#funder')}>
+            <span class="pm__chip">
+              <Image alt="" {...chip(funder)} densities={[1, 2]} />
+            </span>
+            <span>Funded by {funder.data.short}</span>
+          </a>
+        )
+      }
+      <a class="pm__all" href={url('partners/')}>All partners →</a>
+    </div>
   </div>
 </li>
 
@@ -103,7 +105,7 @@ const chip = (p: CollectionEntry<'partners'>) => {
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: 6px;
+    border-radius: var(--radius);
     background: transparent;
     color: var(--muted);
     cursor: pointer;
@@ -124,11 +126,11 @@ const chip = (p: CollectionEntry<'partners'>) => {
     right: var(--gutter);
     z-index: 30;
     width: min(440px, calc(100% - 2 * var(--gutter)));
-    padding: 8px;
-    background: var(--surface);
+    padding: 14px 10px 8px;
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--shadow-pop);
   }
   .pm__panel[hidden] {
     display: none;
@@ -142,6 +144,12 @@ const chip = (p: CollectionEntry<'partners'>) => {
     top: -14px;
     height: 14px;
   }
+  .pm__head {
+    margin: 0 10px 6px;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--muted);
+  }
   .pm__list {
     list-style: none;
     margin: 0;
@@ -154,13 +162,13 @@ const chip = (p: CollectionEntry<'partners'>) => {
     align-items: center;
     min-height: 44px;
     padding: 9px 10px;
-    border-radius: 8px;
+    border-radius: var(--radius);
     color: var(--text);
     text-decoration: none;
   }
   .pm__row:hover,
   .pm__row:focus-visible {
-    background: color-mix(in srgb, var(--text) 8%, var(--surface));
+    background: var(--surface);
   }
   .pm__row[aria-current='page'] .pm__name {
     text-decoration: underline;
@@ -190,7 +198,8 @@ const chip = (p: CollectionEntry<'partners'>) => {
     height: 36px;
     padding: 4px;
     background: var(--well);
-    border-radius: 6px;
+    border: 1px solid var(--well-border);
+    border-radius: var(--radius);
   }
   .pm__chip :global(img) {
     display: block;
@@ -199,9 +208,14 @@ const chip = (p: CollectionEntry<'partners'>) => {
     width: auto;
     height: auto;
   }
-  .pm__rule {
-    margin: 6px 10px;
-    border: 0;
+  .pm__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 12px;
+    margin: 6px 0 0;
+    padding-top: 6px;
     border-top: 1px solid var(--border);
   }
   .pm__row--muted {
@@ -213,9 +227,10 @@ const chip = (p: CollectionEntry<'partners'>) => {
     align-items: center;
     min-height: 44px;
     padding: 0 10px;
-    border-radius: 8px;
+    border-radius: var(--radius);
     font-size: var(--step-0);
     font-weight: 600;
+    color: var(--brand-red);
     text-decoration: none;
   }
   .pm__all:hover {

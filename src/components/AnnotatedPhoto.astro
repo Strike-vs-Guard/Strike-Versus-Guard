@@ -2,7 +2,8 @@
 /**
  * A photo with a few labelled points. Each point is `{ x, y, label }` in percent of the photo (0 to 100,
  * from the top left); optional `lx`/`ly` place the label (default: 12 % above the point, or below it
- * near the top edge). A thin --text leader line (with a dark edge) runs from a small ring on the point to the label.
+ * near the top edge). A thin --text leader line (with a --halo edge, so it flips with the theme) runs from a small ring
+ * on the point to the label.
  * Below 640 px the labels become numbers on the photo and the text stacks in a list under it.
  * More than one per page is fine (no ids, no script).
  */
@@ -81,9 +82,9 @@ const pts = points.map((p, i) => {
     stroke: var(--text);
     stroke-width: 1;
   }
-  /* a dark edge under each leader line so it reads on pale walls too */
+  /* an edge in the opposite tone under each leader line (dark in dark mode, white in light) */
   .ap__lines .ap__halo {
-    stroke: rgb(0 0 0 / 0.7);
+    stroke: var(--halo);
     stroke-width: 3;
   }
   .ap__ring {
@@ -93,7 +94,7 @@ const pts = points.map((p, i) => {
     margin: -4.5px 0 0 -4.5px;
     border: 1.5px solid var(--text);
     border-radius: 50%;
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.6);
+    box-shadow: 0 0 0 1px var(--halo);
   }
   .ap__label {
     position: absolute;
@@ -103,10 +104,8 @@ const pts = points.map((p, i) => {
     padding: 4px 9px;
     background: var(--bg);
     border: 1px solid var(--text);
-    border-radius: 3px;
-    font: 500 var(--step--1) var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    border-radius: var(--radius);
+    font: 600 var(--step-0) var(--font-body);
     color: var(--text);
     white-space: nowrap;
     line-height: 1.3;
@@ -126,13 +125,9 @@ const pts = points.map((p, i) => {
   .ap__label--end.ap__label--below {
     transform: translate(-100%, 0);
   }
+  /* numbers are shown only on phones, where the words move to the list below the photo */
   .ap__n {
-    display: inline-grid;
-    place-items: center;
-    min-width: 1.6em;
-    height: 1.6em;
-    border: 1px solid currentColor;
-    border-radius: 50%;
+    display: none;
     font: 500 var(--step--1) var(--font-mono);
     letter-spacing: 0;
   }
@@ -148,12 +143,14 @@ const pts = points.map((p, i) => {
   @media (max-width: 639px) {
     .ap__label,
     .ap__label[class] {
-      padding: 2px;
-      border-radius: 50%;
+      padding: 1px 2px;
       transform: translate(-50%, -50%);
     }
-    .ap__label .ap__n {
-      border: 0;
+    .ap__n {
+      display: inline-grid;
+      place-items: center;
+      min-width: 1.6em;
+      height: 1.6em;
     }
     .ap__t {
       display: none;
@@ -170,14 +167,16 @@ const pts = points.map((p, i) => {
       padding: 0;
       display: grid;
       gap: 6px;
-      font: 500 var(--step--1) var(--font-mono);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-size: var(--step-0);
     }
     .ap__key li {
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+    .ap__key .ap__n {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
     }
   }
 </style>
