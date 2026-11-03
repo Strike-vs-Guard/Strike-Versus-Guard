@@ -59,7 +59,7 @@ const p = partners.find((x) => x.id === d.partner);
           </p>
         )
       }
-      <p class="post-back"><a href={url(`updates/?partner=${update.id.includes('/') ? update.id.split('/')[0] : d.partner}`)}>More from {p?.data.short ?? d.partner} →</a></p>
+      <p class="post-back"><a href={url(`updates/?partner=${d.partner}`)}>More from {p?.data.short ?? d.partner} →</a></p>
     </div>
   </article>
 </Base>

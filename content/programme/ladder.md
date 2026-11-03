@@ -1,10 +1,10 @@
 ---
 # Test ladder on the Flights page: ST Engineering's six steps to the first Starling flight in Singapore.
-# Owned by ST Engineering. `state:` is the status as of the July 2026 report; update the note when it changes.
+# Owned by ST Engineering. `state:` is the status as of the note's date; update the note when it changes.
 eyebrow: Test ladder
 title: Six steps before a Starling flies in Singapore
 order: 12
-note: Status as of July 2026, except M6, flown since. Each step must pass before the next one starts.
+note: Status as of November 2026. Each step must pass before the next one starts.
 # The annotated photo under the ladder. `points:` are in percent of the photo from the top left
 # (placed by eye on the 1100 x 623 original); `lx`/`ly` place each label.
 image: ../partners/ST/singapore-flight-lab.jpg
@@ -30,11 +30,11 @@ items:
   - label: M4
     title: Tracking into the drone, propellers off
     text: The OptiTrack position is fused into the drone's own estimate, and the frames are checked.
-    state: Ready to test
+    state: Done
   - label: M5
     title: Hand-carry check
     text: The drone's estimate follows it as it is carried through the flight volume.
-    state: Ready to test
+    state: Done
   - label: M6
     title: First flight
     text: First Starling flights in Singapore, flown.

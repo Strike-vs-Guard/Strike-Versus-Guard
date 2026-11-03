@@ -1,20 +1,20 @@
 ---
 /**
  * Updates: every post, newest first, as rows (date · partner · author · title, then the summary).
- * Partner filter (by the post's folder, content/updates/<partner>/): links to ?partner=<id>; a small script shows only that partner's rows (without
+ * Partner filter (by the post's `partner:`, which the schema checks against its folder content/updates/<partner>/): links to ?partner=<id>; a small script shows only that partner's rows (without
  * JavaScript every row stays visible). A partner with no posts gets "No posts from <Short> yet. Post one →".
  */
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/sections/PageHead.astro';
 import { url } from '../../lib/url';
 import { fmtDate } from '../../lib/text';
-import { allUpdates, isoDay, partnersInOrder, postPartner } from '../../components/sections/data';
+import { allUpdates, isoDay, partnersInOrder, shortNames } from '../../components/sections/data';
 
 const updates = await allUpdates();
 const { all } = await partnersInOrder();
-const short = (id: string) => all.find((p) => p.id === id)?.data.short ?? id;
+const short = await shortNames();
 /* Filter: the four partners, plus the funder only if it has posted. */
-const filters = all.filter((p) => p.data.page || updates.some((u) => postPartner(u) === p.id));
+const filters = all.filter((p) => p.data.page || updates.some((u) => u.data.partner === p.id));
 ---
 
 <Base title="Updates" description="News and progress from the Strike vs Guard partner labs, signed by the people who wrote them.">
@@ -33,7 +33,7 @@ const filters = all.filter((p) => p.data.page || updates.some((u) => postPartner
     <ol class="up__list">
       {
         updates.map((u) => (
-          <li class="up__row" data-partner={postPartner(u)}>
+          <li class="up__row" data-partner={u.data.partner}>
             <p class="up__meta">
               <time datetime={isoDay(u.data.date)}>{fmtDate(u.data.date, 'short')}</time>
               <span> · {short(u.data.partner)}</span>

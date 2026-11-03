@@ -143,14 +143,14 @@ const button = variant === 'button';
     /* sits on video, so it is the same in both themes: white glyph on a dark disc */
     color: #fff;
     border: 1px solid rgb(255 255 255 / 0.7);
-    background: rgb(11 22 34 / 0.55);
+    background: color-mix(in srgb, var(--media) 55%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: opacity 0.15s ease;
   }
   .clip__btn:hover .clip__icon {
-    background: rgb(11 22 34 / 0.75);
+    background: color-mix(in srgb, var(--media) 75%, transparent);
   }
   .clip__pause,
   .is-playing .clip__play {

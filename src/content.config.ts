@@ -89,6 +89,19 @@ const partners = defineCollection({
          * People on this partner's team, shown as a row with faces on the partner page.
          * `photo` is optional and relative to this file, e.g. ./ST/people/jeremy-chia.jpg
          */
+        people: z
+          .array(
+            z
+              .object({
+                name: z.string(),
+                role: z.string().optional(),
+                photo: image().optional(),
+                /** Set true for the principal investigator or lead. */
+                lead: z.boolean().default(false),
+              })
+              .strict(),
+          )
+          .default([]),
         /** Publications from this partner's work on the programme. */
         publications: z
           .array(
@@ -104,19 +117,6 @@ const partners = defineCollection({
                 pdf: url.optional(),
                 /** Optional first-page or poster image, relative to this file. */
                 image: image().optional(),
-              })
-              .strict(),
-          )
-          .default([]),
-        people: z
-          .array(
-            z
-              .object({
-                name: z.string(),
-                role: z.string().optional(),
-                photo: image().optional(),
-                /** Set true for the principal investigator or lead. */
-                lead: z.boolean().default(false),
               })
               .strict(),
           )
@@ -222,15 +222,34 @@ const programme = defineCollection({
       .strict(),
 });
 
-/** News and progress posts: content/updates/YYYY-MM-DD-short-title.md */
+/**
+ * News and progress posts: content/updates/<partner>/YYYY-MM-DD-short-title.md
+ * The id is the path without ".md", e.g. "st/2026-11-02-website-launch" (the post's address). A post in a
+ * partner folder must name that same partner in `partner:`; the build stops if they differ, so pages can
+ * trust `partner:` alone.
+ */
 const updates = defineCollection({
-  loader: glob({ pattern: '**/[!_]*.md', base: './content/updates' }),
+  loader: glob({
+    pattern: '**/[!_]*.md',
+    base: './content/updates',
+    generateId: ({ entry, data }) => {
+      const id = entry.replace(/\.md$/, '').toLowerCase();
+      const folder = id.includes('/') ? id.split('/')[0] : undefined;
+      if (folder && !(PARTNER_IDS as readonly string[]).includes(folder))
+        throw new Error(`content/updates/${entry}: the folder "${folder}" is not a partner id (${PARTNER_IDS.join(', ')}).`);
+      if (folder && data.partner !== folder)
+        throw new Error(
+          `content/updates/${entry}: the post is in the "${folder}" folder but says partner: ${String(data.partner)}. Make them match.`,
+        );
+      return id;
+    },
+  }),
   schema: ({ image }) =>
     z
       .object({
         title: z.string().max(100),
         date: z.coerce.date(),
-        /** Partner id of the author's organisation. */
+        /** Partner id of the author's organisation; must match the post's folder. */
         partner: z.enum(PARTNER_IDS),
         author: z.string().optional(),
         summary: z.string().max(300),

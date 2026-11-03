@@ -22,9 +22,6 @@ export async function allUpdates(): Promise<Update[]> {
   );
 }
 
-/** Which partner a post belongs to: its folder (content/updates/<partner>/…), else its `partner:` field. */
-export const postPartner = (u: Update) => (u.id.includes('/') ? u.id.split('/')[0] : u.data.partner);
-
 /** Load content/programme/<id>.md if it exists (with its rendered body), else undefined. */
 export async function optionalSection(id: string) {
   const entry = await getEntry('programme', id);
@@ -32,6 +29,11 @@ export async function optionalSection(id: string) {
   const { Content } = await render(entry);
   return { ...entry.data, Content, hasBody: !!entry.body?.trim() };
 }
+
+/** Upper-case the first letter. */
+export const upperFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+/** Lower-case the first letter. */
+export const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 /** The partner file name, e.g. "NUS.md", from the entry's file path. */
 export const fileName = (p: Partner) => p.filePath?.split('/').pop() ?? `${p.id}.md`;
@@ -43,7 +45,7 @@ export function leadLine(p: Partner): string | undefined {
   const lead = d.people.find((m) => m.lead);
   if (lead) return lead.name;
   const withRole = d.people.find((m) => m.role);
-  return withRole ? `${withRole.name}, ${withRole.role!.charAt(0).toLowerCase()}${withRole.role!.slice(1)}` : undefined;
+  return withRole?.role ? `${withRole.name}, ${lowerFirst(withRole.role)}` : undefined;
 }
 
 /** "nus" → "NUS" (falls back to the id). */
@@ -55,11 +57,6 @@ export async function shortNames(): Promise<(id: string) => string> {
 
 /** ISO date for <time datetime>. */
 export const isoDay = (d: Date) => d.toISOString().slice(0, 10);
-
-/** Upper-case the first letter. */
-export const upperFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-/** Lower-case the first letter. */
-export const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 /** Publication status as a plain-text tag. */
 export const statusLabel: Record<string, string> = {
@@ -73,6 +70,7 @@ export const statusLabel: Record<string, string> = {
  * The five research themes, in page order. From content/programme/themes.md when it exists (one item per
  * theme: `title` name, `label` owner, `state` status, `text` one line, `icon` the anchor on the Research
  * page); otherwise derived from tracks.md, command.md, localisation.md and simulation.md (no status).
+ * Pass the already-loaded themes section (from `optionalSection('themes')`) to avoid rendering it twice.
  */
 export interface Theme {
   id: string;
@@ -82,10 +80,9 @@ export interface Theme {
   line?: string;
 }
 const THEME_IDS = ['learning', 'formal', 'safety', 'localisation', 'simulation'];
-export async function themes(): Promise<Theme[]> {
+export async function themes(file?: Awaited<ReturnType<typeof optionalSection>>): Promise<Theme[]> {
   const short = await shortNames();
   const names = (ids: string[]) => [...new Set(ids)].map(short).join(', ');
-  const file = await optionalSection('themes');
   if (file && file.items.length > 0) {
     return file.items.map((t, i) => ({
       id: t.icon ?? THEME_IDS[i] ?? t.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),

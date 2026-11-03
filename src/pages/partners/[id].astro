@@ -13,7 +13,7 @@ import Base from '../../layouts/Base.astro';
 import { url } from '../../lib/url';
 import { fmtDate } from '../../lib/text';
 import PubList from '../../components/sections/PubList.astro';
-import { allUpdates, postPartner } from '../../components/sections/data';
+import { allUpdates, fileName } from '../../components/sections/data';
 
 export async function getStaticPaths() {
   const partners = await getCollection('partners', (p) => p.data.page);
@@ -24,11 +24,10 @@ const { partner } = Astro.props;
 const d = partner.data;
 const { Content } = await render(partner);
 const all = (await getCollection('partners', (p) => p.data.page)).sort((a, b) => a.data.order - b.data.order);
-const updates = (await allUpdates()).filter((u) => postPartner(u) === partner.id);
+const updates = (await allUpdates()).filter((u) => u.data.partner === partner.id);
 const site = (await getEntry('site', 'main'))!.data;
 const repo = site.repository.replace(/\/$/, '');
-const fileName = partner.filePath?.split('/').pop() ?? `${partner.id}.md`;
-const filePath = `content/partners/${fileName}`;
+const filePath = `content/partners/${fileName(partner)}`;
 const editUrl = `${repo}/edit/development/${filePath}`;
 const pubs = [...d.publications].sort((a, b) => b.year - a.year);
 /* Head logos: base 76 px, capped at the well's 94 px inner height (src/lib/logo.ts). */
@@ -206,8 +205,8 @@ const layerNames: Record<string, string> = {
 <style>
   .pp-own {
     margin: 0;
-    background: var(--brand-blue);
-    color: #e8edf2;
+    background: var(--band);
+    color: var(--band-text);
     font-size: var(--step-0);
   }
   .pp-own__in {

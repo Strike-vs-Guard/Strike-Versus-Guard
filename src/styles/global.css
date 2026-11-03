@@ -12,6 +12,15 @@
   --grid: #e6eaee;
   --brand-red: #b3122e;
   --brand-blue: #1a3e62;
+  /* brand blue as text (links, status words): #1A3E62 in light, lighter in dark for contrast on --bg */
+  --link: var(--brand-blue);
+  /* Bands that stay dark in both themes (footer, partner-page file line), and the text on them. */
+  --band: var(--brand-blue);
+  --band-text: #e8edf2;
+  --band-muted: #b4c2d0;
+  --band-accent: #ff8a98;
+  /* The dark backdrop behind and over video (hero panel, play buttons), the same in both themes. */
+  --media: #0b1622;
   --strike: #d9542c;
   --guard: #2d6fd0;
   --guard-tint: color-mix(in srgb, var(--guard) 9%, transparent);
@@ -52,6 +61,7 @@
   --border: #26384d;
   --grid: #1f2d3d;
   --brand-red: #ff5a6e;
+  --link: #6fa3f5;
   --strike: #f2766a;
   --guard: #6fa3f5;
   --well-border: transparent;
@@ -68,6 +78,7 @@
     --border: #26384d;
     --grid: #1f2d3d;
     --brand-red: #ff5a6e;
+    --link: #6fa3f5;
     --strike: #f2766a;
     --guard: #6fa3f5;
     --well-border: transparent;

@@ -167,7 +167,7 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
     aspect-ratio: 2 / 1;
     border-radius: 12px;
     overflow: hidden;
-    background: #0b1622;
+    background: var(--media);
   }
   .hero__panel video,
   .hero__panel img {
@@ -199,7 +199,7 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
     height: 44px;
     border-radius: var(--radius);
     border: 1px solid rgb(255 255 255 / 0.45);
-    background: rgb(11 22 34 / 0.45);
+    background: color-mix(in srgb, var(--media) 45%, transparent);
     color: #fff;
     cursor: pointer;
     display: grid;
@@ -207,7 +207,7 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
     padding: 0;
   }
   .hero__toggle:hover {
-    background: rgb(11 22 34 / 0.7);
+    background: color-mix(in srgb, var(--media) 70%, transparent);
   }
   .hero__toggle[hidden] {
     display: none;

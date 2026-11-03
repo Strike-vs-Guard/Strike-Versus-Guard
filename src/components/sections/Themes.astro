@@ -7,8 +7,8 @@
 import { url } from '../../lib/url';
 import { themes as loadThemes, optionalSection } from './data';
 
-const rows = await loadThemes();
 const file = await optionalSection('themes');
+const rows = await loadThemes(file);
 ---
 
 <section id="research" class="section th-sec" aria-labelledby="research-title">
@@ -70,15 +70,7 @@ const file = await optionalSection('themes');
   .th__st {
     font-size: var(--step-0);
     font-weight: 600;
-    color: var(--brand-blue);
-  }
-  :global([data-theme='dark']) .th__st {
-    color: var(--text);
-  }
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .th__st {
-      color: var(--text);
-    }
+    color: var(--link);
   }
   .th__one {
     font-size: var(--step-0);

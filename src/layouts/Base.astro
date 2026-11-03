@@ -342,16 +342,17 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 40, 34);
   }
 
   /*
-   * Footer: a brand-blue band in both themes, so its tokens are set here. Logos in colour in white
+   * Footer: a brand-blue band in both themes (--band tokens, global.css), so its tokens are set here. Logos in colour in white
    * wells (ST, NUS, UPenn, CMU), then "Funded by" HTX, smaller and set apart.
    */
   .site-footer {
-    --text: #e8edf2;
-    --muted: #b4c2d0;
+    --text: var(--band-text);
+    --muted: var(--band-muted);
+    --link: var(--band-text);
     --border: rgb(255 255 255 / 0.2);
     --well-border: transparent;
-    --brand-red: #ff8a98;
-    background: var(--brand-blue);
+    --brand-red: var(--band-accent);
+    background: var(--band);
     color: var(--text);
     padding-block: 48px 32px;
     font-size: var(--step-0);

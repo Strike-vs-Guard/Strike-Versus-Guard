@@ -86,6 +86,9 @@ sets `data-theme` before first paint (no flash). Partners need do nothing for it
 | `--border` | #E3E6EA | #26384D | rules, the 1 px edge on every photo and video |
 | brand red | #B3122E | #FF5A6E | **type, rules and bands only**: wordmark, one rule under the hero title, the "We are here" marker |
 | brand blue | #1A3E62 | #1A3E62 | bands and links only |
+| `--link` | #1A3E62 | #6FA3F5 | brand blue as text (links, the theme status word); #1A3E62 on #0B1622 is 1.7:1, #6FA3F5 is 7.2:1 |
+| `--band` / `--band-text` / `--band-muted` / `--band-accent` | #1A3E62 / #E8EDF2 / #B4C2D0 / #FF8A98 | same | bands that stay dark in both themes: footer, partner-page file line (text 9.3:1, muted 6.1:1, accent 4.9:1) |
+| `--media` | #0B1622 | #0B1622 | behind and over video only: hero panel, play-button discs |
 | `--strike` | #D9542C | #F2766A | **only** the Strike team inside game figures |
 | `--guard` | #2D6FD0 | #6FA3F5 | **only** the Guard team inside game figures |
 | `--well` | #FFFFFF | #FFFFFF | the white background behind every logo; 1 px `--border` edge in light mode only |
@@ -174,7 +177,8 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 
 Nav: **Updates · Research · Partners ▾ · Flights · Publications · Contribute**, then the sun/moon
 theme toggle. There is no Benchmark item; the game stays on the Research page. `/programme/` is a
-redirect to `/research/` (anchors kept).
+redirect to `/research/` (an `#anchor` is not carried over). Moved addresses are `redirects:` in
+`astro.config.mjs`, never redirect pages under `src/pages/`.
 
 **Partners menu:** "Partners" stays a link. The ▾ button opens a panel on hover (120 ms open, 300 ms
 close grace), click, or Enter/Space. Escape closes it and returns focus; ArrowDown enters the rows;
@@ -238,7 +242,8 @@ update, add a publication, and a link to CONTRIBUTING.md for the rest.
 
 **Updates (`/updates/`):** a dated log with a partner filter; each post shows its `author:`, its
 `gallery:` as a photo strip and its optional `link:`. Posts are `updates/[...id]` (the id includes
-the partner folder).
+the partner folder; the build fails if a post's `partner:` differs from its folder). The two posts that
+moved into `updates/st/` keep their old addresses as redirects.
 
 The page sections live as section components under `src/components/sections/`.
 
