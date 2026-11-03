@@ -1,8 +1,10 @@
 ---
 /**
- * Home page: the five layers on the annotated drone, compact (DroneDiagram mode "compact"):
- * the drawing and six rows naming the partners on each layer. The full explain-mode drone
- * lives on the Partners page; "Who works on each layer →" leads there.
+ * Home page: the five layers on the interactive annotated drone (DroneDiagram explain mode,
+ * no target, so nothing scrolls). Selecting a layer lights its parts of the drawing and shows
+ * that layer's description; every callout names the partners on it (from each partner's
+ * `work:` lines). The connection diagram lives on the Partners page; "Who works on each
+ * layer →" leads there.
  */
 import DroneDiagram from '../DroneDiagram.astro';
 import { getSystemData } from '../../lib/system';
@@ -22,7 +24,6 @@ const system = await getSystemData();
       </div>
       <a class="arrow-link" href={url('partners/#who')}>Who works on each layer →</a>
     </header>
-    <DroneDiagram data={system} mode="compact" />
+    <DroneDiagram data={system} mode="explain" />
   </div>
 </section>
-

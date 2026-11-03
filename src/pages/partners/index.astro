@@ -1,10 +1,8 @@
 ---
-/** Partners page: the five layers, the partner cards, who works on each layer, proof so far. */
+/** Partners page: the partner cards, then who works on each layer (the connection diagram). */
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/sections/PageHead.astro';
 import PartnerCards from '../../components/sections/PartnerCards.astro';
-import Progress from '../../components/sections/Progress.astro';
-import DroneDiagram from '../../components/DroneDiagram.astro';
 import ConnectionDiagram from '../../components/ConnectionDiagram.astro';
 import { getSystemData } from '../../lib/system';
 import { section } from '../../components/sections/content';
@@ -20,12 +18,7 @@ const system = await getSystemData();
   <PartnerCards />
   <section class="section section--alt">
     <div class="wrap">
-      <div class="sys-part sys-part--layers">
-        {stack.droneTitle && <h2 class="sys-part__h">{stack.droneTitle}</h2>}
-        {stack.droneHint && <p class="sys-part__hint">{stack.droneHint}</p>}
-      </div>
-      <DroneDiagram data={system} mode="explain" target="#who-links" scrollTo="#who" />
-      <div class="sys-part sys-part--who" id="who">
+      <div class="sys-part" id="who">
         <h2 class="sys-part__h">Who works on each layer</h2>
         <p class="sys-part__hint">Select a partner or a layer to trace the links.</p>
       </div>
@@ -34,7 +27,6 @@ const system = await getSystemData();
       </div>
     </div>
   </section>
-  <Progress />
 </Base>
 
 <style>
@@ -44,9 +36,6 @@ const system = await getSystemData();
     align-items: baseline;
     gap: 4px 14px;
     margin: 0 0 18px;
-  }
-  .sys-part--who {
-    margin-top: clamp(40px, 6vw, 72px);
   }
   .sys-part__h {
     font-size: var(--step-3);
