@@ -31,16 +31,15 @@ people:
     role: Principal Investigator, Director of NEAR Lab
     photo: ./ST/people/william-teo.jpg
     lead: true
-  - name: Jeremy Chia Hwe Huang
-    role: AI Robotics Engineer
-    photo: ./ST/people/jeremy-chia.jpg
-    lead: false
-  - name: Chen Jiaying
-    role: Principal AI Engineer
-    photo: ./ST/people/chen-jiaying.jpg
   - name: Derek
     role: Principal AI Engineer
     photo: ./ST/people/derek.jpg
+  - name: Chen Jiaying
+    role: Principal AI Engineer
+    photo: ./ST/people/chen-jiaying.jpg
+  - name: Jeremy Chia Hwe Huang
+    role: AI Robotics Engineer
+    photo: ./ST/people/jeremy-chia.jpg
 publications:
   - title: Pairwise Approximation Can Select the Wrong Multi-Robot Plan
     authors: William Teo (MARMoT Lab, NUS; NEAR Lab, ST Engineering)
