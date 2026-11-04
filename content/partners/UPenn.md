@@ -28,6 +28,7 @@ order: 4
 updated: 2026-11-03
 people:
   - name: Prof Rahul Mangharam
+    photo: ./UPenn/people/rahul-mangharam.jpg
     lead: true
   - name: Hongrui (Billy) Zheng
     photo: ./UPenn/people/hongrui-zheng.jpg
