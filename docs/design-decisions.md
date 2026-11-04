@@ -28,7 +28,7 @@ editing workflow, and the visual design. The decisions below reconcile their pro
   as a hub of short cards), DeepMind, ETH ASL and UZH RPG (home never repeats a nav page in full).
   Jeremy chose, from a clickable draft: A compact drone on home (full one on Partners), B no
   Benchmark nav item, C looping clip in the hero.
-- **Reports (round 3, 3 Nov 2026).** The programme lead approved publishing selected content from the
+- **Reports (round 3, 3 Nov 2026).** The site owner approved publishing selected content from the
   October monthly report, then the July FR&PDR and the localisation brief ("there's no code
   involved"). Exclusions stay: budgets, prices, contract and deliverable IDs, the physical-contact
   scenario and kinetic wording, people beyond those named on the site, work under review. Added:

@@ -13,7 +13,7 @@ import Base from '../../layouts/Base.astro';
 import { url } from '../../lib/url';
 import { fmtDate } from '../../lib/text';
 import PubList from '../../components/sections/PubList.astro';
-import { allUpdates, fileName } from '../../components/sections/data';
+import { allUpdates, fileName, peopleGroups } from '../../components/sections/data';
 
 export async function getStaticPaths() {
   const partners = await getCollection('partners', (p) => p.data.page);
@@ -30,8 +30,8 @@ const repo = site.repository.replace(/\/$/, '');
 const filePath = `content/partners/${fileName(partner)}`;
 const editUrl = `${repo}/edit/development/${filePath}`;
 const pubs = [...d.publications].sort((a, b) => b.year - a.year);
-/* Head logos: base 76 px, capped at the well's 94 px inner height (src/lib/logo.ts). */
-const logo = (img: ImageMetadata) => logoSize(img, 76, 94);
+/* Head logos: base 106 px, capped at the well's 132 px inner height (src/lib/logo.ts). */
+const logo = (img: ImageMetadata) => logoSize(img, 106, 132);
 const people = d.people ?? [];
 const initials = (name: string) =>
   name
@@ -125,22 +125,27 @@ const layerNames: Record<string, string> = {
         <section class="pp-people" aria-labelledby="pp-people-h">
           <div class="wrap">
             <h2 id="pp-people-h" class="eyebrow">People</h2>
-            <ul class="pp-people__row">
-              {people.map((m) => (
-                <li class="pp-person">
-                  {m.photo ? (
-                    <Image class="pp-person__face" src={m.photo} alt={m.name} width={72} height={72} densities={[1, 2]} />
-                  ) : (
-                    <span class="pp-person__face pp-person__initials" aria-hidden="true">
-                      {initials(m.name)}
-                    </span>
-                  )}
-                  <span class="pp-person__name">{m.name}</span>
-                  {m.role && <span class="pp-person__role">{m.role}</span>}
-                  {m.lead && <span class="pp-person__tag">Lead</span>}
-                </li>
-              ))}
-            </ul>
+            {peopleGroups(people).map(({ group, people: row }) => (
+              <>
+                {group && <h3 class="pp-people__group">{group}</h3>}
+                <ul class="pp-people__row">
+                  {row.map((m) => (
+                    <li class="pp-person">
+                      {m.photo ? (
+                        <Image class="pp-person__face" src={m.photo} alt={m.name} width={72} height={72} densities={[1, 2]} />
+                      ) : (
+                        <span class="pp-person__face pp-person__initials" aria-hidden="true">
+                          {initials(m.name)}
+                        </span>
+                      )}
+                      <span class="pp-person__name">{m.name}</span>
+                      {m.role && <span class="pp-person__role">{m.role}</span>}
+                      {m.lead && <span class="pp-person__tag">Lead</span>}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ))}
           </div>
         </section>
       )
@@ -269,18 +274,20 @@ const layerNames: Record<string, string> = {
   }
   /* One wide well under the lede: institution left, hairline, lab right. */
   .pp-logos {
-    --logo-base: 76px;
-    --logo-max: 94px;
+    --logo-base: 106px;
+    --logo-max: 132px;
     width: fit-content;
     min-width: min(100%, 440px);
     max-width: 100%;
-    height: 128px;
+    height: 164px;
     margin-top: 28px;
     padding: 16px 40px;
     gap: 28px;
   }
   @media (max-width: 520px) {
     .pp-logos {
+      --logo-max: 96px;
+      height: 128px;
       padding: 16px 14px;
       gap: 14px;
     }
@@ -329,9 +336,17 @@ const layerNames: Record<string, string> = {
     gap: 4px;
     min-width: 0;
   }
+  .pp-people__group {
+    margin: 32px 0 16px;
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--muted);
+  }
   .pp-person :global(.pp-person__face) {
+    flex: none;
     width: 72px;
     height: 72px;
+    aspect-ratio: 1;
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid var(--border);

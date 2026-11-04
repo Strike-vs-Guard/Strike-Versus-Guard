@@ -262,7 +262,7 @@ A three-reviewer panel (editor, art director, outside professor; ad-hoc, brief i
 - Flights: lead clip + grid with mono stamps and "watch" cues, plus an annotated Singapore lab photo.
 - Logos sized by visual weight (`src/lib/logo.ts`): footer 2×2 partner wells with lab logos, card well
   104 px, partner-page well 128 px.
-- STANDARDS §2 now holds the voice rules. "Programme lead" is used only as Jeremy's role.
+- STANDARDS §2 now holds the voice rules.
 
 ## 16. Round 5: lab feedback, light/dark, Research (3 Nov 2026)
 > Nine points from the lab after they saw the test site, then "follow the panel" and picks from the

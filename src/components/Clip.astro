@@ -7,6 +7,7 @@
  * ground station above the flight. `natural` uses the video's own shape (read from the file at build
  * time) and caps the height, so a lead clip can run at full width without filling the screen.
  * `flight` fills the frame and shows the bottom (flight) half of a stacked clip.
+ * `media` puts the frame on the dark --media backdrop (the Flights grid, where every cell shares one frame).
  * Starting any clip pauses the others (src/lib/clip-player.ts).
  */
 import { url } from '../lib/url';
@@ -18,10 +19,10 @@ interface Props {
   variant?: 'controls' | 'button';
   aspect?: string;
   natural?: boolean;
-  /** with `natural`: frame clips wider than 16:9 at 16:9 (they letterbox), so a small grid cell keeps some height */
-  capWide?: boolean;
   /** fill the frame and show the flight (bottom) half of a clip that stacks the ground station above it */
   flight?: boolean;
+  /** letterbox on the dark --media backdrop instead of --surface */
+  media?: boolean;
 }
 const {
   video,
@@ -30,20 +31,16 @@ const {
   variant = 'controls',
   aspect = '960 / 1080',
   natural = false,
-  capWide = false,
   flight = false,
+  media = false,
 } = Astro.props;
 const size = natural ? videoSize(video) : null;
-const frame = size
-  ? capWide && size.width / size.height > 16 / 9
-    ? '16 / 9'
-    : `${size.width} / ${size.height}`
-  : aspect;
+const frame = size ? `${size.width} / ${size.height}` : aspect;
 const button = variant === 'button';
 ---
 
 <div
-  class:list={['clip', `clip--${variant}`, { 'clip--natural': natural, 'clip--flight': flight }]}
+  class:list={['clip', `clip--${variant}`, { 'clip--natural': natural, 'clip--flight': flight, 'clip--media': media }]}
   style={button ? `aspect-ratio: ${frame}` : undefined}
   data-clip={variant}
   data-title={title}>
@@ -102,6 +99,10 @@ const button = variant === 'button';
     width: 100%;
     object-fit: contain;
     background: var(--surface);
+  }
+  .clip--media,
+  .clip--media video {
+    background: var(--media);
   }
   /* full-width lead clip: tall clips letterbox inside a capped height instead of filling the screen */
   .clip--natural video {

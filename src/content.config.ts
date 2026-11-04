@@ -98,6 +98,8 @@ const partners = defineCollection({
                 photo: image().optional(),
                 /** Set true for the principal investigator or lead. */
                 lead: z.boolean().default(false),
+                /** Optional group, e.g. "Interns": shown under its own small heading after the ungrouped people. */
+                group: z.string().max(40).optional(),
               })
               .strict(),
           )

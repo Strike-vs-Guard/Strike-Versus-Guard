@@ -53,11 +53,6 @@ items:
 image: ./images/starlings-cage-floor.jpg
 imageAlt: Three Starling 2 Max drones on the concrete floor of a flight cage, green lights on.
 caption: "Three Starling 2 Max on the floor of CMU's flight cage, lights on, before a run. Photo: CMU AirLab."
-openLabel: What went wrong, and what's still open
-open:
-  - "Before CMU fixed it, drones flying at about 6 m/s overshot the virtual fence by 0.35–0.68 m. They now stop within 0.02 m of it, CMU reports."
-  - "In CMU's runs the closest passes were 0.52 m apart, against the 1.1 m the safety filter is set to keep."
-  - "None of the 7 clips here is a full Strike vs Guard game yet."
 ---
 
 In October 2026 we spent several days in CMU's flight cage in Pittsburgh with three Starlings. Nobody flew them, and the safety filter stayed on the whole time. Then one of us flew the third by hand straight across the other two to see if they would keep their spacing. They did.

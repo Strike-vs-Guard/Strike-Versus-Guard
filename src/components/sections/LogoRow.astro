@@ -1,5 +1,5 @@
 ---
-/** Home: the four partner logos in white wells (each links to its page), then "Funded by" and the funder's logo, set apart. */
+/** Home: the four partner logos (no well in light mode, a white well in dark) (each links to its page), then "Funded by" and the funder's logo, set apart. */
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { logoSize } from '../../lib/logo';
@@ -7,8 +7,8 @@ import { url } from '../../lib/url';
 import { partnersInOrder } from './data';
 
 const { partners, funder } = await partnersInOrder();
-/* Row logos: base 44 px, capped at the well's 48 px inner height (src/lib/logo.ts). */
-const logo = (img: ImageMetadata) => logoSize(img, 44, 48);
+/* Row logos: base 72 px, capped at the well's 72 px inner height (src/lib/logo.ts). */
+const logo = (img: ImageMetadata) => logoSize(img, 72, 72);
 ---
 
 <div class="wrap lr" role="group" aria-label="Partners and funder">
@@ -28,7 +28,7 @@ const logo = (img: ImageMetadata) => logoSize(img, 44, 48);
       <a class="lr__funded" href={funder.data.website} title={funder.data.institution}>
         <span>Funded by</span>
         <span class="logo-well lr__fwell">
-          <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.short} {...logoSize(funder.data.logo, 36, 40)} densities={[1, 2]} />
+          <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.short} {...logoSize(funder.data.logo, 50, 56)} densities={[1, 2]} />
         </span>
       </a>
     )
@@ -53,20 +53,17 @@ const logo = (img: ImageMetadata) => logoSize(img, 44, 48);
     gap: 16px;
   }
   .lr__well {
-    --logo-base: 44px;
-    --logo-max: 48px;
-    height: 76px;
-    padding: 14px 18px;
-  }
-  .lr__well:hover {
-    border-color: var(--muted);
+    --logo-base: 72px;
+    --logo-max: 72px;
+    height: 104px;
+    padding: 16px 18px;
   }
   .lr__funded {
     flex: none;
     display: flex;
     align-items: center;
     gap: 10px;
-    min-height: 56px;
+    min-height: 72px;
     padding-left: 20px;
     border-left: 1px solid var(--border);
     font-size: var(--step--1);
@@ -78,11 +75,11 @@ const logo = (img: ImageMetadata) => logoSize(img, 44, 48);
     text-decoration: underline;
   }
   .lr__fwell {
-    --logo-base: 36px;
-    --logo-max: 40px;
-    width: 52px;
-    height: 52px;
-    padding: 6px;
+    --logo-base: 50px;
+    --logo-max: 56px;
+    width: 72px;
+    height: 72px;
+    padding: 8px;
   }
   @media (max-width: 720px) {
     .lr {
@@ -94,8 +91,9 @@ const logo = (img: ImageMetadata) => logoSize(img, 44, 48);
       gap: 10px;
     }
     .lr__well {
-      height: 64px;
-      padding: 10px 14px;
+      --logo-max: 60px;
+      height: 84px;
+      padding: 12px 14px;
     }
     .lr__funded {
       border-left: 0;

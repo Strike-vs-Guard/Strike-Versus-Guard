@@ -22,20 +22,24 @@ logo: ./ST/st-engineering.png
 logoMark: ./ST/mark.png
 labLogo: ./ST/near-lab.png
 logoAlt: ST Engineering
+lead: William Teo
 website: https://www.stengg.com
 order: 2
 updated: 2026-11-03
 people:
-  - name: Jeremy Chia Hwe Huang
-    role: Programme lead
-    photo: ./ST/people/jeremy-chia.jpg
   - name: William Teo
+    role: Principal Investigator, Director of NEAR Lab
     photo: ./ST/people/william-teo.jpg
+    lead: true
+  - name: Jeremy Chia Hwe Huang
+    photo: ./ST/people/jeremy-chia.jpg
+    lead: false
   - name: Chen Jiaying
     role: Principal AI Engineer
     photo: ./ST/people/chen-jiaying.jpg
   - name: Derek
     photo: ./ST/people/derek.jpg
+    group: Interns
 publications:
   - title: Pairwise Approximation Can Select the Wrong Multi-Robot Plan
     authors: William Teo (MARMoT Lab, NUS; NEAR Lab, ST Engineering)

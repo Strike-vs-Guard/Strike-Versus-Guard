@@ -5,9 +5,9 @@
  * `id` names the file and is the section anchor (#flights on the Flights page, #simulation on the
  * Programme page). `body` shows the file's Markdown body under the title; `alt` uses the alternate
  * background; `aspect` sets the clip frame (default: the tall flight clips).
- * `lead` (Flights page): the first clip runs at full content width, the rest sit three to a row; every
- * clip keeps its own shape (tall and wide clips are grouped in the content, so rows stay even), but grid
- * clips wider than 16:9 sit in a 16:9 frame so the player controls do not cover them.
+ * `lead` (Flights page, home flights block): the first clip runs at full content width in its own shape;
+ * the rest sit three to a row, each in the same 16:10 frame on the dark --media backdrop (`object-fit:
+ * contain`), so the stacked 4:3 clips and the wide three-pane clips line up.
  * `log` (Flights page): each caption starts with a mono stamp line (label · when ·
  * partners) and gives `text` as "What to watch:".
  * `skip` leaves out clips by video file name (the home page skips the hero clip); `limit` caps the number
@@ -75,7 +75,7 @@ const gridItems = leadItem ? rest : items;
         <div class:list={['clips', { 'clips--three': lead }]}>
           {gridItems.map((c) => (
             <figure class="clip-card">
-              {c.video && <Clip video={c.video} poster={c.poster} title={c.title} aspect={aspect} natural={lead} capWide />}
+              {c.video && <Clip video={c.video} poster={c.poster} title={c.title} aspect={lead ? '16 / 10' : aspect} media={lead} />}
               <figcaption>
                 {log && stamp(c) && <span class="clip-card__stamp">{stamp(c)}</span>}
                 <strong>{c.title}</strong>

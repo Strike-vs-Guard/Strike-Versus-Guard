@@ -48,6 +48,16 @@ export function leadLine(p: Partner): string | undefined {
   return withRole?.role ? `${withRole.name}, ${lowerFirst(withRole.role)}` : undefined;
 }
 
+/** A partner's people split by `group:`: ungrouped people first (group undefined), then each group in file order. */
+export function peopleGroups<T extends { group?: string }>(people: T[]): { group?: string; people: T[] }[] {
+  const out: { group?: string; people: T[] }[] = [];
+  const ungrouped = people.filter((m) => !m.group);
+  if (ungrouped.length > 0) out.push({ people: ungrouped });
+  for (const g of [...new Set(people.map((m) => m.group).filter((g): g is string => !!g))])
+    out.push({ group: g, people: people.filter((m) => m.group === g) });
+  return out;
+}
+
 /** "nus" → "NUS" (falls back to the id). */
 export async function shortNames(): Promise<(id: string) => string> {
   const all = await getCollection('partners');

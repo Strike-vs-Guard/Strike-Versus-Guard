@@ -27,6 +27,8 @@
   --zone: color-mix(in srgb, var(--muted) 8%, transparent);
   --well: #ffffff;
   --well-border: var(--border);
+  /* behind logos: none in light (logos sit on the page), the white --well in dark and on dark bands */
+  --well-bg: transparent;
   --halo: rgb(255 255 255 / 0.85);
   --shadow: none;
   --shadow-pop: 0 12px 32px rgb(10 25 40 / 0.14);
@@ -65,6 +67,7 @@
   --strike: #f2766a;
   --guard: #6fa3f5;
   --well-border: transparent;
+  --well-bg: var(--well);
   --halo: rgb(0 0 0 / 0.7);
   --shadow-pop: 0 16px 40px rgb(0 0 0 / 0.55);
   color-scheme: dark;
@@ -82,6 +85,7 @@
     --strike: #f2766a;
     --guard: #6fa3f5;
     --well-border: transparent;
+    --well-bg: var(--well);
     --halo: rgb(0 0 0 / 0.7);
     --shadow-pop: 0 16px 40px rgb(0 0 0 / 0.55);
     color-scheme: dark;
@@ -292,17 +296,18 @@ p {
 }
 
 /*
- * Logo wells (STANDARDS §3): white, logos in colour. Logos are sized by visual weight, not by
+ * Logo wells (STANDARDS §3): logos in colour. Logos are sized by visual weight, not by
  * height: each <img> gets --logo-k = 1/√(width÷height) from its component (0.9× that for square
  * solid-colour tiles), so height = --logo-base × --logo-k, capped at the well's inner height
  * --logo-max. Every logo then covers about the same area. Each use sets --logo-base and --logo-max.
- * White in both themes; a 1 px --border edge in light mode only (--well-border).
+ * Light: no background and no border (--well-bg is transparent; white logo backgrounds multiply away
+ * into the page). Dark, and on the dark footer band: a soft white well, same box, so nothing shifts.
  */
 .logo-well {
   --logo-base: 48px;
   --logo-max: 56px;
-  background: var(--well);
-  border: 1px solid var(--well-border);
+  background: var(--well-bg);
+  border: 0;
   border-radius: var(--radius);
   display: flex;
   align-items: center;
@@ -317,6 +322,8 @@ p {
   width: auto;
   max-width: 100%;
   object-fit: contain;
+  /* a logo's own white background disappears on a light page; on a white well this changes nothing */
+  mix-blend-mode: multiply;
 }
 /* Institution and lab in one well: institution left, a hairline, lab right. */
 .logo-well__half {

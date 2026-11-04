@@ -105,14 +105,14 @@ people:
 | `role` | Your actual role. Leave it out if you are unsure |
 | `photo` | 400 px square JPG, 80 KB or less, in `content/partners/<Name>/people/` (e.g. `./NUS/people/jane-tan.jpg`). Optional |
 | `lead` | `true` for the principal investigator or lead |
+| `group` | Optional, e.g. `Interns`. Grouped people show under their own small heading, after everyone else |
 
 Only add people who agree to be named. Photos need the person's consent.
 
 ### 1b. The open-problems list
 
 Sections that report results end with what is not solved: `open:` (one line each) and
-`openLabel:` (e.g. "What we haven't solved yet"). It is in `localisation.md`, `simulation.md` and
-`flights.md`. Write what did not work or is still open, in plain words, with a number if you have one.
+`openLabel:` (e.g. "What we haven't solved yet"). It is in `localisation.md` and `simulation.md`. Write what did not work or is still open, in plain words, with a number if you have one.
 
 ## 2a. Edit in the browser (no install needed)
 

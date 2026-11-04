@@ -1,7 +1,7 @@
 ---
 /**
  * Partner cards (v2), in `order:` (ST Engineering, NUS, UPenn, CMU), then the funder line. Holds #partners
- * and #funder. Each card: the institution and lab logos in one white well, name, lab (and "lead partner"),
+ * and #funder. Each card: the institution and lab logos in one well (none in light, white in dark), name, lab (and "lead partner"),
  * lead, the one-line `contribution`, "<Short>'s page · written by <Short> →" and the date of the partner's
  * last post (from content/updates/). `heading` adds a section heading (home page); without it the card
  * names are h2 (Partners page, under its own page head).
@@ -22,8 +22,8 @@ const { heading, funderLine = true } = Astro.props;
 const { partners, funder } = await partnersInOrder();
 const updates = await allUpdates();
 const lastPost = (id: string) => updates.find((u) => u.data.partner === id)?.data.date;
-/* Card logos: base 50 px, capped at the well's 60 px inner height (src/lib/logo.ts). */
-const logo = (img: ImageMetadata) => logoSize(img, 50, 60);
+/* Card logos: base 70 px, capped at the well's 84 px inner height (src/lib/logo.ts). */
+const logo = (img: ImageMetadata) => logoSize(img, 70, 84);
 const H = heading ? 'h3' : 'h2';
 ---
 
@@ -84,7 +84,7 @@ const H = heading ? 'h3' : 'h2';
       funderLine && funder && (
         <div id="funder" class="pc__funder">
           <a class="logo-well pc__fwell" href={funder.data.website} title={funder.data.institution}>
-            <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.short} {...logoSize(funder.data.logo, 34, 36)} densities={[1, 2]} />
+            <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.short} {...logoSize(funder.data.logo, 48, 50)} densities={[1, 2]} />
           </a>
           <p>
             <strong>Funded by {funder.data.short}</strong>, {funder.data.institution}.
@@ -114,9 +114,9 @@ const H = heading ? 'h3' : 'h2';
     min-width: 0;
   }
   .pc__logos {
-    --logo-base: 50px;
-    --logo-max: 60px;
-    height: 96px;
+    --logo-base: 70px;
+    --logo-max: 84px;
+    height: 112px;
     padding: 14px 12px;
     gap: 12px;
   }
@@ -181,12 +181,12 @@ const H = heading ? 'h3' : 'h2';
     font-weight: 600;
   }
   .pc__fwell {
-    --logo-base: 34px;
-    --logo-max: 36px;
+    --logo-base: 48px;
+    --logo-max: 50px;
     flex: none;
-    width: 48px;
-    height: 48px;
-    padding: 6px;
+    width: 66px;
+    height: 66px;
+    padding: 8px;
   }
   @media (max-width: 1080px) {
     .pc {

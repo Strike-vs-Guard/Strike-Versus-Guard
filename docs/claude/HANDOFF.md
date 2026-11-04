@@ -9,7 +9,7 @@ programme on **decentralised multi-drone autonomy** funded by **HTX** and carrie
 (lead partner) with **NUS**, **UPenn** and **CMU**. It is an **Astro 7** static site on **GitHub Pages**.
 Each partner edits one Markdown file. All edits go to the `development` branch, which publishes a
 **test site**. A pull request from `development` into `main` publishes the **live site**. The
-programme lead driving the work is Jeremy (ST Engineering).
+site owner driving the work is Jeremy (ST Engineering); the ST lead is William Teo.
 
 - Live: https://strike-vs-guard.github.io/Strike-Versus-Guard/
 - Test: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/

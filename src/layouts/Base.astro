@@ -34,9 +34,9 @@ const logoPartners = partners.filter((p) => p !== funder);
 /* The partner's own file, e.g. content/partners/NUS.md, and its edit link on GitHub (development branch). */
 const partnerFile = (p: (typeof partners)[number]) => p.filePath ?? `content/partners/${p.id}.md`;
 const editUrl = (file: string) => `${site.repository}/edit/development/${file}`;
-/* Footer logos: base 60 px, capped at the well's 46 px inner height (src/lib/logo.ts); the funder smaller. */
-const logo = (img: ImageMetadata) => logoSize(img, 60, 46);
-const funderLogo = (img: ImageMetadata) => logoSize(img, 40, 34);
+/* Footer logos: base 84 px, capped at the well's 64 px inner height (src/lib/logo.ts); the funder smaller. */
+const logo = (img: ImageMetadata) => logoSize(img, 84, 64);
+const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
 ---
 
 <!doctype html>
@@ -342,8 +342,8 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 40, 34);
   }
 
   /*
-   * Footer: a brand-blue band in both themes (--band tokens, global.css), so its tokens are set here. Logos in colour in white
-   * wells (ST, NUS, UPenn, CMU), then "Funded by" HTX, smaller and set apart.
+   * Footer: a brand-blue band in both themes (--band tokens, global.css), so its tokens are set here. The band is dark, so
+   * logos keep the soft white well (no border) in both themes (ST, NUS, UPenn, CMU), then "Funded by" HTX, smaller and set apart.
    */
   .site-footer {
     --text: var(--band-text);
@@ -351,6 +351,7 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 40, 34);
     --link: var(--band-text);
     --border: rgb(255 255 255 / 0.2);
     --well-border: transparent;
+    --well-bg: var(--well);
     --brand-red: var(--band-accent);
     background: var(--band);
     color: var(--text);
@@ -373,10 +374,10 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 40, 34);
     gap: 12px;
   }
   .logo-strip__item {
-    --logo-base: 60px;
-    --logo-max: 46px;
-    height: 76px;
-    padding: 14px 20px;
+    --logo-base: 84px;
+    --logo-max: 64px;
+    height: 100px;
+    padding: 18px 20px;
   }
   .logo-strip__funder {
     flex: none;
@@ -394,11 +395,11 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 40, 34);
     color: var(--text);
   }
   .logo-strip__funder-well {
-    --logo-base: 40px;
-    --logo-max: 34px;
-    width: 64px;
-    height: 48px;
-    padding: 6px;
+    --logo-base: 56px;
+    --logo-max: 48px;
+    width: 84px;
+    height: 64px;
+    padding: 8px;
   }
   @media (max-width: 900px) {
     .logo-strip {

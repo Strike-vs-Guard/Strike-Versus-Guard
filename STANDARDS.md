@@ -2,7 +2,7 @@
 
 This file defines what the website is and the rules every change must follow, whether the change is
 made by a person or by Claude. If a request conflicts with this file, say so before changing anything.
-Precedence: the programme lead's explicit instruction, then this file, then personal taste.
+Precedence: the site owner's explicit instruction, then this file, then personal taste.
 
 ---
 
@@ -42,12 +42,11 @@ Precedence: the programme lead's explicit instruction, then this file, then pers
 | A partner speaks as "we" | Partner pages are first person plural, with the partner's own headings |
 | Name people and dates | "Jeremy flew it on 28 October", not "the team tested it" |
 | One number per claim | Give the number that matters; put the rest in the report |
-| Say what didn't work | Every results page ends with what is still open (`open:`) |
+| Say what didn't work | Localisation and simulation end with what is still open (`open:`); Flights has none (owner, 4 Nov 2026) |
 | No self-praising adjectives | No "honest", "robust", "seamless" |
 | Avoid triads | Not three tidy items by habit; use two, or four, or one |
 | Clips carry a cue | The caption says what to look at: "Watch the gaps between the drones…" |
 
-- "Programme lead" is used only as Jeremy's role. Do not use it for anyone else or for ST Engineering.
 
 | Avoid | Use instead |
 |---|---|
@@ -91,7 +90,7 @@ sets `data-theme` before first paint (no flash). Partners need do nothing for it
 | `--media` | #0B1622 | #0B1622 | behind and over video only: hero panel, play-button discs |
 | `--strike` | #D9542C | #F2766A | **only** the Strike team inside game figures |
 | `--guard` | #2D6FD0 | #6FA3F5 | **only** the Guard team inside game figures |
-| `--well` | #FFFFFF | #FFFFFF | the white background behind every logo; 1 px `--border` edge in light mode only |
+| `--well` / `--well-bg` | #FFFFFF / none | #FFFFFF / `--well` | logos: no background or border in light; a soft white well (no border) in dark and on the footer band |
 | `--max` | 1200px | 1200px | content width, with the gutter |
 
 Section padding is 96 to 112 px. Corners are 3 px. Rules, not boxed cards. Text columns stay about
@@ -103,13 +102,16 @@ Section padding is 96 to 112 px. Corners are 3 px. Rules, not boxed cards. Text 
 - No numbered circles, pill chips or dot grid. Mono labels appear at page level only.
 - **Never** colour partners, tracks, buttons or banners blue or red. Red never means "alarm".
 - No crosshairs, HUD styling, radar sweeps or military imagery.
-- Logos always sit in a `--well`, shown **in colour**, in equal white wells. In the footer they are in
-  2×2 partner wells (lab logos beside the institution's), with "Funded by" HTX beside them. (The old
-  "greyscale until hover" rule is withdrawn, 3 Nov 2026.)
+- Logos are shown **in colour**. In light mode they sit straight on the page (no well, no border; a
+  logo's own white background multiplies away). In dark mode, and on the dark footer band in both
+  themes, each sits in a soft white `--well` (no border, 3 px corners) of the same size, so nothing
+  shifts. "Funded by" HTX gets the same treatment. (4 Nov 2026; greyscale-until-hover withdrawn 3 Nov.)
 - **Logo sizing is by visual weight** (`src/lib/logo.ts`): height = base × 1/√(width ÷ height), 10 %
   less for square solid-colour tiles, capped at the well's inner height. A wide wordmark and a square
-  badge then look the same size. Do not set logo heights by hand. Wells: footer base 60 px (cap 74 px),
-  partner card 104 px, partner page 128 px. Always white, always colour.
+  badge then look the same size. Do not set logo heights by hand. Bases (box height): home row 72 px (104 px),
+  footer 84 px (100 px), partner card 70 px (112 px), partner page 106 px (164 px).
+- **Portraits are circles** everywhere (`border-radius: 50%`, `object-fit: cover`, one diameter per
+  row); the initials fallback is a circle too.
 - The drone drawing has no dot grid and no corner marks. Research directions is a plain numbered list.
 - Two themes (light default, dark navy-black). Brand red and blue never colour partners, tracks or buttons; Strike and Guard colours never leave the game figures. (Round 5 replaced the single pure-black theme, 3 Nov 2026.)
 
@@ -136,7 +138,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | Flights "Test ladder" (`items:` with `state:` chips; the safety order in the body) and "Outdoors" clip | `content/programme/ladder.md`, `content/programme/outdoor.md` | ST Engineering; CMU for `outdoor.md` |
 | Layers of the system (drone diagram and connection diagram) | `content/programme/stack.md` (`icon:` is the layer id) | ST Engineering |
 | People on a partner's team: `people:` (name, role, photo, `lead`), a row with faces on the partner page and the people row on home; photos for every partner come from the lab's profile pictures | `content/partners/<NAME>.md`, photos in `content/partners/<NAME>/people/` (400 px square, 80 KB or less) | That partner |
-| Open problems: `open:` list and `openLabel:` ("What we haven't solved yet"), one line each | `localisation.md`, `simulation.md`, `flights.md` | ST Engineering (+ CMU for flights) |
+| Open problems: `open:` list and `openLabel:` ("What we haven't solved yet"), one line each | `localisation.md`, `simulation.md` | ST Engineering |
 | Page head overrides: `pageEyebrow:` / `pageTitle:` (when the section also heads its own page) | `overview.md`, `flights.md` | ST Engineering |
 | Clips: `video:` + `poster:` on an item; a hero `video:` on a section | `content/programme/*.md`, files in `public/media/` | ST Engineering; CMU for its clips |
 | News, a dated log, **one folder per partner**; `author:` names who wrote it, `draft: true` hides it; optional `gallery:` (photos with `alt:` and `caption:`) and `link:` / `linkLabel:` (paper, poster, code) | `content/updates/<partner>/YYYY-MM-DD-slug.md` (`st`, `nus`, `upenn`, `cmu`), images in `content/updates/<partner>/images/` | That partner |
@@ -149,11 +151,11 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
   the simulator and technical advice). A partner's
   `work.<layer>` line (90 characters or fewer) is what puts that partner on a layer in both diagrams.
 - **Sources:** the October 2026 monthly report (29 Oct 2026) is approved for publication by the
-  programme lead (3 Nov 2026): its simulation figures and numbers may go on the site, translated into
+  site owner (3 Nov 2026): its simulation figures and numbers may go on the site, translated into
   the §2 wording, with proposals labelled as proposals and nothing under review. The D3 FR&PDR
   (July 2026) is confidential, and the localisation brief (22 Oct 2026) stays context only: nothing
   numeric or unpublished from those two goes on the site.
-  **Update, 3 Nov 2026:** the programme lead approved publishing selected content from the July FR&PDR
+  **Update, 3 Nov 2026:** the site owner approved publishing selected content from the July FR&PDR
   and the localisation brief. The exclusions still hold: no budgets, prices or cost ceilings; no
   contract or deliverable IDs; no classification markings; nothing about the physical-contact scenario
   and no kinetic wording; no names beyond the three PIs already on the site; no papers under review.
@@ -231,8 +233,8 @@ fully clickable partner cards; the **connection diagram only** (the drone moved 
 **Flights (`/flights/`):** the CMU cage photo (credit line), a lead clip at full width and the other
 clips in a grid, each with a mono stamp line and a "Watch …" cue; CMU's outdoor clip (`outdoor.md`);
 the test ladder M1–M6 (`ladder.md`; **M6, the first Starling flight in Singapore, is done**) with the
-annotated Singapore lab photo; the localisation status line; "What went wrong, and what's still
-open" (`open:` in `flights.md`); milestones.
+annotated Singapore lab photo; the localisation status line; milestones. (No open list on Flights
+since 4 Nov 2026.)
 
 **Publications (`/publications/`):** every partner's `publications:`, one section per partner (anchor
 = partner id), in partner order. A partner with none shows "None yet (as of <date>)".
@@ -300,7 +302,7 @@ The page sections live as section components under `src/components/sections/`.
   default branch may publish to Pages).
 - **GitHub Pages source must be "GitHub Actions"** (not "Deploy from a branch").
 - Before every push, `npm run check` must pass locally.
-- Claude may push to `development`. It should push to `main` only when the programme lead says so.
+- Claude may push to `development`. It should push to `main` only when the site owner says so.
 
 ---
 
