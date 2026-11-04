@@ -138,10 +138,20 @@ const item = (image: any) =>
       /** Image path relative to the section file, e.g. ./images/flight-cage.jpg */
       image: image().optional(),
       alt: z.string().optional(),
-      /** Video file name in public/media, e.g. formation-change.mp4 */
+      /** Video file name in public/media, e.g. goal-tracking.mp4 */
       video: z.string().regex(/^[\w.-]+\.mp4$/).optional(),
       /** Poster image for the video, file name in public/media. */
       poster: z.string().regex(/^[\w.-]+\.(jpg|png|webp)$/).optional(),
+      /** Optional second run of the same scenario (e.g. lights off), file name in public/media; adds a toggle. */
+      videoAlt: z.string().regex(/^[\w.-]+\.mp4$/).optional(),
+      /** Poster for `videoAlt`, file name in public/media. */
+      posterAlt: z.string().regex(/^[\w.-]+\.(jpg|png|webp)$/).optional(),
+      /** Toggle label for `videoAlt` (the first run is "Lit"). */
+      altLabel: z.string().max(24).default('Lights off'),
+      /** Caption under the clip, where `text` is used for something else (the safety row in themes.md). */
+      caption: z.string().optional(),
+      /** Credit line that ends the caption, e.g. "Video: AirLab, Carnegie Mellon University, CC BY-SA 4.0." */
+      credit: z.string().optional(),
       /** Partner ids associated with this item. */
       partners: z.array(z.enum(PARTNER_IDS)).default([]),
       /** Optional strength / limitation lines (used for the two tracks). */

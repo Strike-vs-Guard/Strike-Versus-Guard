@@ -22,7 +22,7 @@ const overview = await section('overview');
 const flights = await section('flights');
 /* the still photo: the clip's poster, and what reduced-motion visitors see instead of the clip */
 const still = overview.image ? await getImage({ src: overview.image, width: 1600, format: 'webp' }) : undefined;
-const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?? overview.caption ?? '';
+const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?? overview.imageAlt ?? overview.caption ?? '';
 ---
 
 <Base>
@@ -99,6 +99,8 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
    * Hero clip: no autoplay attribute and preload="none", so nothing loads until the script starts it.
    * It plays muted on load unless the visitor prefers reduced motion; they get the still photo and a
    * play button instead. Shares the play/pause wiring (and one-clip-at-a-time) with Clip.astro.
+   * It pauses while scrolled out of view or while the tab is hidden, and resumes only if it was playing
+   * then: a visitor's pause, or another clip starting, keeps it paused.
    */
   import { bindToggle } from '../lib/clip-player';
 
@@ -117,9 +119,31 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
       beforePlay: () => panel.classList.add('is-on'),
     });
     button.hidden = false;
+
+    /* `wanted`: should the clip play whenever it is visible? Pausing it off screen or in a hidden tab keeps it. */
+    let wanted = !reduce;
+    let inView = true;
+    const apply = () => {
+      const run = wanted && inView && !document.hidden;
+      if (run && video.paused) video.play().catch(() => {});
+      else if (!run && !video.paused) video.pause();
+    };
+    /* a pause while the clip is on screen and the tab is shown came from the visitor or another clip */
+    video.addEventListener('pause', () => {
+      if (inView && !document.hidden) wanted = false;
+    });
+    video.addEventListener('play', () => (wanted = true));
+    document.addEventListener('visibilitychange', apply);
+    new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        apply();
+      },
+      { threshold: 0.1 },
+    ).observe(panel);
     if (!reduce) {
       panel.classList.add('is-on');
-      video.play().catch(() => {});
+      apply();
     }
   }
 </script>
@@ -176,9 +200,9 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
     object-fit: cover;
     border: 0;
   }
-  /* each clip stacks the ground station (top) over the flight (bottom): show the flight */
-  .hero__panel video.is-started {
-    object-position: 50% 100%;
+  /* the hero loop is cropped to 2:1 from the room camera, so it fills the panel centred */
+  .hero__panel video {
+    object-position: 50% 50%;
   }
   .hero__panel.has-video .hero__still {
     display: none;
@@ -225,7 +249,7 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
     color: var(--muted);
   }
   @media (max-width: 720px) {
-    /* 16:9 shows exactly the flight half of a stacked clip */
+    /* a little taller on phones; the 2:1 loop trims its sides */
     .hero__panel {
       aspect-ratio: 16 / 9;
     }

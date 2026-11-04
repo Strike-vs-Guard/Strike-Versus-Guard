@@ -9,7 +9,7 @@ order: 14
 note: As of 3 November 2026
 items:
   - state: Done
-    title: Three Starlings flew with no pilot at CMU, October 2026.
+    title: Three Starlings flew themselves at CMU, October 2026.
   - state: Done
     title: The NUS team strategy runs on Starlings.
   - state: Done

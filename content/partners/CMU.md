@@ -55,7 +55,7 @@ fair comparison possible.
 
 ## October in the cage
 
-In October 2026 three Starling 2 Max drones flew in our flight cage with no pilot.
+In October 2026 three Starling 2 Max drones flew themselves in our flight cage.
 They changed formation and kept their spacing. They flew to separate goals across
 each other's paths. They kept going while a hand-flown drone cut across them, and a
 virtual boundary kept every one of them inside the flight area.
@@ -63,6 +63,8 @@ virtual boundary kept every one of them inside the flight area.
 That boundary didn't work first time. Before we fixed it, a drone flying at about
 6 m/s overshot it by 0.35–0.68 m; now it stops within 0.02 m. More of our flight
 recordings, with the settings behind them, are on our own project site.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/goal-sequence.jpg" aria-label="Flight clip: three drones crossing on purpose in our flight cage"><source src="../../media/goal-sequence.mp4" type="video/mp4"></video><figcaption>We sent the three drones through five layouts whose straight paths cross head-on; nobody touched the controls after Start. Watch the lights turn red at each crossing, then green again. Video: AirLab, Carnegie Mellon University, CC BY-SA 4.0; re-encoded.</figcaption></figure>
 
 In the same visit, the NUS team strategy went from palm-sized drones to full-size
 Starlings on AirStack: the programme's first successful run on full-size drones.

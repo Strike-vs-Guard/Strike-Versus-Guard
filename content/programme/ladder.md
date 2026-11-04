@@ -42,5 +42,5 @@ items:
 ---
 
 ST Engineering is bringing up AirStack on the Starling 2 Max in its Singapore hangar one step at a time.
-**Who can stop a flight**, highest authority first: a safety pilot holding a radio stop switch, then
+**Who can stop a flight**, highest authority first: a safety observer holding a radio stop switch, then
 PX4's own failsafes on the drone (including loss of the link), then AirStack's software geofence.

@@ -20,6 +20,10 @@ items:
     partners: [cmu, upenn]
     state: Flying
     text: Checks every command so the drones keep apart, whatever the strategy above it decides.
+    video: safety-random-goals-off.mp4
+    poster: safety-random-goals-off.jpg
+    caption: The drones cross on purpose; red means the safety filter is easing one aside.
+    credit: "Video: AirLab, Carnegie Mellon University, CC BY-SA 4.0; re-encoded."
   - icon: localisation
     title: Localisation
     partners: [st, cmu]

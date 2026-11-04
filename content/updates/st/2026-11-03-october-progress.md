@@ -5,7 +5,7 @@ partner: st
 author: Jeremy Chia Hwe Huang
 summary: >-
   The Starling 2 Max now flies in the AirStack simulator, camera-only
-  localisation has a first number, and three Starlings flew at CMU with no pilot.
+  localisation has a first number, and three Starlings flew themselves at CMU.
 ---
 
 October was the month the Starling 2 Max started flying in the AirStack simulator. We built a

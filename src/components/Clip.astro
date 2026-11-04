@@ -8,6 +8,8 @@
  * time) and caps the height, so a lead clip can run at full width without filling the screen.
  * `flight` fills the frame and shows the bottom (flight) half of a stacked clip.
  * `media` puts the frame on the dark --media backdrop (the Flights grid, where every cell shares one frame).
+ * `videoAlt`/`posterAlt` add a second run of the same scenario (the lights-off run): two buttons under the
+ * frame ("Lit" / `altLabel`) swap the source and poster; a clip that was playing keeps playing from the start.
  * Starting any clip pauses the others (src/lib/clip-player.ts).
  */
 import { url } from '../lib/url';
@@ -23,6 +25,11 @@ interface Props {
   flight?: boolean;
   /** letterbox on the dark --media backdrop instead of --surface */
   media?: boolean;
+  /** a second run of the same scenario (file in public/media), e.g. the lights-off run */
+  videoAlt?: string;
+  posterAlt?: string;
+  /** label for the second run's button; the first is "Lit" */
+  altLabel?: string;
 }
 const {
   video,
@@ -33,17 +40,25 @@ const {
   natural = false,
   flight = false,
   media = false,
+  videoAlt,
+  posterAlt,
+  altLabel = 'Lights off',
 } = Astro.props;
 const size = natural ? videoSize(video) : null;
 const frame = size ? `${size.width} / ${size.height}` : aspect;
 const button = variant === 'button';
+const runs = videoAlt
+  ? [
+      { label: 'Lit', src: url(`media/${video}`), poster: poster ? url(`media/${poster}`) : '' },
+      { label: altLabel, src: url(`media/${videoAlt}`), poster: posterAlt ? url(`media/${posterAlt}`) : '' },
+    ]
+  : [];
 ---
 
+<div class="clip-wrap" data-clip={variant} data-title={title}>
 <div
   class:list={['clip', `clip--${variant}`, { 'clip--natural': natural, 'clip--flight': flight, 'clip--media': media }]}
-  style={button ? `aspect-ratio: ${frame}` : undefined}
-  data-clip={variant}
-  data-title={title}>
+  style={button ? `aspect-ratio: ${frame}` : undefined}>
   <video
     src={url(`media/${video}`)}
     poster={poster ? url(`media/${poster}`) : undefined}
@@ -69,9 +84,29 @@ const button = variant === 'button';
     )
   }
 </div>
+{
+  runs.length > 0 && (
+    <div class="clip__runs">
+      <div class="clip__seg" role="group" aria-label={`Run shown: ${title}`}>
+        {runs.map((r, i) => (
+          <button
+            type="button"
+            class="clip__run"
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            data-src={r.src}
+            data-poster={r.poster}>
+            {r.label}
+          </button>
+        ))}
+      </div>
+      <p class="clip__pair">Two runs of the same scenario, one with the lights on and one off.</p>
+    </div>
+  )
+}
+</div>
 
 <script>
-  import { bindToggle, exclusive } from '../lib/clip-player';
+  import { bindRuns, bindToggle, exclusive } from '../lib/clip-player';
 
   for (const root of document.querySelectorAll<HTMLElement>('[data-clip]')) {
     const video = root.querySelector('video');
@@ -83,6 +118,8 @@ const button = variant === 'button';
     } else {
       exclusive(video);
     }
+    const runs = [...root.querySelectorAll<HTMLButtonElement>('.clip__run')];
+    if (runs.length) bindRuns(video, runs);
   }
 </script>
 
@@ -167,6 +204,47 @@ const button = variant === 'button';
   .is-playing .clip__btn:hover .clip__icon,
   .is-playing .clip__btn:focus-visible .clip__icon {
     opacity: 1;
+  }
+  /* Lit / Lights off: a two-button switch under the frame, then one mono line */
+  .clip__runs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin-top: 8px;
+  }
+  .clip__seg {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .clip__run {
+    margin: 0;
+    padding: 4px 12px;
+    min-height: 32px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--muted);
+    font: 500 var(--step--1) var(--font-mono);
+    cursor: pointer;
+  }
+  .clip__run + .clip__run {
+    border-left: 1px solid var(--border);
+  }
+  .clip__run[aria-pressed='true'] {
+    background: var(--text);
+    color: var(--bg);
+  }
+  .clip__run:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: -2px;
+  }
+  .clip__pair {
+    margin: 0;
+    font: 400 var(--step--1) var(--font-mono);
+    color: var(--muted);
   }
   @media (prefers-reduced-motion: reduce) {
     .clip__icon {

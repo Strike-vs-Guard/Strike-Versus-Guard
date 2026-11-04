@@ -50,16 +50,23 @@ for (const file of walk(dist)) {
 const root = new URL('../', import.meta.url).pathname;
 const budgets = [
   { dir: 'content', max: 5 * 1024 * 1024, what: 'image' },
-  { dir: 'public/media', max: 15 * 1024 * 1024, what: 'media file' },
+  { dir: 'public/media', max: 8 * 1024 * 1024, what: 'media file', total: 60 * 1024 * 1024 },
 ];
-for (const { dir, max, what } of budgets) {
+for (const { dir, max, what, total } of budgets) {
+  let sum = 0;
   for (const f of walk(join(root, dir))) {
     const size = statSync(f).size;
+    sum += size;
     if (size > max) {
       problems.push(
         `${f.slice(root.length)}: ${what} is ${(size / 1048576).toFixed(1)} MB (limit ${max / 1048576} MB). Please compress it.`,
       );
     }
+  }
+  if (total && sum > total) {
+    problems.push(
+      `${dir}/ holds ${(sum / 1048576).toFixed(1)} MB in all (limit ${total / 1048576} MB). Remove clips the site no longer uses, or re-encode the largest ones smaller.`,
+    );
   }
 }
 

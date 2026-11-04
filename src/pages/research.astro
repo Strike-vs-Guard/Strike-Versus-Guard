@@ -2,7 +2,7 @@
 /**
  * Research: the five themes, each with an anchor the home page links to: #learning and #formal (the two
  * tracks), #safety (how a command travels, through the safety filter), #localisation and #simulation.
- * Then the research directions. Larger, standardised type: h2 step-4, body step-1, no mono prose.
+ * #safety also shows the safety-filter clip from themes.md (small, click to play). Then the research directions. Larger, standardised type: h2 step-4, body step-1, no mono prose.
  * The head comes from content/programme/themes.md (`pageEyebrow`, `pageTitle`, body) when it exists.
  */
 import { getEntry } from 'astro:content';
@@ -13,10 +13,13 @@ import CommandPath from '../components/sections/CommandPath.astro';
 import Simulation from '../components/sections/Simulation.astro';
 import Localisation from '../components/sections/Localisation.astro';
 import Directions from '../components/sections/Directions.astro';
+import Clip from '../components/Clip.astro';
 import { optionalSection } from '../components/sections/data';
 
 const site = (await getEntry('site', 'main'))!.data;
 const themes = await optionalSection('themes');
+/* the safety-filter clip (themes.md, the `icon: safety` row), shown under "how a command travels" */
+const safety = themes?.items.find((t) => t.icon === 'safety' && t.video);
 ---
 
 <Base title="Research" description="Two strategy tracks on one shared stack, the safety filter, camera-only localisation and the shared simulator.">
@@ -25,7 +28,20 @@ const themes = await optionalSection('themes');
   </PageHead>
   <div class="research">
     <Tracks />
-    <div id="safety" class="research__anchor"><CommandPath /></div>
+    <div id="safety" class="research__anchor">
+      <CommandPath>
+        {
+          safety?.video && (
+            <figure class="research__clip">
+              <Clip video={safety.video} poster={safety.poster} title={safety.title} variant="button" aspect="16 / 9" media />
+              <figcaption>
+                {safety.caption} {safety.credit}
+              </figcaption>
+            </figure>
+          )
+        }
+      </CommandPath>
+    </div>
     <Localisation />
     <Simulation alt />
     <Directions />
@@ -54,6 +70,14 @@ const themes = await optionalSection('themes');
     font-family: var(--font-body);
     text-transform: none;
     letter-spacing: 0;
+  }
+  .research__clip {
+    margin: clamp(28px, 4vw, 40px) 0 0;
+    max-width: 640px;
+  }
+  .research__clip figcaption {
+    margin-top: 10px;
+    color: var(--muted);
   }
   .research :global(:is(#learning, #formal, #localisation, #simulation)),
   .research__anchor {

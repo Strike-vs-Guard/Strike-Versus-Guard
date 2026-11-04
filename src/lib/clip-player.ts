@@ -47,3 +47,35 @@ export function bindToggle({ root, video, button, label, pressed = true, beforeP
   video.addEventListener('pause', sync);
   sync();
 }
+
+/**
+ * Two (or more) runs of one clip, e.g. lit and lights off: each button carries `data-src` and `data-poster`.
+ * Choosing a run swaps the source and poster and resets to the start; a clip that was playing keeps playing.
+ * Buttons use aria-pressed; Left/Right arrows move between them (Enter/Space choose, as for any button).
+ */
+export function bindRuns(video: HTMLVideoElement, buttons: HTMLButtonElement[]): void {
+  const choose = (pick: HTMLButtonElement) => {
+    if (pick.getAttribute('aria-pressed') === 'true') return;
+    const src = pick.dataset.src;
+    if (!src) return;
+    const playing = !video.paused;
+    for (const b of buttons) b.setAttribute('aria-pressed', String(b === pick));
+    video.pause();
+    if (pick.dataset.poster) video.poster = pick.dataset.poster;
+    else video.removeAttribute('poster');
+    video.src = src;
+    video.load();
+    if (playing) video.play().catch(() => {});
+  };
+  buttons.forEach((b, i) => {
+    b.addEventListener('click', () => choose(b));
+    b.addEventListener('keydown', (e) => {
+      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!step) return;
+      e.preventDefault();
+      const next = buttons[(i + step + buttons.length) % buttons.length];
+      next.focus();
+      choose(next);
+    });
+  });
+}

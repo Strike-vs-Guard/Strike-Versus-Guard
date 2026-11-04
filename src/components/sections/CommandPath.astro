@@ -2,7 +2,8 @@
 /**
  * "How a command travels" (content/programme/command.md) on the Programme page: one row of labelled
  * boxes, left to right, joined by arrows. An item's `passes:` labels the arrow after it. On phones the
- * row turns into a column with downward arrows. Holds #command-path.
+ * row turns into a column with downward arrows. Holds #command-path. Anything passed as children (the
+ * Research page's safety-filter clip) goes under the note.
  */
 import PartnerChips from '../PartnerChips.astro';
 import { section } from './content';
@@ -43,6 +44,7 @@ const { Content } = d;
       }
     </ol>
     {d.note && <p class="section__note">{d.note}</p>}
+    <slot />
   </div>
 </section>
 

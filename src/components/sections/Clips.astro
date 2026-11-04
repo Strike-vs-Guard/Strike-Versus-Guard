@@ -6,8 +6,8 @@
  * Programme page). `body` shows the file's Markdown body under the title; `alt` uses the alternate
  * background; `aspect` sets the clip frame (default: the tall flight clips).
  * `lead` (Flights page, home flights block): the first clip runs at full content width in its own shape;
- * the rest sit three to a row, each in the same 16:10 frame on the dark --media backdrop (`object-fit:
- * contain`), so the stacked 4:3 clips and the wide three-pane clips line up.
+ * the rest sit three to a row, each in the same 16:9 frame on the dark --media backdrop (`object-fit:
+ * contain`). An item with `videoAlt` gets the Lit / Lights off switch; `credit` ends its caption.
  * `log` (Flights page): each caption starts with a mono stamp line (label · when ·
  * partners) and gives `text` as "What to watch:".
  * `skip` leaves out clips by video file name (the home page skips the hero clip); `limit` caps the number
@@ -61,11 +61,20 @@ const gridItems = leadItem ? rest : items;
     {
       leadItem && (
         <figure class="clip-card clip-card--lead">
-          <Clip video={leadItem.video!} poster={leadItem.poster} title={leadItem.title} natural />
+          <Clip
+            video={leadItem.video!}
+            poster={leadItem.poster}
+            videoAlt={leadItem.videoAlt}
+            posterAlt={leadItem.posterAlt}
+            altLabel={leadItem.altLabel}
+            title={leadItem.title}
+            natural
+          />
           <figcaption>
             {log && stamp(leadItem) && <span class="clip-card__stamp">{stamp(leadItem)}</span>}
             <strong>{leadItem.title}</strong>
             {leadItem.text && <span>{leadItem.text}</span>}
+            {leadItem.credit && <span class="clip-card__credit">{leadItem.credit}</span>}
           </figcaption>
         </figure>
       )
@@ -75,11 +84,23 @@ const gridItems = leadItem ? rest : items;
         <div class:list={['clips', { 'clips--three': lead }]}>
           {gridItems.map((c) => (
             <figure class="clip-card">
-              {c.video && <Clip video={c.video} poster={c.poster} title={c.title} aspect={lead ? '16 / 10' : aspect} media={lead} />}
+              {c.video && (
+                <Clip
+                  video={c.video}
+                  poster={c.poster}
+                  videoAlt={c.videoAlt}
+                  posterAlt={c.posterAlt}
+                  altLabel={c.altLabel}
+                  title={c.title}
+                  aspect={lead ? '16 / 9' : aspect}
+                  media={lead}
+                />
+              )}
               <figcaption>
                 {log && stamp(c) && <span class="clip-card__stamp">{stamp(c)}</span>}
                 <strong>{c.title}</strong>
                 {c.text && <span>{c.text}</span>}
+                {c.credit && <span class="clip-card__credit">{c.credit}</span>}
               </figcaption>
             </figure>
           ))}
@@ -118,6 +139,10 @@ const gridItems = leadItem ? rest : items;
     letter-spacing: 0.06em;
     color: var(--muted);
     margin-bottom: 2px;
+  }
+  .clip-card__credit {
+    font-size: var(--step--1);
+    color: var(--muted);
   }
   .clip-card--lead {
     margin-bottom: clamp(32px, 4vw, 48px);
