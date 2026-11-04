@@ -33,7 +33,7 @@ Each file has two parts:
 ```markdown
 ---
 short: NUS                         ← "front matter": short fields that feed
-lab: MARMot Lab                      the partner card on the home page
+lab: MARMoT Lab                      the partner card on the home page
 lead: Prof Guillaume Sartoretti
 summary: >-
   One or two sentences for the card.
@@ -106,8 +106,22 @@ people:
 | `photo` | 400 px square JPG, 80 KB or less, in `content/partners/<Name>/people/` (e.g. `./NUS/people/jane-tan.jpg`). Optional |
 | `lead` | `true` for the principal investigator or lead |
 | `group` | Optional, e.g. `Interns`. Grouped people show under their own small heading, after everyone else |
+| `bio` | Optional. Two sentences in the third person, 300 characters or fewer: title, lab, what you study, degree. No awards or superlatives. Shown in "About the lab" |
+| `link` | Optional profile page for the bio, e.g. your staff page |
 
 Only add people who agree to be named. Photos need the person's consent.
+
+**"About the lab"** sits under the people row. It shows `labBlurb:` (three sentences in "we" voice,
+420 characters or fewer: who you are, what you work on, your part in Strike vs Guard) next to the
+bios above. ST Engineering drafted the first versions from your lab's website; replace them with your
+own words.
+
+```yaml
+labBlurb: >-
+  We are the Multi-Agent Robotic Motion Laboratory in Mechanical Engineering at NUS. We work on
+  decentralised robot teams where each agent decides for itself. In Strike vs Guard we lead the
+  learning track.
+```
 
 ### 1b. The open-problems list
 

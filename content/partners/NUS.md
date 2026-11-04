@@ -5,13 +5,19 @@
 # ─────────────────────────────────────────────────────────────────────────────
 short: NUS
 institution: National University of Singapore
-lab: MARMot Lab
+lab: MARMoT Lab
 labFull: Multi-Agent Robotic Motion Lab
+labBlurb: >-
+  We are the Multi-Agent Robotic Motion Laboratory in Mechanical Engineering at
+  NUS. We work on decentralised robot teams where each agent decides for itself:
+  learned multi-agent path finding, learned communication and exploration. In
+  Strike vs Guard we lead the learning track, where the drones discover their own
+  skills and team plays.
 lead: Prof Guillaume Sartoretti
 role: Partner
 contribution: Learning-based strategy track
 summary: >-
-  The NUS MARMot Lab leads the learning-based approach: agents discover their
+  The NUS MARMoT Lab leads the learning-based approach: agents discover their
   own skills and team behaviours through experience, and a planner picks the
   play that best fits the situation.
 # What you do on each layer (one line each, max 90 characters). Shown in the
@@ -25,11 +31,18 @@ labLogo: ./NUS/marmot-lab.png
 logoAlt: National University of Singapore
 website: https://www.marmotlab.org
 order: 3
-updated: 2026-11-03
+updated: 2026-11-04
 people:
   - name: Prof Guillaume Sartoretti
+    role: Assistant Professor, Mechanical Engineering
     photo: ./NUS/people/guillaume-sartoretti.jpg
     lead: true
+    bio: >-
+      Guillaume Sartoretti is an Assistant Professor in Mechanical Engineering at
+      NUS and leads the MARMoT Lab. He studies how cooperation emerges in large
+      groups of agents making their own choices; PhD in robotics from EPFL (2016),
+      then a postdoc at CMU's Robotics Institute.
+    link: https://www.marmotlab.org/bio.html
   - name: Tanishq Duhan
     photo: ./NUS/people/tanishq-duhan.jpg
   - name: Jeric Lew

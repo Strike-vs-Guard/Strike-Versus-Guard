@@ -6,6 +6,12 @@
 short: CMU
 institution: Carnegie Mellon University
 lab: AirLab
+labBlurb: >-
+  We are AirLab at the Robotics Institute, Carnegie Mellon University. Our mission
+  is to advance state-of-the-art autonomy: state estimation, 3D perception,
+  exploration, planning and collision avoidance for aerial and field robots. In
+  Strike vs Guard we provide AirStack, the shared flight software, co-develop the
+  safety filter with UPenn and fly the drone teams in our indoor flight cage.
 lead: Prof Sebastian Scherer
 role: Partner
 contribution: AirStack flight software, safety filter and flight testing
@@ -25,11 +31,18 @@ labLogo: ./CMU/airlab.png
 logoAlt: Carnegie Mellon University
 website: https://theairlab.org
 order: 5
-updated: 2026-11-03
+updated: 2026-11-04
 people:
   - name: Prof Sebastian Scherer
+    role: Research Professor, Robotics Institute
     photo: ./CMU/people/sebastian-scherer.jpg
     lead: true
+    bio: >-
+      Sebastian Scherer is a Research Professor at the Robotics Institute,
+      Carnegie Mellon University, and leads AirLab. His work is autonomy for
+      aerial and field robots, from perception and state estimation to planning
+      and exploration, in places where it has to keep working.
+    link: https://www.ri.cmu.edu/ri-faculty/sebastian-scherer/
   - name: Yikuan Fang
     photo: ./CMU/people/yikuan-fang.jpg
   - name: Cao Muqing

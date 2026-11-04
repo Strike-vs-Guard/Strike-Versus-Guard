@@ -12,7 +12,7 @@ Precedence: the site owner's explicit instruction, then this file, then personal
   teams of drones that coordinate, adapt and make decisions on their own in changing environments,
   with no pilot and no central controller.
 - **Funding and partners:** funded by **HTX** and carried out by **ST Engineering** (lead partner,
-  AI.R.STC · NEAR Lab) in collaboration with **NUS** (MARMot Lab), **UPenn** (xLab) and **CMU** (AirLab).
+  AI.R.STC · NEAR Lab) in collaboration with **NUS** (MARMoT Lab), **UPenn** (xLab) and **CMU** (AirLab).
 - **Two strategy tracks:** NUS leads the **learning-based** track; UPenn leads the **formal** track
   (signal temporal logic). Both run on the same stack, **CMU's AirStack on Starling 2 Max drones**.
 - ***Strike vs Guard* is the benchmark game**, not the purpose of the programme: a two-team game that
@@ -138,6 +138,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | Flights "Test ladder" (`items:` with `state:` chips; the safety order in the body) and "Outdoors" clip | `content/programme/ladder.md`, `content/programme/outdoor.md` | ST Engineering; CMU for `outdoor.md` |
 | Layers of the system (drone diagram and connection diagram) | `content/programme/stack.md` (`icon:` is the layer id) | ST Engineering |
 | People on a partner's team: `people:` (name, role, photo, `lead`), a row with faces on the partner page and the people row on home; photos for every partner come from the lab's profile pictures | `content/partners/<NAME>.md`, photos in `content/partners/<NAME>/people/` (400 px square, 80 KB or less) | That partner |
+| "About the lab" on the partner page: `labBlurb:` (three sentences in "we" voice, 420 characters or fewer: who you are, what you work on, your part in the programme) and `bio:` on a person (two sentences, third person, 300 or fewer: title, lab, research, degree; no awards) with an optional profile `link:`. Facts come from the lab's own website; a partner approves its own text | `content/partners/<NAME>.md` | That partner (drafted by ST Engineering) |
 | Open problems: `open:` list and `openLabel:` ("What we haven't solved yet"), one line each | `localisation.md`, `simulation.md` | ST Engineering |
 | Page head overrides: `pageEyebrow:` / `pageTitle:` (when the section also heads its own page) | `overview.md`, `flights.md` | ST Engineering |
 | Clips: `video:` + `poster:` on an item; a hero `video:` on a section | `content/programme/*.md`, files in `public/media/` | ST Engineering; CMU for its clips |
@@ -185,7 +186,7 @@ redirect to `/research/` (an `#anchor` is not carried over). Moved addresses are
 **Partners menu:** "Partners" stays a link. The ▾ button opens a panel on hover (120 ms open, 300 ms
 close grace), click, or Enter/Space. Escape closes it and returns focus; ArrowDown enters the rows;
 it closes on focus-out. Without JS it is just the link. Heading: "Each partner has its own page". Rows:
-ST Engineering · NEAR Lab, NUS · MARMot Lab, UPenn · xLab, CMU · AirLab (logo chip, name,
+ST Engineering · NEAR Lab, NUS · MARMoT Lab, UPenn · xLab, CMU · AirLab (logo chip, name,
 contribution line), then "Funded by HTX" (→ `/partners/#funder`) and "All partners: who does what →".
 On phones the panel opens full width under the header.
 
@@ -224,6 +225,8 @@ fully clickable partner cards; the **connection diagram only** (the drone moved 
 - Top line: "This is NUS's own file · Edit". Header and meta card; "Maintained by <Short> · updated
   <date> · Edit this page" sits in "At a glance".
 - People: a row with faces from `people:` (the lead first).
+- "About the lab": `labBlurb:` on the left, the bios of people with `bio:` (lead first, face, role,
+  "Profile →") on the right. Skipped when both are empty. Home and cards stay as they are.
 - "In the system": `DroneDiagram` in `partner` mode, with that partner's layers lit.
 - The Markdown body, in first person with the partner's own headings. It may embed simulation clips as
   `<figure class="clip">` (see CONTRIBUTING §4) and has an "In simulation" section.

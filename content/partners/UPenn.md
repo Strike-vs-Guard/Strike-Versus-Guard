@@ -6,6 +6,13 @@
 short: UPenn
 institution: University of Pennsylvania
 lab: xLab
+labFull: Safe Autonomous Systems Lab
+labBlurb: >-
+  We are xLab, the Safe Autonomous Systems Lab at the University of Pennsylvania
+  and part of the PRECISE Center. We develop safety-critical autonomous systems by
+  combining formal methods with learning and control, from autonomous vehicles to
+  medical devices. In Strike vs Guard we lead the formal track and co-develop the
+  safety filter with CMU.
 lead: Prof Rahul Mangharam
 role: Partner
 contribution: Formal strategy track using signal temporal logic
@@ -25,11 +32,18 @@ labLogo: ./UPenn/xlab.png
 logoAlt: University of Pennsylvania
 website: https://xlab.upenn.edu
 order: 4
-updated: 2026-11-03
+updated: 2026-11-04
 people:
   - name: Prof Rahul Mangharam
+    role: Professor, Electrical and Systems Engineering
     photo: ./UPenn/people/rahul-mangharam.jpg
     lead: true
+    bio: >-
+      Rahul Mangharam is a Professor of Electrical and Systems Engineering at the
+      University of Pennsylvania and directs xLab, the Safe Autonomous Systems
+      Lab. His work sits where formal methods, machine learning and control meet;
+      PhD in Electrical and Computer Engineering from Carnegie Mellon.
+    link: https://xlab.upenn.edu/team/rahul/
   - name: Hongrui (Billy) Zheng
     photo: ./UPenn/people/hongrui-zheng.jpg
   - name: Wei Wang

@@ -7,6 +7,12 @@ short: ST Engineering
 institution: ST Engineering
 lab: AI.R.STC · NEAR Lab
 labFull: AI and Robotics Strategic Technology Centre, NEAR Lab
+labBlurb: >-
+  We are the Next-gen Edge AI and Robotics Lab, part of ST Engineering's AI and
+  Robotics Strategic Technology Centre in Singapore. We study how teams of robots
+  learn to coordinate, and build systems that carry from simulation to the field.
+  In Strike vs Guard we coordinate the partners, integrate every layer and run the
+  Singapore flight lab.
 role: Lead partner
 contribution: Coordination, system integration and the Singapore flight lab
 summary: >-
@@ -25,12 +31,18 @@ logoAlt: ST Engineering
 lead: William Teo
 website: https://www.stengg.com
 order: 2
-updated: 2026-11-03
+updated: 2026-11-04
 people:
   - name: William Teo
     role: Principal Investigator, Director of NEAR Lab
     photo: ./ST/people/william-teo.jpg
     lead: true
+    bio: >-
+      William Teo directs NEAR Lab at ST Engineering and is the programme's
+      principal investigator. He studies how teams of robots learn to coordinate,
+      and when that coordination holds or breaks, as a PhD researcher at the
+      MARMoT Lab, NUS, supervised by Guillaume Sartoretti.
+    link: https://nearlab.ai/#/people
   - name: Derek Tan Ming Siang
     role: Principal AI Engineer
     photo: ./ST/people/derek.jpg

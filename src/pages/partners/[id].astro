@@ -2,7 +2,8 @@
 /**
  * One page per partner, built from content/partners/<PARTNER>.md.
  * The layout is shared; each partner only edits their own Markdown file. The top line names that file
- * with an Edit link; then the head, people, the partner's own text, "Updates from <Short>" (always shown;
+ * with an Edit link; then the head, people, "About the lab" (`labBlurb:` plus the bios of people with
+ * `bio:`, lead first; skipped when both are empty), the partner's own text, "Updates from <Short>" (always shown;
  * empty → "No posts yet. Post one →") and its publications. The layer drawing lives on the home page.
  */
 import { getCollection, getEntry, render } from 'astro:content';
@@ -33,6 +34,9 @@ const pubs = [...d.publications].sort((a, b) => b.year - a.year);
 /* Head logos: base 106 px, capped at the well's 132 px inner height (src/lib/logo.ts). */
 const logo = (img: ImageMetadata) => logoSize(img, 106, 132);
 const people = d.people ?? [];
+/* "About the lab": the lab blurb and every person with a bio, lead first. */
+const bios = [...people.filter((m) => m.lead && m.bio), ...people.filter((m) => !m.lead && m.bio)];
+const showAbout = !!d.labBlurb || bios.length > 0;
 const initials = (name: string) =>
   name
     .replace(/^(Prof|Dr|Mr|Ms|Mrs|Assoc Prof|Asst Prof)\.?\s+/i, '')
@@ -146,6 +150,56 @@ const layerNames: Record<string, string> = {
                 </ul>
               </>
             ))}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      showAbout && (
+        <section class="pp-about" aria-labelledby="pp-about-h">
+          <div class="wrap pp-about__grid">
+            <div class="pp-about__lab">
+              <h2 id="pp-about-h" class="eyebrow">About the lab</h2>
+              {d.labBlurb && (
+                <>
+                  <h3>{d.labFull ?? d.lab ?? d.institution}</h3>
+                  <p>{d.labBlurb}</p>
+                  {d.website && (
+                    <p class="pp-about__link">
+                      <a href={d.website}>{new URL(d.website).hostname.replace(/^www\./, '')} →</a>
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+            {bios.length > 0 && (
+              <ul class="pp-about__people">
+                {bios.map((m) => (
+                  <li class="pp-bio">
+                    {m.photo ? (
+                      <Image class="pp-bio__face" src={m.photo} alt="" width={96} height={96} densities={[1, 2]} />
+                    ) : (
+                      <span class="pp-bio__face pp-person__initials" aria-hidden="true">
+                        {initials(m.name)}
+                      </span>
+                    )}
+                    <div class="pp-bio__text">
+                      <h3>{m.name}</h3>
+                      {m.role && <p class="pp-bio__role">{m.role}</p>}
+                      <p>{m.bio}</p>
+                      {m.link && (
+                        <p class="pp-about__link">
+                          <a href={m.link}>
+                            Profile<span class="visually-hidden">: {m.name}</span> →
+                          </a>
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </section>
       )
@@ -380,6 +434,89 @@ const layerNames: Record<string, string> = {
     padding: 1px 8px;
     border: 1px solid var(--text);
     border-radius: 999px;
+  }
+  .pp-about {
+    padding-block: clamp(32px, 4vw, 48px);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .pp-about__grid {
+    display: grid;
+    gap: 32px;
+  }
+  @media (min-width: 900px) {
+    .pp-about__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 56px;
+      align-items: start;
+    }
+  }
+  .pp-about h2 {
+    margin: 0 0 20px;
+  }
+  .pp-about h3 {
+    font-size: var(--step-1);
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .pp-about p {
+    margin: 0;
+    font-size: var(--step-0);
+    max-width: 60ch;
+  }
+  .pp-about__link {
+    margin-top: 10px !important;
+  }
+  .pp-about__link a {
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .pp-about__link a:hover {
+    text-decoration: underline;
+  }
+  .pp-about__people {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 28px;
+  }
+  @media (min-width: 900px) {
+    .pp-about__people {
+      padding-top: calc(var(--step--1) * 1.4 + 20px); /* align with the lab heading under the eyebrow */
+    }
+  }
+  .pp-bio {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .pp-bio :global(.pp-bio__face) {
+    flex: none;
+    width: 96px;
+    height: 96px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+  }
+  .pp-bio__text {
+    min-width: 0;
+  }
+  .pp-bio__role {
+    font: 500 var(--step--1) var(--font-mono);
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 8px !important;
+  }
+  @media (max-width: 520px) {
+    .pp-bio {
+      gap: 14px;
+    }
+    .pp-bio :global(.pp-bio__face) {
+      width: 72px;
+      height: 72px;
+    }
   }
   .pp-body {
     padding-block: clamp(40px, 6vw, 72px);

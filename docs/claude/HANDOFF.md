@@ -111,6 +111,7 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
 |---|---|
 | Check the test site (rounds 2 to 5: light/dark toggle, new home order, Research, Publications, Contribute, people rows, first-person pages), then merge PR #6 (open, `development` into `main`) | Jeremy |
 | Confirm your people, roles and photos (photos came from the labs' profile pictures) | Each partner |
+| Approve or rewrite your "About the lab" text and your lead's bio (`labBlurb:`, `bio:`, `link:`; drafted 4 Nov from marmotlab.org, xlab.upenn.edu, theairlab.org, nearlab.ai) | Each partner |
 | Supply the NUS workshop paper (not found publicly; NUS shows "None yet") | NUS |
 | Decide whether the full A0 poster may go up (only the top half is published; the lower half has wording the site avoids) | Jeremy |
 | Confirm the captions of CMU's clips used in the hero and Flights | CMU |

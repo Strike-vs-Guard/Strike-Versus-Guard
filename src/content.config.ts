@@ -40,10 +40,15 @@ const partners = defineCollection({
         short: z.string().max(24),
         /** Full institution name. */
         institution: z.string(),
-        /** Lab or group name, e.g. "MARMot Lab". Optional for the sponsor. */
+        /** Lab or group name, e.g. "MARMoT Lab". Optional for the sponsor. */
         lab: z.string().optional(),
         /** Lab name written out in full, if `lab` is an acronym. */
         labFull: z.string().optional(),
+        /**
+         * About the lab, in "we" voice: who you are, what you work on, your part in the programme.
+         * Three sentences, 420 characters or fewer. Shown under the people row on the partner page.
+         */
+        labBlurb: z.string().max(420).optional(),
         /** Principal investigator or lead, e.g. "Prof Guillaume Sartoretti". */
         lead: z.string().optional(),
         /** Role in the programme, shown as a small label on the card. */
@@ -100,6 +105,10 @@ const partners = defineCollection({
                 lead: z.boolean().default(false),
                 /** Optional group, e.g. "Interns": shown under its own small heading after the ungrouped people. */
                 group: z.string().max(40).optional(),
+                /** Short third-person bio, two sentences, 300 characters or fewer; shown in "About the lab". */
+                bio: z.string().max(300).optional(),
+                /** Profile page for the bio, e.g. the lab's staff page. */
+                link: url.optional(),
               })
               .strict(),
           )

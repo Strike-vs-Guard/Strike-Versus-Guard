@@ -306,6 +306,23 @@ web-performance (ladder, budgets, licence); saved as `svg-media-panel-*`.
 **The picks:** the encoding ladder and caps, `preload` rules and wording for hand-flown drones are in
 STANDARDS §9. Lit and lights-off stay separate runs. CMU's overlay stays except in the cropped hero.
 
+## 18. Round 7: professors and labs (4 Nov 2026)
+> Add Prof Rahul Mangharam's photo; give a brief description of the professors and the labs. Propose
+> where first; consult the panel.
+
+**The panel:** editor (house style: PI bio third person, two sentences, 300 characters; lab blurb "we"
+voice, three sentences, 420; no awards; facts only from the lab's own site) and content architect
+(four placements; chose "About the lab" under the people row, nothing new on home or cards, no
+People page).
+
+**Jeremy's picks:** William Teo stays "Director of NEAR Lab" (not "Lead"); lab spelling switched to
+MARMoT; Sartoretti's facts from marmotlab.org/bio.html; lab role plus PhD line for William, no
+career history. Professors' `role:` = their verified title (Assistant Professor, ME; Professor, ESE;
+Research Professor, RI). Temasek Labs left out (not on the bio page).
+
+**Built:** `labBlurb:`, `people[].bio`, `people[].link` (schema, STANDARDS §4/§5, CONTRIBUTING §1a);
+UPenn `labFull: Safe Autonomous Systems Lab`. Each partner approves its own text (HANDOFF §5).
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)
