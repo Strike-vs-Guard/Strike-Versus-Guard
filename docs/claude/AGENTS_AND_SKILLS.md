@@ -39,6 +39,15 @@ Rejected along the way, so don't propose these again without a new reason:
 | `.claude/agents/svg-ux-panel-first-screen.md` | UX panel: the first screen and the gist | Reviewing a page top (run with the other two panel agents) |
 | `.claude/agents/svg-ux-panel-layout.md` | UX panel: page length, width, rhythm, media | Reviewing a page's spacing and length |
 | `.claude/agents/svg-ux-panel-navigation.md` | UX panel: nav, findability, partner paths | Reviewing menus and how pages link |
+| `.claude/agents/svg-humanise-panel-editor.md` | Humanising panel: voice and copy, AI tells, rewrites | Round-4-style copy review (run with the other two humanise agents) |
+| `.claude/agents/svg-humanise-panel-art-director.md` | Humanising panel: visual template tells, hand-made moves, logo sizing | Same round |
+| `.claude/agents/svg-humanise-panel-outsider.md` | Humanising panel: robotics professor's cold-read impression test | Same round |
+| `.claude/agents/svg-redesign-panel-design-system.md` | Redesign panel: palette, light/dark, fonts, hero spec | Site-wide redesign (run with the other two redesign agents) |
+| `.claude/agents/svg-redesign-panel-content-architecture.md` | Redesign panel: site map, updates-first, publications, cuts | Same round |
+| `.claude/agents/svg-redesign-panel-drone-interaction.md` | Redesign panel: ranked drone effects, reduced-motion, HUD risk | Same round |
+| `.claude/agents/svg-media-panel-producer.md` | Media panel: shot list and ffmpeg commands | Replacing or adding video (run with the other two media agents) |
+| `.claude/agents/svg-media-panel-science-comms.md` | Media panel: what each clip proves, order, captions, credit | Same round |
+| `.claude/agents/svg-media-panel-web-performance.md` | Media panel: encoding ladder, budgets, licence; runs test encodes | Same round |
 | `.claude/agents/svg-implementer.md` | Implements an agreed spec in the Astro repo and verifies it with Playwright; doesn't commit | After a design decision is made |
 
 ## UX panel (added 3 Nov 2026)
@@ -71,8 +80,7 @@ Keep doing that; an agent knows only what its brief says.
 
 ## Humanising panel (round 4, 3 Nov 2026)
 
-Three reviewers read the live test site, each through one lens. They were **ad-hoc, not saved as
-agent files**; this brief makes it reusable.
+Three reviewers read the live test site, each through one lens. Now saved as the `svg-humanise-panel-*` agents.
 
 | Reviewer | Lens: does the site sound like people made it? |
 |---|---|
@@ -86,7 +94,7 @@ building. Findings that two share come first.
 
 ## Round-5 panel (3 Nov 2026)
 
-Three reviewers, again ad-hoc and not saved as agent files, read the test site after the lab's
+Three reviewers, now saved as the `svg-redesign-panel-*` agents, read the test site after the lab's
 nine-point feedback. Reuse this brief for a site-wide redesign.
 
 | Reviewer | Lens |
@@ -110,6 +118,26 @@ tabbed comparison page. To recreate it, write:
 - `render.mjs`: Playwright screenshots, logging overflow and errors
 
 Use Python or a replacer function for the inlining: JS `String.replace` mangles `$$`.
+
+## Media panel (round 6, 4 Nov 2026)
+
+Three saved agents (`svg-media-panel-producer`, `-science-comms`, `-web-performance`) planned the
+replacement of the flight videos with CMU's clips (commit 6167492). Rules that came out of it are in
+STANDARDS §9.
+
+## How a panel round runs
+
+1. Three lenses run in parallel (one message), each with the preview URL, the relevant STANDARDS
+   sections and the lab's asks.
+2. The orchestrator reconciles: findings shared by two lenses first, conflicts to Jeremy.
+3. Write one proposal.
+4. When layout is at stake, publish a clickable draft with switches.
+5. Jeremy picks.
+6. Parallel implementers with disjoint file ownership; `npm run check` serialised with `flock`; each
+   commits its own paths only.
+7. Code review, then a fix wave.
+8. Docs (handoff, history, standards).
+9. Push to `development`.
 
 ---
 

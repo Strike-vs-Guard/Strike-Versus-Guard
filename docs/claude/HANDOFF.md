@@ -103,6 +103,9 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
   Small polish left: the "AirStack: plan → flight" label is crossed by the leader line for marker 4,
   and the "safe distance" label sits tight against its marker.
 
+**Round 6 (4 Nov 2026), media replacement:** flight clips replaced from CMU's repo at commit 6167492
+(read-only clone; never edit or push there). Rules in STANDARDS §9; panel agents `svg-media-panel-*`.
+
 ## 5. Open items / waiting on people
 | Item | Who |
 |---|---|
@@ -124,6 +127,12 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
 | Partner pages were drafted from the deck. Each partner should review its page, people list and publications; lab website URLs need verifying | Each partner |
 | CODEOWNERS team names (`@Strike-vs-Guard/st-web`, `nus`, `upenn`, `cmu`) are placeholders; the `main` ruleset isn't set up yet | Repo admin (`docs/admin-setup.md`) |
 | CMU's separate site `Strike-vs-Guard/svg-website` uses counter-UAS wording ("ground controller for counter-UAS flights", "airspace protection", "intruder") and is linked from the CMU page | Raise with CMU |
+| Derek (ST): full name and role | ST Engineering |
+| ST intern names | ST Engineering |
+| NUS workshop paper | NUS |
+| Full A0 poster: decide whether to publish | Jeremy |
+| Confirm captions and the drone numbering behind "CORRECTING drone N" in CMU's clips | CMU |
+| Merge PR #6 | Jeremy |
 
 ## 6. How to continue (process that worked)
 1. **Clarify, then explore in parallel.** For anything visual, brief 3–4 agents with different
@@ -148,3 +157,4 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
   brief (22 Oct 2026) was approved the same day, with the exclusions in STANDARDS §4 (no budgets, IDs,
   markings, contact scenario, extra names or papers under review). Extracted text is kept outside the
   repo in `~/Documents/GitHub/Strike-Versus-Guard-sources/` on Jeremy's laptop.
+- CMU `svg-website` media (commit 6167492), licence CC BY-SA 4.0: the flight clips, re-encoded and credited per STANDARDS §9.

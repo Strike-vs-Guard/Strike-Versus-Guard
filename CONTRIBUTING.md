@@ -253,6 +253,9 @@ black text).
   as they swap places." Two sentences at most.
 - Only publish material you have the right to publish. The test site is public, even before merging.
 
+**Clip ladder (full rules: STANDARDS §9).** Loops 15 s or less and 1 MB or less; lead clips 1080p CRF 26, 8 MB or less; grid clips 720p CRF 28 to 30; posters 100 KB or less; 8 MB per file.
+**Credit rule:** partner clips say who made them and the licence, and say "re-encoded" or "cropped" if you changed them. Items take `videoAlt`, `posterAlt`, `altLabel` and `credit` fields for the description, poster description, short label and credit line.
+
 ### Adding a simulation clip to your partner page
 
 1. Convert the clip (a GIF works too) to MP4 and grab its first frame as the poster:

@@ -26,3 +26,4 @@ Website for **Strike vs Guard**, a research programme on decentralised multi-dro
   changes run the UX panel (`svg-ux-panel-*` agents) first; see `docs/claude/AGENTS_AND_SKILLS.md`.
 
 **Commands:** `npm ci` · `npm run dev` · `npm run check` · `npx astro preview`
+- **Media:** encoding, size caps, credit line and wording for clips are in `STANDARDS.md` §9.

@@ -74,7 +74,7 @@ Precedence: the site owner's explicit instruction, then this file, then personal
 All tokens live in `src/styles/global.css`. Do not introduce new colours or fonts. **Light is the
 default** (it follows the system setting); **dark** is navy-black, not pure black. A sun/moon toggle in
 the header switches them and stores the choice in `localStorage.theme`; an inline script in `Base.astro`
-sets `data-theme` before first paint (no flash). Partners need do nothing for it.
+sets `data-theme` before first paint (no flash). If CMU's video overlay is kept, the hero crop must not cut the status card (see §9). Partners need do nothing for it.
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
@@ -316,3 +316,28 @@ The page sections live as section components under `src/components/sections/`.
 - [ ] Docs updated if the structure or workflow changed (`README.md`, `CONTRIBUTING.md`,
       `docs/design-decisions.md`, this file).
 - [ ] Pushed to `development`; the test site checked after the deploy finishes.
+
+---
+
+## 9. Media
+
+Applies to every clip in `public/media/`. `npm run check` enforces the caps.
+
+| Class | Encoding | Limit |
+|---|---|---|
+| All | H.264 High, yuv420p, 30 fps, `-g 60`, `-movflags +faststart`, no audio | none |
+| Hero loop | cropped, CRF 23 | 15 s or less, 1 MB or less |
+| Lead clip | 1080p, CRF 26 | 8 MB or less |
+| Grid clip | 720p, CRF 28 to 30 | 8 MB or less |
+| Poster | jpg | 100 KB or less |
+
+- Caps: 8 MB per file; 60 MB for all of `public/media` together.
+- `preload`: hero `none` and started by JS; lead `metadata`; grid `none`. Pause a clip when it is
+  off-screen. With reduced motion, show the poster only.
+- Keep CMU's on-video overlay (status card, "CORRECTING drone N") in every clip except the cropped
+  hero loop. The hero crop must not cut the status card if the overlay is kept (§3).
+- **Lit and lights-off are separate runs.** Never splice them; label each clip so.
+- Credit line in the caption: "Video: AirLab, Carnegie Mellon University, CC BY-SA 4.0; re-encoded[ and
+  cropped]." CMU's site licence is CC BY-SA 4.0; derived files must say they were changed.
+- Hand-flown drones: never "striker", "intruder", "pilot" or "operator". Say "the filter does not
+  steer the hand-flown drone".

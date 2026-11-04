@@ -294,6 +294,18 @@ is listed without surname or role. The full A0 poster waits for Jeremy.
 
 **Outcome:** Jeremy checks the test site and merges PR #6; partners confirm people, roles and photos.
 
+## 17. Round 6: media replacement (4 Nov 2026)
+> Replace the flight videos with CMU's better clips.
+
+**The asks:** use the clips from CMU's `svg-website` (commit 6167492, read-only clone), keep them light
+enough for phones, and credit CMU under CC BY-SA 4.0.
+
+**The panel:** producer (shot list, ffmpeg), science-comms (what each clip proves, captions, credit),
+web-performance (ladder, budgets, licence); saved as `svg-media-panel-*`.
+
+**The picks:** the encoding ladder and caps, `preload` rules and wording for hand-flown drones are in
+STANDARDS §9. Lit and lights-off stay separate runs. CMU's overlay stays except in the cropped hero.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)
