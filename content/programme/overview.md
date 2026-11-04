@@ -22,5 +22,5 @@ This is a research programme, funded by HTX and carried out by ST Engineering in
 collaboration with Carnegie Mellon University, the University of Pennsylvania,
 and the National University of Singapore, working toward **decentralised
 multi-drone autonomy**: teams of drones that coordinate, adapt, and make
-decisions on their own in changing environments, with nobody at the controls
+decisions on their own in changing environments, with no pilot and no central
 and no central controller.

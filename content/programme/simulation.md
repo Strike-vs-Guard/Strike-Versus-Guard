@@ -1,6 +1,6 @@
 ---
 # Simulation clips for the Programme page. Owned by ST Engineering with the partners.
-# Videos live in public/media (H.264 MP4, muted, with a .jpg poster; 15 MB or less).
+# Videos live in public/media (H.264 MP4, muted, with a .jpg poster; 8 MB or less).
 eyebrow: In simulation
 title: We try it in simulation first
 order: 3

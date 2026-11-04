@@ -55,7 +55,7 @@ fair comparison possible.
 
 ## October in the cage
 
-In October 2026 three Starling 2 Max drones flew themselves in our flight cage.
+In October 2026 three Starling 2 Max drones flew in our flight cage with no pilot.
 They changed formation and kept their spacing. They flew to separate goals across
 each other's paths. They kept going while a hand-flown drone cut across them, and a
 virtual boundary kept every one of them inside the flight area.

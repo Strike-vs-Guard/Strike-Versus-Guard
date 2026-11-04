@@ -170,7 +170,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
   workshop paper was not found publicly, so NUS shows "None yet" until it supplies it. "Derek" (ST) is
   listed without surname or role until he confirms them.
 - Images must be referenced **relative to the content file** (`./NUS/photo.jpg`), never as `/images/...`.
-- **Size limits:** images 5 MB or less and clips 15 MB or less (H.264 MP4, muted, with a `.jpg`
+- **Size limits:** images 5 MB or less and clips 8 MB or less (H.264 MP4, muted, with a `.jpg`
   poster). Both are enforced by `npm run check`.
 
 ---

@@ -4,7 +4,7 @@ date: 2026-10-02
 partner: st
 author: Jeremy Chia Hwe Huang
 summary: >-
-  Three Starling 2 Max drones flew themselves in CMU's flight cage, and the
+  Three Starling 2 Max drones flew in CMU's flight cage with no pilot, and the
   NUS team strategy flew on them too.
 image: ./images/cmu-starlings-in-cage.jpg
 imageAlt: Three Starling 2 Max drones hovering low in the CMU flight cage
