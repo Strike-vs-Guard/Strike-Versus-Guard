@@ -112,7 +112,7 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
 | Check the test site (rounds 2 to 5: light/dark toggle, new home order, Research, Publications, Contribute, people rows, first-person pages), then merge PR #6 (open, `development` into `main`) | Jeremy |
 | Confirm your people, roles and photos (photos came from the labs' profile pictures) | Each partner |
 | Supply the NUS workshop paper (not found publicly; NUS shows "None yet") | NUS |
-| Derek (ST) is listed without surname or role: give his full name and role | ST Engineering |
+| Derek (ST, Principal AI Engineer) is listed without a surname: add it | ST Engineering |
 | Decide whether the full A0 poster may go up (only the top half is published; the lower half has wording the site avoids) | Jeremy |
 | Confirm the captions of CMU's clips used in the hero and Flights | CMU |
 | Check your first-person page, your people row and your roles. William Teo's role is unknown (left blank); Chen Jiaying's role was taken from nearlab.ai | ST Engineering, Jeremy |
@@ -127,7 +127,7 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
 | Partner pages were drafted from the deck. Each partner should review its page, people list and publications; lab website URLs need verifying | Each partner |
 | CODEOWNERS team names (`@Strike-vs-Guard/st-web`, `nus`, `upenn`, `cmu`) are placeholders; the `main` ruleset isn't set up yet | Repo admin (`docs/admin-setup.md`) |
 | CMU's separate site `Strike-vs-Guard/svg-website` uses counter-UAS wording ("ground controller for counter-UAS flights", "airspace protection", "intruder") and is linked from the CMU page | Raise with CMU |
-| Derek (ST): full name and role | ST Engineering |
+| Derek (ST): surname | ST Engineering |
 | ST intern names | ST Engineering |
 | NUS workshop paper | NUS |
 | Full A0 poster: decide whether to publish | Jeremy |
