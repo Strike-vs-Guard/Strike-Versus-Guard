@@ -4,7 +4,7 @@
 eyebrow: The benchmark
 title: Strike vs Guard, the game we test with
 order: 3
-note: Nobody at the controls, no central controller.
+note: No pilot, no central controller.
 items:
   - label: "1"
     title: Divide

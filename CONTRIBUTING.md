@@ -266,7 +266,7 @@ black text).
    ```
 
    Name both `sim-<partner>-<slug>` and put them in `public/media/`. Aim for about 3 MB or less
-   (add `-t 12` to keep the first 12 seconds); `npm run check` fails anything over 15 MB.
+   (add `-t 12` to keep the first 12 seconds); `npm run check` fails anything over 8 MB, or a media folder over 60 MB.
 2. Paste this into your `.md` file where the clip should appear, with your file names and a one-line
    caption. Keep the `../../media/` start exactly as written: it works on the live site, the test site
    and your own computer.
