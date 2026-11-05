@@ -1,0 +1,117 @@
+---
+/**
+ * "Principal investigators": one row on the Partners page, in partner `order:`. Each entry is the person
+ * marked `lead: true` in a partner file, with their photo, `role`, lab and `bio`; the name links to the
+ * partner page and "Profile →" to `link:`. Partners without a bio are skipped.
+ */
+import { Image } from 'astro:assets';
+import { url } from '../../lib/url';
+import { partnersInOrder } from './data';
+
+const { partners } = await partnersInOrder();
+const pis = partners.flatMap((p) => {
+  const m = p.data.people.find((x) => x.lead && x.bio);
+  return m ? [{ id: p.id, lab: p.data.lab ?? p.data.short, m }] : [];
+});
+---
+
+{
+  pis.length > 0 && (
+    <section class="section inv" aria-labelledby="inv-h">
+      <div class="wrap">
+        <header class="section__head">
+          <h2 id="inv-h">Principal investigators</h2>
+        </header>
+        <ul class="inv__list">
+          {pis.map(({ id, lab, m }) => (
+            <li class="inv__item">
+              {m.photo && <Image class="inv__face" src={m.photo} alt="" width={112} height={112} densities={[1, 2]} />}
+              <h3>
+                <a href={url(`partners/${id}/`)}>{m.name}</a>
+              </h3>
+              <p class="inv__role">{m.role ?? lab}</p>
+              <p class="inv__bio">{m.bio}</p>
+              {m.link && (
+                <p class="inv__link">
+                  <a href={m.link}>
+                    Profile<span class="visually-hidden">: {m.name}</span>{' '}→
+                  </a>
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .inv {
+    border-top: 1px solid var(--border);
+  }
+  .inv__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 40px 32px;
+  }
+  .inv__item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .inv__item :global(.inv__face) {
+    width: 112px;
+    height: 112px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+  .inv__item h3 {
+    font-size: var(--step-2);
+    margin: 0;
+  }
+  .inv__item h3 a {
+    text-decoration: none;
+  }
+  .inv__item h3 a:hover {
+    text-decoration: underline;
+  }
+  .inv__role {
+    font: 500 var(--step--1) var(--font-mono);
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin: 0;
+  }
+  .inv__bio {
+    margin: 6px 0 0;
+    font-size: var(--step-0);
+  }
+  .inv__link {
+    margin: 8px 0 0;
+    font-size: var(--step-0);
+  }
+  .inv__link a {
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .inv__link a:hover {
+    text-decoration: underline;
+  }
+  @media (max-width: 1080px) {
+    .inv__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 720px) {
+    .inv__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -1,8 +1,9 @@
 ---
-/** Partners page: the partner cards, then who works on each layer (the connection diagram). */
+/** Partners page: the partner cards, the principal investigators, then who works on each layer (the connection diagram). */
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/sections/PageHead.astro';
 import PartnerCards from '../../components/sections/PartnerCards.astro';
+import Investigators from '../../components/sections/Investigators.astro';
 import ConnectionDiagram from '../../components/ConnectionDiagram.astro';
 import { getSystemData } from '../../lib/system';
 import { section } from '../../components/sections/content';
@@ -16,6 +17,7 @@ const system = await getSystemData();
     <stack.Content />
   </PageHead>
   <PartnerCards />
+  <Investigators />
   <section class="section section--alt">
     <div class="wrap">
       <div class="sys-part" id="who">

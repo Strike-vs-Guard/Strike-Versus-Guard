@@ -91,12 +91,17 @@ sets `data-theme` before first paint (no flash). If CMU's video overlay is kept,
 | `--strike` | #D9542C | #F2766A | **only** the Strike team inside game figures |
 | `--guard` | #2D6FD0 | #6FA3F5 | **only** the Guard team inside game figures |
 | `--well` / `--well-bg` | #FFFFFF / none | #FFFFFF / `--well` | logos: no background or border in light; a soft white well (no border) in dark and on the footer band |
-| `--max` | 1200px | 1200px | content width, with the gutter |
+| `--max` | 75rem | 75rem | content width, with the gutter: 1200 px at root 16 px, 1500 px at root 20 px |
+
+**Fluid scale:** the root font size is `clamp(1rem, 0.75rem + 0.45vw, 1.25rem)`: 16 px on phones,
+about 18 px at 1280 wide, 20 px from 1780 wide. Every type step and the content width are in rem, so
+the whole page grows with the monitor. Steps: 14 / 16 / 18 (body) / 22 (h3) / 28 / 36 (h2) / 44 / 68 (h1)
+at root 16. Text columns are in rem or ch, never px.
 
 Section padding is 96 to 112 px. Corners are 3 px. Rules, not boxed cards. Text columns stay about
 68ch wide.
 
-- **Fonts:** **Archivo 700** for headlines; IBM Plex Sans 400/600 for body (17px, line height 1.6,
+- **Fonts:** **Archivo 700** for headlines; IBM Plex Sans 400/600 for body (18px at root 16, line height 1.6,
   about 68ch wide); IBM Plex Mono 500 only for dates, numbers and page-level labels. The header
   wordmark is larger than before. The Research page uses larger, standard type (h2 step-4, body step-1).
 - No numbered circles, pill chips or dot grid. Mono labels appear at page level only.
@@ -198,7 +203,7 @@ On phones the panel opens full width under the header.
 | 2 | Logo row | ST, NUS, UPenn, CMU, then "Funded by HTX" |
 | 3 | Updates strip | The 3 latest posts |
 | 4 | At a glance + Latest | Status lines from `glance.md` (grouped by `state:`) beside a rail of the 5 latest posts |
-| 5 | Partner cards | "NUS's page · written by NUS →" and "Last post" on each |
+| 5 | Partner cards | "Partner page →" and, when the partner has posted, "Latest update · <date>" |
 | 6 | Research themes | Five rows from `themes.md` |
 | 7 | Interactive drone | Full explain mode, partner names in the callouts (effects below) |
 | 8 | Flights | Lead clip + 3 |
@@ -218,20 +223,22 @@ as 3 lines. Each theme has an anchor (`#learning`, `#formal`, `#safety`, `#local
 and standardised (h2 step-4, body step-1).
 
 **Partners (`/partners/`, h1 "Who does what"):** "Each partner writes and maintains its own page.";
-fully clickable partner cards; the **connection diagram only** (the drone moved to home); the HTX card
-(`id="funder"`).
+fully clickable partner cards; the HTX card (`id="funder"`); **"Principal investigators"**: one entry per
+partner from the person marked `lead: true` with a `bio:` (photo, name linked to the partner page,
+`role`, bio, "Profile →"); then the **connection diagram only** (the drone moved to home).
 
 **Partner page (`src/pages/partners/[id].astro`):**
 - Top line: "This is NUS's own file · Edit". Header and meta card; "Maintained by <Short> · updated
   <date> · Edit this page" sits in "At a glance".
-- People: a row with faces from `people:` (the lead first).
+- People: a row with faces from `people:` (the lead first, tagged "PI"; the meta box says "Principal
+  investigator"). The word "Lead" is not used for people.
 - "About the lab": `labBlurb:` on the left, the bios of people with `bio:` (lead first, face, role,
   "Profile →") on the right. Skipped when both are empty. Home and cards stay as they are.
 - "In the system": `DroneDiagram` in `partner` mode, with that partner's layers lit.
 - The Markdown body, in first person with the partner's own headings. It may embed simulation clips as
   `<figure class="clip">` (see CONTRIBUTING §4) and has an "In simulation" section.
 - "Updates from <Short>" (always shown; empty reads "No posts yet. Post one →").
-- Publications (if any).
+- Publications (if any). No chip row to the other partners: the header menu does that.
 
 **Flights (`/flights/`):** the CMU cage photo (credit line), a lead clip at full width and the other
 clips in a grid, each with a mono stamp line and a "Watch …" cue; CMU's outdoor clip (`outdoor.md`);

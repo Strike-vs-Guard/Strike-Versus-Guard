@@ -103,6 +103,12 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
   Small polish left: the "AirStack: plan → flight" label is crossed by the leader line for marker 4,
   and the "safe distance" label sits tight against its marker.
 
+**Round 7 (4–5 Nov 2026), professors and labs, type scale:** "About the lab" on partner pages
+(`labBlurb:`, `people[].bio`, `people[].link`), "Principal investigators" row on the Partners page,
+"PI" not "Lead", partner cards say "Partner page →", the chip row left the partner pages, MARMoT
+spelling. Root font size is fluid and `--max` is in rem, so the site scales with the monitor
+(STANDARDS §3). Partners approve their own text (§5 below).
+
 **Round 6 (4 Nov 2026), media replacement:** flight clips replaced from CMU's repo at commit 6167492
 (read-only clone; never edit or push there). Rules in STANDARDS §9; panel agents `svg-media-panel-*`.
 

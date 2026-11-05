@@ -323,6 +323,14 @@ Research Professor, RI). Temasek Labs left out (not on the bio page).
 **Built:** `labBlurb:`, `people[].bio`, `people[].link` (schema, STANDARDS §4/§5, CONTRIBUTING §1a);
 UPenn `labFull: Safe Autonomous Systems Lab`. Each partner approves its own text (HANDOFF §5).
 
+**5 Nov follow-up (Jeremy's screenshot):** the card footer "NUS's page · written by NUS → / Last post:
+none yet" read as machine-written → "Partner page →" and "Latest update · <date>" only when there is
+one. "Lead" → "Principal investigator" / "PI" pill. The small chip row (other partners) at the foot of
+each partner page removed. "Principal investigators" row added to the Partners page from the same
+`bio:` data. Type: root size fluid (16 → 20 px by viewport), steps one notch larger, `--max` in rem,
+text columns in rem, so the page scales with the monitor. Also fixed a duplicated "and no central"
+in the positioning statement.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)

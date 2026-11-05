@@ -2,8 +2,8 @@
 /**
  * Partner cards (v2), in `order:` (ST Engineering, NUS, UPenn, CMU), then the funder line. Holds #partners
  * and #funder. Each card: the institution and lab logos in one well (none in light, white in dark), name, lab (and "lead partner"),
- * lead, the one-line `contribution`, "<Short>'s page · written by <Short> →" and the date of the partner's
- * last post (from content/updates/). `heading` adds a section heading (home page); without it the card
+ * lead, the one-line `contribution`, "Partner page →" and "Latest update · <date>" when the partner has
+ * posted (from content/updates/); nothing when it hasn't. `heading` adds a section heading (home page); without it the card
  * names are h2 (Partners page, under its own page head).
  */
 import { Image } from 'astro:assets';
@@ -67,13 +67,14 @@ const H = heading ? 'h3' : 'h2';
               <div class="pc__links">
                 {d.page && (
                   <a href={url(`partners/${p.id}/`)}>
-                    {d.short}'s page · written by {d.short} →
+                    Partner page<span class="visually-hidden">: {d.short}</span>{' '}→
                   </a>
                 )}
-                <span class="muted">
-                  Last post:{' '}
-                  {last ? <time class="pc__date" datetime={isoDay(last)}>{fmtDate(last, 'short')}</time> : 'none yet'}
-                </span>
+                {last && (
+                  <span class="muted">
+                    Latest update · <time class="pc__date" datetime={isoDay(last)}>{fmtDate(last, 'short')}</time>
+                  </span>
+                )}
               </div>
             </li>
           );
