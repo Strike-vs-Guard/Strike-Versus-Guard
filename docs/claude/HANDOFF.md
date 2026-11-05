@@ -46,7 +46,9 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
   `content/programme/localisation.md`.
 - Spec: `docs/superpowers/specs/2026-11-03-site-restructure-design.md`; plan beside it in `plans/`.
 
-**Round 2 (3 Nov 2026, after Jeremy saw the test site), on `development`, PR #6 open:**
+**Rounds 2 to 7 went live on 5 Nov 2026: PR #6 (`development` → `main`, 61 commits) merged as f6fad73.**
+
+**Round 2 (3 Nov 2026, after Jeremy saw the test site), on `development`, PR #6:**
 - A three-agent UX panel reviewed the site; Jeremy chose from a draft with switches (compact drone on
   home, no Benchmark nav item, clip in the hero). Spec: `docs/superpowers/specs/2026-11-03-home-redesign-design.md`.
 - Nav is now Programme · Partners ▾ · Flights · Updates; the Partners menu lists each partner's page.
@@ -115,7 +117,6 @@ spelling. Root font size is fluid and `--max` is in rem, so the site scales with
 ## 5. Open items / waiting on people
 | Item | Who |
 |---|---|
-| Check the test site (rounds 2 to 5: light/dark toggle, new home order, Research, Publications, Contribute, people rows, first-person pages), then merge PR #6 (open, `development` into `main`) | Jeremy |
 | Confirm your people, roles and photos (photos came from the labs' profile pictures) | Each partner |
 | Approve or rewrite your "About the lab" text and your lead's bio (`labBlurb:`, `bio:`, `link:`; drafted 4 Nov from marmotlab.org, xlab.upenn.edu, theairlab.org, nearlab.ai) | Each partner |
 | Supply the NUS workshop paper (not found publicly; NUS shows "None yet") | NUS |
@@ -136,7 +137,6 @@ spelling. Root font size is fluid and `--max` is in rem, so the site scales with
 | NUS workshop paper | NUS |
 | Full A0 poster: decide whether to publish | Jeremy |
 | Confirm captions and the drone numbering behind "CORRECTING drone N" in CMU's clips | CMU |
-| Merge PR #6 | Jeremy |
 
 ## 6. How to continue (process that worked)
 1. **Clarify, then explore in parallel.** For anything visual, brief 3–4 agents with different
