@@ -1,5 +1,5 @@
 ---
-/** Home: a band with the three latest updates on one line each (date · partner · title), then "All updates →". */
+/** Home: a band with the three latest updates, each as "date · partner" over the full title (wraps, at most two lines), then "All updates →". */
 import { url } from '../../lib/url';
 import { fmtDate } from '../../lib/text';
 import { allUpdates, shortNames, isoDay } from './data';
@@ -16,8 +16,10 @@ const short = await shortNames();
           {updates.map((u) => (
             <li>
               <a href={url(`updates/${u.id}/`)}>
-                <time class="ustrip__dt" datetime={isoDay(u.data.date)}>{fmtDate(u.data.date, 'short')}</time>
-                <span class="ustrip__pt"> · {short(u.data.partner)} · </span>
+                <span class="ustrip__meta">
+                  <time class="ustrip__dt" datetime={isoDay(u.data.date)}>{fmtDate(u.data.date, 'short')}</time>
+                  <span class="ustrip__pt"> · {short(u.data.partner)}</span>
+                </span>
                 <span class="ustrip__hl">{u.data.title}</span>
               </a>
             </li>
@@ -35,10 +37,10 @@ const short = await shortNames();
     border-block: 1px solid var(--border);
   }
   .ustrip__in {
-    min-height: 56px;
     display: flex;
     align-items: center;
     gap: 28px;
+    padding-block: 6px;
   }
   .ustrip ul {
     list-style: none;
@@ -61,11 +63,19 @@ const short = await shortNames();
   }
   .ustrip li a {
     text-decoration: none;
-    display: block;
+    display: grid;
+    gap: 2px;
     padding-block: 12px;
-    white-space: nowrap;
+  }
+  .ustrip__meta {
+    display: block;
+  }
+  .ustrip__hl {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
   .ustrip li a:hover .ustrip__hl {
     text-decoration: underline;
@@ -103,7 +113,9 @@ const short = await shortNames();
     }
     .ustrip li a {
       padding-block: 10px;
-      white-space: normal;
+    }
+    .ustrip__hl {
+      display: block;
     }
   }
 </style>

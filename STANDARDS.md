@@ -201,7 +201,7 @@ On phones the panel opens full width under the header.
 |---|---|---|
 | 1 | Hero | Title above a rounded 2:1 clip panel (best CMU clip, full resolution, poster still, pause button; reduced motion shows the still) |
 | 2 | Logo row | ST, NUS, UPenn, CMU, then "Funded by HTX" |
-| 3 | Updates strip | The 3 latest posts |
+| 3 | Updates strip | The 3 latest posts, "date · partner" over the full title (two lines at most, never cut with an ellipsis) |
 | 4 | At a glance + Latest | Status lines from `glance.md` (grouped by `state:`) beside a rail of the 5 latest posts |
 | 5 | Partner cards | "Partner page →" and, when the partner has posted, "Latest update · <date>" |
 | 6 | Research themes | Five rows from `themes.md` |
