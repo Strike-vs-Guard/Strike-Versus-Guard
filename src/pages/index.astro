@@ -1,6 +1,6 @@
 ---
 /**
- * Home (v3, spec 2026-11-03): title above a rounded 2:1 clip panel → logo row → updates strip →
+ * Home (v3, spec 2026-11-03): title above a rounded 2:1 clip panel → logo row →
  * At a glance + Latest → partner cards → research themes → the annotated drone (Layers) → flights
  * (lead + 3) → publications → people. The footer is in Base.
  */
@@ -9,7 +9,6 @@ import Base from '../layouts/Base.astro';
 import { url } from '../lib/url';
 import { section } from '../components/sections/content';
 import LogoRow from '../components/sections/LogoRow.astro';
-import UpdatesStrip from '../components/sections/UpdatesStrip.astro';
 import Glance from '../components/sections/Glance.astro';
 import PartnerCards from '../components/sections/PartnerCards.astro';
 import Themes from '../components/sections/Themes.astro';
@@ -81,7 +80,6 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
   </section>
 
   <LogoRow />
-  <UpdatesStrip />
 
   <div class="home">
     <Glance />

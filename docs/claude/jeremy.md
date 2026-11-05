@@ -331,7 +331,8 @@ each partner page removed. "Principal investigators" row added to the Partners p
 text columns in rem, so the page scales with the monitor. Also fixed a duplicated "and no central"
 in the positioning statement. Later the same day: the footer column "Each partner edits its own
 file:" with the four `content/partners/*.md` paths removed (Jeremy: visitors will see this); the
-Contribute page and each partner page's own Edit link still lead editors to the files.
+Contribute page and each partner page's own Edit link still lead editors to the files. The home updates strip (three truncated titles under the
+logo row) was removed: the "Latest" rail beside "At a glance" already lists the posts.
 
 ---
 

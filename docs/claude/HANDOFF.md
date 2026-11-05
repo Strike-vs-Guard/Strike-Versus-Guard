@@ -92,7 +92,7 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
 | Theme | Light default, dark navy-black, header toggle; tokens in STANDARDS §3; Archivo 700 headlines; larger wordmark |
 | Nav | Updates · Research · Partners ▾ · Flights · Publications · Contribute |
 | Pages | Research replaces Programme (`/programme/` redirects); new Publications and Contribute; Partners keeps only the connection diagram |
-| Home | Hero (title above a 2:1 clip panel), logo row, updates strip, glance + latest, partner cards, five themes, interactive drone, flights, publications, people |
+| Home | Hero (title above a 2:1 clip panel), logo row, glance + latest (the only updates list on home; the strip was removed 5 Nov), partner cards, five themes, interactive drone, flights, publications, people |
 | Drone | Effects list in STANDARDS §5; ring drift only while Safety is lit; no count-ins or scan sweeps |
 | Content model | `content/updates/<partner>/` with `gallery:` and `link:`; `publications:` per partner; `glance.md`; `themes.md`; site `start`/`end` (June 2026 – June 2029) |
 | Content added | People photos for all partners; IROS 2026 posts and posters; UPenn STL-SVPIO paper; A0 poster (top half only); ladder M6 done |
