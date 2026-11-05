@@ -1,0 +1,103 @@
+---
+/** Home: the four partner logos (no well in light mode, a white well in dark) (each links to its page), then "Funded by" and the funder's logo, set apart. */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { logoSize } from '../../lib/logo';
+import { url } from '../../lib/url';
+import { partnersInOrder } from './data';
+
+const { partners, funder } = await partnersInOrder();
+/* Row logos: base 72 px, capped at the well's 72 px inner height (src/lib/logo.ts). */
+const logo = (img: ImageMetadata) => logoSize(img, 72, 72);
+---
+
+<div class="wrap lr" role="group" aria-label="Partners and funder">
+  <ul class="lr__four">
+    {
+      partners.map((p) => (
+        <li>
+          <a class="logo-well lr__well" href={p.data.page ? url(`partners/${p.id}/`) : p.data.website} title={p.data.institution}>
+            <Image src={p.data.logo} alt={p.data.logoAlt ?? p.data.institution} {...logo(p.data.logo)} densities={[1, 2]} />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  {
+    funder && (
+      <a class="lr__funded" href={funder.data.website} title={funder.data.institution}>
+        <span>Funded by</span>
+        <span class="logo-well lr__fwell">
+          <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.short} {...logoSize(funder.data.logo, 50, 56)} densities={[1, 2]} />
+        </span>
+      </a>
+    )
+  }
+</div>
+
+<style>
+  .lr {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-block: 28px;
+  }
+  .lr__four {
+    flex: 1;
+    min-width: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .lr__well {
+    --logo-base: 72px;
+    --logo-max: 72px;
+    height: 104px;
+    padding: 16px 18px;
+  }
+  .lr__funded {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 72px;
+    padding-left: 20px;
+    border-left: 1px solid var(--border);
+    font-size: var(--step--1);
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .lr__funded:hover span:first-child {
+    text-decoration: underline;
+  }
+  .lr__fwell {
+    --logo-base: 50px;
+    --logo-max: 56px;
+    width: 72px;
+    height: 72px;
+    padding: 8px;
+  }
+  @media (max-width: 720px) {
+    .lr {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .lr__four {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .lr__well {
+      --logo-max: 60px;
+      height: 84px;
+      padding: 12px 14px;
+    }
+    .lr__funded {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+</style>

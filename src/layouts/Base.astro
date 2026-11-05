@@ -2,8 +2,11 @@
 import '../styles/global.css';
 import { getEntry, getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { logoSize } from '../lib/logo';
 import { url, isPreview, previewPr } from '../lib/url';
 import Wordmark from '../components/Wordmark.astro';
+import PartnersMenu from '../components/PartnersMenu.astro';
 
 interface Props {
   title?: string;
@@ -15,19 +18,38 @@ const partners = (await getCollection('partners')).sort((a, b) => a.data.order -
 const { title, description = site.description } = Astro.props;
 const pageTitle = title ? `${title} · ${site.title}` : `${site.title}: ${site.tagline}`;
 const path = Astro.url.pathname;
-const nav = [
-  { href: url('#programme'), label: 'Programme' },
-  { href: url('#benchmark'), label: 'Benchmark' },
-  { href: url('#partners'), label: 'Partners' },
-  { href: url('#flights'), label: 'Flights' },
+const navBefore = [
   { href: url('updates/'), label: 'Updates' },
+  { href: url('research/'), label: 'Research' },
 ];
+const navAfter = [
+  { href: url('flights/'), label: 'Flights' },
+  { href: url('publications/'), label: 'Publications' },
+  { href: url('contribute/'), label: 'Contribute' },
+];
+/* A page is current when its path starts with the nav link's path (anchors on the home page never are). */
+const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href);
+const funder = partners.find((p) => p.data.role === 'Funding sponsor');
+const logoPartners = partners.filter((p) => p !== funder);
+/* The partner's own file, e.g. content/partners/NUS.md, and its edit link on GitHub (development branch). */
+/* Footer logos: base 84 px, capped at the well's 64 px inner height (src/lib/logo.ts); the funder smaller. */
+const logo = (img: ImageMetadata) => logoSize(img, 84, 64);
+const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- Apply the stored theme before first paint; with nothing stored the CSS follows the system. -->
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
@@ -41,7 +63,7 @@ const nav = [
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+Condensed:wght@400;700&family=IBM+Plex+Sans:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;600&display=swap"
     />
   </head>
   <body>
@@ -57,14 +79,24 @@ const nav = [
     <header class="site-header">
       <div class="wrap site-header__inner">
         <a href={url()} class="site-header__brand" aria-label={`${site.title}, home`}>
-          <Wordmark size="sm" />
+          <Wordmark size="md" />
         </a>
-        <nav aria-label="Main">
+        <nav aria-label="Main" class="site-header__nav">
           <ul class="site-nav">
             {
-              nav.map((n) => (
+              navBefore.map((n) => (
                 <li>
-                  <a href={n.href} aria-current={path === n.href ? 'page' : undefined}>
+                  <a class="nav-link" href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>
+                    {n.label}
+                  </a>
+                </li>
+              ))
+            }
+            <PartnersMenu partners={partners} current={isCurrent(url('partners/'))} path={path} />
+            {
+              navAfter.map((n) => (
+                <li>
+                  <a class="nav-link" href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>
                     {n.label}
                   </a>
                 </li>
@@ -72,6 +104,15 @@ const nav = [
             }
           </ul>
         </nav>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch to dark theme">
+          <svg class="theme-toggle__sun" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4.2"></circle>
+            <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"></path>
+          </svg>
+          <svg class="theme-toggle__moon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+            <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path>
+          </svg>
+        </button>
       </div>
     </header>
 
@@ -81,53 +122,78 @@ const nav = [
 
     <footer class="site-footer">
       <div class="wrap">
-        <ul class="logo-strip" aria-label="Programme partners">
+        <div class="logo-strip">
+          <ul class="logo-strip__row" aria-label="Partners">
+            {
+              logoPartners.map((p) => (
+                <li>
+                  <a href={p.data.page ? url(`partners/${p.id}/`) : p.data.website} title={p.data.institution} class="logo-well logo-strip__item">
+                    <Image src={p.data.logo} alt={p.data.logoAlt ?? p.data.institution} {...logo(p.data.logo)} densities={[1, 2]} />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
           {
-            partners.map((p) => (
-              <li>
-                <a
-                  href={p.data.page ? url(`partners/${p.id}/`) : p.data.website}
-                  title={p.data.institution}
-                  class="logo-strip__item"
-                >
-                  <Image
-                    src={p.data.logo}
-                    alt={p.data.logoAlt ?? p.data.institution}
-                    height={56}
-                    densities={[1, 2]}
-                  />
-                </a>
-              </li>
-            ))
+            funder && (
+              <a class="logo-strip__funder" href={funder.data.website ?? url('partners/#funder')} title={funder.data.institution}>
+                <span>Funded by</span>
+                <span class="logo-well logo-strip__funder-well">
+                  <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.institution} {...funderLogo(funder.data.logo)} densities={[1, 2]} />
+                </span>
+              </a>
+            )
           }
-        </ul>
+        </div>
         <div class="site-footer__cols">
           <p class="site-footer__note">{site.footerNote}</p>
-          <ul class="site-footer__links">
-            {
-              partners
-                .filter((p) => p.data.page)
-                .map((p) => (
-                  <li>
-                    <a href={url(`partners/${p.id}/`)}>{p.data.short}</a>
-                  </li>
-                ))
-            }
-            <li><a href={url('updates/')}>Updates</a></li>
-            <li><a href={`${site.repository}/blob/main/CONTRIBUTING.md`}>Edit this site</a></li>
-          </ul>
+          <div>
+            <h2 class="site-footer__h" id="footer-site">Site</h2>
+            <ul class="site-footer__links" aria-labelledby="footer-site">
+              <li><a href={url('updates/')}>Updates</a></li>
+              <li><a href={url('research/')}>Research</a></li>
+              <li><a href={url('partners/')}>Partners</a></li>
+              <li><a href={url('flights/')}>Flights</a></li>
+              <li><a href={url('publications/')}>Publications</a></li>
+              <li><a href={url('contribute/')}>Contribute</a></li>
+              <li><a href={site.repository}>Source on GitHub</a></li>
+            </ul>
+          </div>
         </div>
         <p class="site-footer__small">© {new Date().getFullYear()} Strike vs Guard programme partners.</p>
       </div>
     </footer>
+
+    <script>
+      /* Theme toggle: flips data-theme, stores it, and keeps the label naming the theme it switches to. */
+      const root = document.documentElement;
+      const system = window.matchMedia('(prefers-color-scheme: dark)');
+      const current = () => root.getAttribute('data-theme') ?? (system.matches ? 'dark' : 'light');
+      document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+        const label = () => btn.setAttribute('aria-label', current() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+        label();
+        system.addEventListener('change', label);
+        btn.addEventListener('click', () => {
+          const next = current() === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          try {
+            localStorage.setItem('theme', next);
+          } catch {
+            /* private mode: the choice lasts for this page only */
+          }
+          document.querySelectorAll('[data-theme-toggle]').forEach((b) => b.dispatchEvent(new Event('theme-change')));
+        });
+        btn.addEventListener('theme-change', label);
+      });
+    </script>
   </body>
 </html>
 
 <style>
   .preview-banner {
-    background: #fff6d6;
-    color: #3d3000;
-    border-bottom: 1px solid #e9d27a;
+    background: var(--surface);
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
     font-size: var(--step-0);
     padding: 10px var(--gutter);
     text-align: center;
@@ -147,127 +213,229 @@ const nav = [
     position: sticky;
     top: 0;
     z-index: 20;
-    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
     backdrop-filter: saturate(1.4) blur(10px);
     -webkit-backdrop-filter: saturate(1.4) blur(10px);
     border-bottom: 1px solid var(--border);
   }
   .site-header__inner {
+    /* The Partners panel is positioned against this row. */
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 16px;
-    min-height: 60px;
+    min-height: 68px;
   }
   .site-header__brand {
     text-decoration: none;
     flex-shrink: 0;
   }
+  .site-header__nav {
+    margin-left: auto;
+  }
   .site-nav {
     display: flex;
-    gap: 4px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
     list-style: none;
     margin: 0;
     padding: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
   }
-  .site-nav a {
+  .site-nav :global(.nav-link) {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
     padding: 0 10px;
     font-size: var(--step-0);
+    font-weight: 600;
     text-decoration: none;
     color: var(--muted);
     white-space: nowrap;
   }
-  .site-nav a:hover,
-  .site-nav a[aria-current='page'] {
+  .site-nav :global(.nav-link:hover),
+  .site-nav :global(.nav-link[aria-current='page']) {
     color: var(--text);
   }
-  @media (max-width: 720px) {
+  /* the current page is marked by an underline as well as colour */
+  .site-nav :global(.nav-link[aria-current='page']) {
+    text-decoration: underline;
+    text-decoration-color: var(--brand-red);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 8px;
+  }
+  .theme-toggle {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .theme-toggle:hover {
+    border-color: var(--muted);
+  }
+  /* sun in light, moon in dark */
+  .theme-toggle__moon {
+    display: none;
+  }
+  :global(:root[data-theme='dark']) .theme-toggle__moon {
+    display: block;
+  }
+  :global(:root[data-theme='dark']) .theme-toggle__sun {
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .theme-toggle__moon {
+      display: block;
+    }
+    :global(:root:not([data-theme='light'])) .theme-toggle__sun {
+      display: none;
+    }
+  }
+  /* narrower screens: wordmark and toggle on the first row, the nav wraps underneath */
+  @media (max-width: 1000px) {
     .site-header__inner {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: 'brand toggle' 'nav nav';
+      gap: 0 12px;
       padding-top: 10px;
     }
-    .site-nav {
-      margin-inline: -10px;
+    .site-header__brand {
+      grid-area: brand;
+    }
+    .theme-toggle {
+      grid-area: toggle;
+    }
+    .site-header__nav {
+      grid-area: nav;
+      margin-left: -10px;
+    }
+  }
+  @media (max-width: 480px) {
+    .site-nav :global(.nav-link) {
+      padding: 0 8px;
     }
   }
 
+  /*
+   * Footer: a brand-blue band in both themes (--band tokens, global.css), so its tokens are set here. The band is dark, so
+   * logos keep the soft white well (no border) in both themes (ST, NUS, UPenn, CMU), then "Funded by" HTX, smaller and set apart.
+   */
   .site-footer {
-    border-top: 1px solid var(--border);
-    background: var(--surface);
+    --text: var(--band-text);
+    --muted: var(--band-muted);
+    --link: var(--band-text);
+    --border: rgb(255 255 255 / 0.2);
+    --well-border: transparent;
+    --well-bg: var(--well);
+    --brand-red: var(--band-accent);
+    background: var(--band);
+    color: var(--text);
     padding-block: 48px 32px;
     font-size: var(--step-0);
   }
   .logo-strip {
-    list-style: none;
-    margin: 0 0 40px;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-  }
-  @media (max-width: 560px) {
-    .logo-strip__item {
-      width: calc(50% - 6px);
-    }
-  }
-  .logo-strip__item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 168px;
-    height: 76px;
-    padding: 10px 16px;
-    background: var(--well);
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    gap: 24px;
+    margin: 0 0 40px;
   }
-  .logo-strip__item :global(img) {
-    max-height: 52px;
-    max-width: 132px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    filter: grayscale(1);
-    opacity: 0.7;
-    transition:
-      filter 0.2s ease,
-      opacity 0.2s ease;
+  .logo-strip__row {
+    flex: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
   }
-  .logo-strip__item:hover :global(img),
-  .logo-strip__item:focus-visible :global(img) {
-    filter: none;
-    opacity: 1;
+  .logo-strip__item {
+    --logo-base: 84px;
+    --logo-max: 64px;
+    height: 100px;
+    padding: 18px 20px;
+  }
+  .logo-strip__funder {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 24px;
+    border-left: 1px solid var(--border);
+    color: var(--muted);
+    font-size: var(--step--1);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .logo-strip__funder:hover {
+    color: var(--text);
+  }
+  .logo-strip__funder-well {
+    --logo-base: 56px;
+    --logo-max: 48px;
+    width: 84px;
+    height: 64px;
+    padding: 8px;
+  }
+  @media (max-width: 900px) {
+    .logo-strip {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+    .logo-strip__row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .logo-strip__funder {
+      align-self: flex-start;
+      padding-left: 0;
+      border-left: 0;
+    }
   }
   .site-footer__cols {
     display: grid;
-    gap: 24px;
+    gap: 28px;
     grid-template-columns: 1fr;
   }
   @media (min-width: 800px) {
     .site-footer__cols {
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 40px;
     }
   }
   .site-footer__note {
     color: var(--muted);
-    max-width: 60ch;
+    max-width: 48ch;
+  }
+  .site-footer__h {
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--muted);
+    margin: 0 0 8px;
   }
   .site-footer__links {
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+  .site-footer__links {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 18px;
-    align-content: flex-start;
+    gap: 0 18px;
+  }
+  .site-footer__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
   .site-footer__small {
     color: var(--muted);

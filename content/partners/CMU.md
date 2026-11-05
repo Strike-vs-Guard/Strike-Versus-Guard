@@ -6,6 +6,12 @@
 short: CMU
 institution: Carnegie Mellon University
 lab: AirLab
+labBlurb: >-
+  We are AirLab at the Robotics Institute, Carnegie Mellon University. Our mission
+  is to advance state-of-the-art autonomy: state estimation, 3D perception,
+  exploration, planning and collision avoidance for aerial and field robots. In
+  Strike vs Guard we provide AirStack, the shared flight software, co-develop the
+  safety filter with UPenn and fly the drone teams in our indoor flight cage.
 lead: Prof Sebastian Scherer
 role: Partner
 contribution: AirStack flight software, safety filter and flight testing
@@ -14,52 +20,92 @@ summary: >-
   tracks run on, co-develops the safety filter, and flies the drone teams in its
   indoor flight cage.
 # What you do on each layer (one line each, max 90 characters). Shown in the
-# "who does what" grid on the home page. Layers: strategy, safety, flight, drones, integration.
+# "who does what" grid on the home page. Layers: strategy, safety, flight, localisation, drones, integration.
 work:
   safety: "Co-develops the safety filter with UPenn."
   flight: "Provides AirStack, the shared flight software for both tracks."
+  localisation: "Provides the AirStack simulator and technical advice from its flight experience."
   drones: "Flies the drone team in its indoor flight cage in Pittsburgh."
 logo: ./CMU/cmu.png
 labLogo: ./CMU/airlab.png
 logoAlt: Carnegie Mellon University
 website: https://theairlab.org
 order: 5
-updated: 2026-11-02
+updated: 2026-11-04
+people:
+  - name: Prof Sebastian Scherer
+    role: Research Professor, Robotics Institute
+    photo: ./CMU/people/sebastian-scherer.jpg
+    lead: true
+    bio: >-
+      Sebastian Scherer is a Research Professor at the Robotics Institute,
+      Carnegie Mellon University, and leads AirLab. His work is autonomy for
+      aerial and field robots, from perception and state estimation to planning
+      and exploration, in places where it has to keep working.
+    link: https://www.ri.cmu.edu/ri-faculty/sebastian-scherer/
+  - name: Yikuan Fang
+    photo: ./CMU/people/yikuan-fang.jpg
+  - name: Cao Muqing
+    photo: ./CMU/people/cao-muqing.jpg
+  - name: Henry Tung
+    photo: ./CMU/people/henry-tung.jpg
+  - name: Younkyung (Cindy) Woo
+    photo: ./CMU/people/younkyung-woo.jpg
+publications: []
 ---
 
-## Our role in Strike vs Guard
+## What we fly
 
-The AirLab at Carnegie Mellon University provides the common ground that makes
-a head-to-head comparison possible: **AirStack**, the flight software that turns
-team plans into flight on real Starling 2 Max drones. Both the learning-based
-and the formal strategy tracks run on it.
+We build **AirStack**, the flight software that turns a team plan into flight on
+real Starling 2 Max drones. Both strategy tracks run on it, which is what makes a
+fair comparison possible.
 
-## What we are working on
+- **AirStack.** One autonomy stack for the whole programme, from simulation to
+  real drones.
+- **Safety filter.** Built with UPenn. It checks every command so the drones
+  don't collide, whatever the strategy above it decides.
+- **Flight testing.** Multi-drone flights in our indoor flight cage in Pittsburgh.
 
-- **AirStack.** A shared autonomy stack for the whole programme, from simulation
-  to real drones.
-- **Safety filter.** With UPenn, a layer that checks every command so that the
-  drones never collide, whatever the strategy above it decides.
-- **Flight testing.** Multi-drone flights in CMU's indoor flight cage.
+## October in the cage
 
-## Results so far
+In October 2026 three Starling 2 Max drones flew in our flight cage with no pilot.
+They changed formation and kept their spacing. They flew to separate goals across
+each other's paths. They kept going while a hand-flown drone cut across them, and a
+virtual boundary kept every one of them inside the flight area.
 
-Three Starling 2 Max drones have flown in CMU's flight cage with no pilot: changing
-formation while keeping their spacing, flying to separate goals with crossing
-paths resolved on their own, and continuing their task while a hand-flown drone
-cut across them. A virtual boundary kept every drone inside the flight area.
+That boundary didn't work first time. Before we fixed it, a drone flying at about
+6 m/s overshot it by 0.35–0.68 m; now it stops within 0.02 m. More of our flight
+recordings, with the settings behind them, are on our own project site.
 
-In one working visit, the NUS team strategy went from palm-sized drones to
-full-size Starlings on AirStack: the programme's first successful run on
-full-size drones.
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/goal-sequence.jpg" aria-label="Flight clip: three drones crossing on purpose in our flight cage"><source src="../../media/goal-sequence.mp4" type="video/mp4"></video><figcaption>We sent the three drones through five layouts whose straight paths cross head-on; nobody touched the controls after Start. Watch the lights turn red at each crossing, then green again. Video: AirLab, Carnegie Mellon University, CC BY-SA 4.0; re-encoded.</figcaption></figure>
+
+In the same visit, the NUS team strategy went from palm-sized drones to full-size
+Starlings on AirStack: the programme's first successful run on full-size drones.
 
 ![Starling 2 Max drones flying in the CMU flight cage](./CMU/starling-flight-cage.jpg)
 
 ![The Strike vs Guard team outside the Robotics Innovation Center at CMU](./CMU/team-robotics-innovation-center.jpg)
 
-## People
+## Before it flies
 
-- Prof Sebastian Scherer, AirLab, Carnegie Mellon University
+AirStack runs real and simulated drones side by side under the same safety filter, so we try new
+ideas on simulated Starlings first.
+
+From the July 2026 report: the safety filter works on velocity commands. We tested it first in a
+point-mass simulation across drone sizes, safety distances, numbers of drones and speeds, then in the
+AirStack simulator with a two-drone close-proximity test and a five-drone mission. AirStack can use
+two simulators. AirSim starts in 6.75 s and Isaac Sim in 70.5 s, so we iterate in AirSim and keep
+Isaac Sim for the high-fidelity checks before real flights. To make the simulated Starling match the
+real one, we measured its motor thrust and motor response time (74 ms) on a test stand. The real
+drone flies for 43 minutes on two 4 Ah batteries.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/sim-cmu-safety-filter.jpg" aria-label="Simulation clip: the safety filter in a point-mass simulation"><source src="../../media/sim-cmu-safety-filter.mp4" type="video/mp4"></video><figcaption>Point-mass simulation: green arrows are the commands each drone (blue) was given; red arrows show where the filter changed one to keep the drones' safety rings apart.</figcaption></figure>
+
+![A Starling 2 Max motor and propeller mounted on a test stand that measures thrust](./CMU/starling-thrust-stand.jpg)
+
+What comes next is a set of proposals, not yet demonstrated: solving the game mathematically for
+each side, a fast controller learned from human pilots, games that mix real drones with simulated
+opponents, and a safety filter that works from each drone's own map of its surroundings.
 
 ## Code and documentation
 

@@ -14,8 +14,8 @@ import { defineCollection } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-/** The four layers of the system, used to tag partners and the stack section. */
-const LAYERS = ['strategy', 'safety', 'flight', 'drones', 'integration'] as const;
+/** The layers of the system, used to tag partners and the stack section. */
+const LAYERS = ['strategy', 'safety', 'flight', 'localisation', 'drones', 'integration'] as const;
 
 /** Partner ids. Must match the partner file names, lower-cased. */
 const PARTNER_IDS = ['htx', 'st', 'cmu', 'upenn', 'nus'] as const;
@@ -40,10 +40,15 @@ const partners = defineCollection({
         short: z.string().max(24),
         /** Full institution name. */
         institution: z.string(),
-        /** Lab or group name, e.g. "MARMot Lab". Optional for the sponsor. */
+        /** Lab or group name, e.g. "MARMoT Lab". Optional for the sponsor. */
         lab: z.string().optional(),
         /** Lab name written out in full, if `lab` is an acronym. */
         labFull: z.string().optional(),
+        /**
+         * About the lab, in "we" voice: who you are, what you work on, your part in the programme.
+         * Three sentences, 420 characters or fewer. Shown under the people row on the partner page.
+         */
+        labBlurb: z.string().max(420).optional(),
         /** Principal investigator or lead, e.g. "Prof Guillaume Sartoretti". */
         lead: z.string().optional(),
         /** Role in the programme, shown as a small label on the card. */
@@ -61,6 +66,7 @@ const partners = defineCollection({
             strategy: z.string().max(90).optional(),
             safety: z.string().max(90).optional(),
             flight: z.string().max(90).optional(),
+            localisation: z.string().max(90).optional(),
             drones: z.string().max(90).optional(),
             integration: z.string().max(90).optional(),
           })
@@ -68,6 +74,8 @@ const partners = defineCollection({
           .default({}),
         /** Institution logo, relative to this file, e.g. ./NUS/nus.png */
         logo: image(),
+        /** Optional square emblem cut from the logo, e.g. ./NUS/mark.png; the Partners menu chip uses it. */
+        logoMark: image().optional(),
         /** Optional lab logo, shown on the partner page. */
         labLogo: image().optional(),
         /** Alt text for the logo. Defaults to the institution name. */
@@ -82,6 +90,48 @@ const partners = defineCollection({
         page: z.boolean().default(true),
         /** Date of the last meaningful edit, YYYY-MM-DD. */
         updated: z.coerce.date(),
+        /**
+         * People on this partner's team, shown as a row with faces on the partner page.
+         * `photo` is optional and relative to this file, e.g. ./ST/people/jeremy-chia.jpg
+         */
+        people: z
+          .array(
+            z
+              .object({
+                name: z.string(),
+                role: z.string().optional(),
+                photo: image().optional(),
+                /** Set true for the principal investigator or lead. */
+                lead: z.boolean().default(false),
+                /** Optional group, e.g. "Interns": shown under its own small heading after the ungrouped people. */
+                group: z.string().max(40).optional(),
+                /** Short third-person bio, two sentences, 300 characters or fewer; shown in "About the lab". */
+                bio: z.string().max(300).optional(),
+                /** Profile page for the bio, e.g. the lab's staff page. */
+                link: url.optional(),
+              })
+              .strict(),
+          )
+          .default([]),
+        /** Publications from this partner's work on the programme. */
+        publications: z
+          .array(
+            z
+              .object({
+                title: z.string(),
+                authors: z.string(),
+                venue: z.string(),
+                year: z.number().int(),
+                /** published | accepted | preprint | workshop */
+                status: z.enum(['published', 'accepted', 'preprint', 'workshop']).default('published'),
+                link: url.optional(),
+                pdf: url.optional(),
+                /** Optional first-page or poster image, relative to this file. */
+                image: image().optional(),
+              })
+              .strict(),
+          )
+          .default([]),
       })
       .strict(),
 });
@@ -97,10 +147,20 @@ const item = (image: any) =>
       /** Image path relative to the section file, e.g. ./images/flight-cage.jpg */
       image: image().optional(),
       alt: z.string().optional(),
-      /** Video file name in public/media, e.g. formation-change.mp4 */
+      /** Video file name in public/media, e.g. goal-tracking.mp4 */
       video: z.string().regex(/^[\w.-]+\.mp4$/).optional(),
       /** Poster image for the video, file name in public/media. */
       poster: z.string().regex(/^[\w.-]+\.(jpg|png|webp)$/).optional(),
+      /** Optional second run of the same scenario (e.g. lights off), file name in public/media; adds a toggle. */
+      videoAlt: z.string().regex(/^[\w.-]+\.mp4$/).optional(),
+      /** Poster for `videoAlt`, file name in public/media. */
+      posterAlt: z.string().regex(/^[\w.-]+\.(jpg|png|webp)$/).optional(),
+      /** Toggle label for `videoAlt` (the first run is "Lit"). */
+      altLabel: z.string().max(24).default('Lights off'),
+      /** Caption under the clip, where `text` is used for something else (the safety row in themes.md). */
+      caption: z.string().optional(),
+      /** Credit line that ends the caption, e.g. "Video: AirLab, Carnegie Mellon University, CC BY-SA 4.0." */
+      credit: z.string().optional(),
       /** Partner ids associated with this item. */
       partners: z.array(z.enum(PARTNER_IDS)).default([]),
       /** Optional strength / limitation lines (used for the two tracks). */
@@ -112,6 +172,10 @@ const item = (image: any) =>
       current: z.boolean().default(false),
       /** Short icon key, used by a few sections. */
       icon: z.string().optional(),
+      /** What this step hands to the next one, shown on the arrow after it (command.md). */
+      passes: z.string().max(40).optional(),
+      /** Short status shown as a chip, e.g. "Done" or "Ready to test" (ladder.md). */
+      state: z.string().max(24).optional(),
     })
     .strict();
 
@@ -128,6 +192,9 @@ const programme = defineCollection({
         /** Small label above the headline. */
         eyebrow: z.string(),
         title: z.string(),
+        /** Optional eyebrow and h1 when the section also heads its own page (e.g. /flights/). */
+        pageEyebrow: z.string().optional(),
+        pageTitle: z.string().optional(),
         /** Position on the home page: lower numbers come first. */
         order: z.number().int(),
         /** Optional one-line note shown under the cards. */
@@ -136,23 +203,74 @@ const programme = defineCollection({
         image: image().optional(),
         imageAlt: z.string().optional(),
         caption: z.string().optional(),
+        /**
+         * Optional labelled points on `image` (an annotated photo, e.g. ladder.md). `x`/`y` are percent of the
+         * photo from the top left; optional `lx`/`ly` place the label.
+         */
+        points: z
+          .array(
+            z
+              .object({
+                x: z.number().min(0).max(100),
+                y: z.number().min(0).max(100),
+                label: z.string().max(40),
+                lx: z.number().min(0).max(100).optional(),
+                ly: z.number().min(0).max(100).optional(),
+              })
+              .strict(),
+          )
+          .default([]),
         items: z.array(item(image)).default([]),
         /** Optional secondary list, e.g. use cases. */
         tags: z.array(z.string()).default([]),
         tagsLabel: z.string().optional(),
+        /** Optional short list of plain statements, e.g. what the drones decide (home-page hero). */
+        decisionsLabel: z.string().optional(),
+        decisions: z.array(z.string()).default([]),
+        /** Optional one-sentence status line, reused by other pages. */
+        status: z.string().optional(),
+        /** Optional list of open problems ("what we haven't solved yet"), one line each. */
+        open: z.array(z.string()).default([]),
+        openLabel: z.string().optional(),
+        /** Optional one-line note shown in the hero under the statement (home page). */
+        gameNote: z.string().optional(),
+        /** Optional heading and hint above the drone diagram on the Partners page (stack.md). */
+        droneTitle: z.string().optional(),
+        droneHint: z.string().optional(),
+        /** Optional hero clip in public/media (muted loop); `image` is its poster. */
+        video: z.string().regex(/^[\w.-]+\.mp4$/).optional(),
       })
       .strict(),
 });
 
-/** News and progress posts: content/updates/YYYY-MM-DD-short-title.md */
+/**
+ * News and progress posts: content/updates/<partner>/YYYY-MM-DD-short-title.md
+ * The id is the path without ".md", e.g. "st/2026-11-02-website-launch" (the post's address). A post in a
+ * partner folder must name that same partner in `partner:`; the build stops if they differ, so pages can
+ * trust `partner:` alone.
+ */
 const updates = defineCollection({
-  loader: glob({ pattern: '[!_]*.md', base: './content/updates' }),
+  loader: glob({
+    pattern: '**/[!_]*.md',
+    base: './content/updates',
+    generateId: ({ entry, data }) => {
+      const id = entry.replace(/\.md$/, '').toLowerCase();
+      const folder = id.includes('/') ? id.split('/')[0] : undefined;
+      if (folder && !(PARTNER_IDS as readonly string[]).includes(folder))
+        throw new Error(`content/updates/${entry}: the folder "${folder}" is not a partner id (${PARTNER_IDS.join(', ')}).`);
+      if (folder && data.partner !== folder)
+        throw new Error(
+          `content/updates/${entry}: the post is in the "${folder}" folder but says partner: ${String(data.partner)}. Make them match.`,
+        );
+      return id;
+    },
+  }),
   schema: ({ image }) =>
     z
       .object({
         title: z.string().max(100),
         date: z.coerce.date(),
-        /** Partner id of the author's organisation. */
+        /** Partner id of the author's organisation; must match the post's folder. */
         partner: z.enum(PARTNER_IDS),
         author: z.string().optional(),
         summary: z.string().max(300),
@@ -160,6 +278,11 @@ const updates = defineCollection({
         imageAlt: z.string().optional(),
         /** Set to true to keep a post out of the live site while you work on it. */
         draft: z.boolean().default(false),
+        /** Optional photos shown as a strip in the post (relative to the post file). */
+        gallery: z.array(z.object({ src: image(), alt: z.string(), caption: z.string().optional() }).strict()).default([]),
+        /** Optional external link (paper, poster PDF, code). */
+        link: url.optional(),
+        linkLabel: z.string().optional(),
       })
       .strict(),
 });
@@ -172,6 +295,9 @@ const site = defineCollection({
     tagline: z.string(),
     description: z.string(),
     contactEmail: z.string().email().optional(),
+    /** Programme start and end, e.g. "June 2026" and "June 2029". */
+    start: z.string().optional(),
+    end: z.string().optional(),
     repository: url,
     footerNote: z.string(),
   }),

@@ -1,6 +1,7 @@
 ---
 interface Props {
-  size?: 'sm' | 'lg';
+  /** sm: footer (20 px) · md: header (30 px, 1.5× sm) · lg: hero */
+  size?: 'sm' | 'md' | 'lg';
   as?: 'span' | 'h1';
 }
 const { size = 'lg', as: Tag = 'span' } = Astro.props;
@@ -28,6 +29,14 @@ const { size = 'lg', as: Tag = 'span' } = Astro.props;
   .wordmark--sm {
     font-size: 1.25rem;
   }
+  .wordmark--md {
+    font-size: 1.875rem;
+  }
+  @media (max-width: 420px) {
+    .wordmark--md {
+      font-size: 1.625rem;
+    }
+  }
   .wordmark--lg {
     font-size: var(--step-hero);
   }
@@ -38,6 +47,7 @@ const { size = 'lg', as: Tag = 'span' } = Astro.props;
     color: var(--guard);
   }
   .wordmark__vs {
+    font-family: var(--font-body);
     font-weight: 400;
     text-transform: lowercase;
     color: var(--muted);

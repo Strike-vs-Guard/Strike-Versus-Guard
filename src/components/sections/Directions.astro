@@ -1,0 +1,90 @@
+---
+/**
+ * Research directions and applications (content/programme/directions.md). Holds #directions.
+ * A plain numbered list (two columns from 900 px); the application tags read as one sentence.
+ */
+import { section } from './content';
+import { listWords } from '../../lib/text';
+
+interface Props {
+  alt?: boolean;
+}
+const { alt = false } = Astro.props;
+const directions = await section('directions');
+/* Tags are written in sentence case in the content (lower case except proper nouns); only the first is capitalised. */
+const tags = directions.tags;
+const tagList = listWords(tags);
+const tagSentence = tagList.charAt(0).toUpperCase() + tagList.slice(1);
+---
+
+<section id="directions" class:list={['section', { 'section--alt': alt }]}>
+  <div class="wrap">
+    <header class="section__head">
+      <p class="eyebrow">{directions.eyebrow}</p>
+      <h2>{directions.title}</h2>
+    </header>
+    {
+      directions.items.length > 0 && (
+        <ol class="dir-list">
+          {directions.items.map((d, i) => (
+            <li>
+              <span class="dir-list__n" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <h3>{d.title}</h3>
+                {d.text && <p class="muted">{d.text}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+    {
+      tags.length > 0 && (
+        <p class="dir-tags muted">
+          {directions.tagsLabel ?? 'Applications'}: {tagSentence}.
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .dir-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0 56px;
+  }
+  @media (min-width: 900px) {
+    .dir-list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .dir-list li {
+    display: grid;
+    grid-template-columns: 3.5ch minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    max-width: 68ch;
+  }
+  .dir-list__n {
+    font: 500 var(--step--1) var(--font-mono);
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding-top: 0.3em;
+  }
+  .dir-list h3 {
+    margin: 0 0 2px;
+  }
+  .dir-list p {
+    margin: 0;
+  }
+  .dir-tags {
+    margin: 32px 0 0;
+    max-width: 68ch;
+  }
+</style>

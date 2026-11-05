@@ -1,0 +1,107 @@
+---
+/**
+ * A list of publications (from partners' `publications:`): title (linked), authors, venue and year, the
+ * status as plain text, links, and the first-page or poster image when there is one. `partner` adds the
+ * partner's short name to each entry (home teaser); `images` turns the images on (Publications page).
+ */
+import { Image } from 'astro:assets';
+import type { Partner } from './data';
+import { statusLabel } from './data';
+
+type Pub = Partner['data']['publications'][number];
+interface Props {
+  pubs: { pub: Pub; partner?: string }[];
+  images?: boolean;
+}
+const { pubs, images = false } = Astro.props;
+---
+
+<ol class="pub">
+  {
+    pubs.map(({ pub: p, partner }) => (
+      <li class:list={['pub__item', { 'pub__item--img': images && p.image }]}>
+        {images && p.image && (
+          <Image class="pub__img" src={p.image} alt={`First page or poster: ${p.title}`} width={160} densities={[1, 2]} />
+        )}
+        <div>
+          <p class="pub__title">{p.link ? <a href={p.link}>{p.title}</a> : p.title}</p>
+          <p class="pub__authors">{p.authors}</p>
+          <p class="pub__venue">
+            {p.venue}, <span class="pub__yr">{p.year}</span> · {statusLabel[p.status] ?? p.status}
+            {partner && ` · ${partner}`}
+          </p>
+          {(p.link || p.pdf) && (
+            <p class="pub__links">
+              {p.link && <a href={p.link}>Paper</a>}
+              {p.pdf && <a href={p.pdf}>PDF</a>}
+            </p>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .pub {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 55rem;
+  }
+  .pub__item {
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+  }
+  .pub__item:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  .pub__item--img {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .pub__item :global(.pub__img) {
+    width: 120px;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .pub__item p {
+    margin: 0;
+  }
+  .pub__title {
+    font-weight: 600;
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .pub__authors,
+  .pub__venue {
+    font-size: var(--step-0);
+    color: var(--muted);
+  }
+  .pub__yr {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+  .pub__links {
+    display: flex;
+    gap: 16px;
+    font-size: var(--step-0);
+  }
+  .pub__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  @media (max-width: 520px) {
+    .pub__item--img {
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 14px;
+    }
+    .pub__item :global(.pub__img) {
+      width: 72px;
+    }
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+/** Home: the newest publications from all partners (up to five), or "None yet (as of <today>)". Holds #publications. */
+import { url } from '../../lib/url';
+import { fmtDate } from '../../lib/text';
+import PubList from './PubList.astro';
+import { partnersInOrder } from './data';
+
+const { partners } = await partnersInOrder();
+const pubs = partners
+  .flatMap((p) => p.data.publications.map((pub) => ({ pub, partner: p.data.short })))
+  .sort((a, b) => b.pub.year - a.pub.year)
+  .slice(0, 5);
+const today = new Date();
+---
+
+<section id="publications" class="section" aria-labelledby="publications-title">
+  <div class="wrap">
+    <header class="section__head section__head--row">
+      <h2 id="publications-title">Publications</h2>
+      <a class="arrow-link" href={url('publications/')}>All publications →</a>
+    </header>
+    {
+      pubs.length > 0 ? (
+        <PubList pubs={pubs} />
+      ) : (
+        <p class="pt__none">
+          None yet (as of <time datetime={today.toISOString().slice(0, 10)}>{fmtDate(today, 'short')}</time>).
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .pt__none {
+    font-size: var(--step-1);
+  }
+  .pt__none time {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+</style>

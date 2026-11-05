@@ -1,22 +1,32 @@
 ---
 /**
  * The annotated drone: a labelled line drawing that explains what each layer
- * of the system is. Drawing on the left, callouts 1-4 in one column on the
+ * of the system is. Drawing on the left, the numbered callouts in one column on the
  * right (top to bottom, like the stack), Integration as a bracket spanning them.
  *
- * mode "explain" (home page): callouts are buttons. Selecting one lights that
- *   layer, tells the connection diagram (a `sys:select` event on document) and
- *   moves to it. Selections made in the connection diagram light the drone too.
+ * mode "explain": callouts are buttons. Selecting one lights that layer.
+ *   With `target`, it also tells the connection diagram on the same page
+ *   (a `sys:select` event on document) and moves to it; selections made in the
+ *   connection diagram light the drone too. Without `target` (the home page), a
+ *   click lights the layer on the drone only, and only the selected callout shows
+ *   its description (the others show title and partner names) to keep it short.
+ *   Escape clears the selection. Effects (none under reduced motion, all paused
+ *   off screen): leader lines draw themselves once on first scroll-in; the flight
+ *   waypoints march while Flight is lit; one pulse runs along the Strategy links
+ *   when Strategy is selected; the safety ring drifts while Safety is lit or peeked.
  * mode "partner" (partner pages): static. The partner's layers are lit and the
  *   callouts show the partner's own `work:` line for each.
+ * mode "compact" (home page): static and short. The drawing (no leader
+ *   lines) beside six plain rows: number, layer title and the partners on it.
  *
  * Content comes from content/programme/stack.md (layers) and each partner's
  * `work:` lines in content/partners/*.md. Styles are prefixed and global.
  */
 import type { SystemData } from '../lib/system';
+import { listWords } from '../lib/text';
 interface Props {
   data: SystemData;
-  mode?: 'explain' | 'partner';
+  mode?: 'explain' | 'partner' | 'compact';
   /** explain mode: CSS selector of the connection diagram to drive */
   target?: string;
   /** explain mode: element to scroll to after a callout is selected (desktop) */
@@ -27,42 +37,73 @@ interface Props {
 const { data, mode = 'explain', target, scrollTo, partner } = Astro.props;
 const uid = 'pd' + Math.random().toString(36).slice(2, 8);
 const id = (s: string) => `${uid}-${s}`;
-const explain = mode !== 'partner';
+const explain = mode === 'explain';
+const compact = mode === 'compact';
+/* explain mode without a connection diagram to drive: descriptions only for the selected layer */
+const brief = explain && !target;
 
 const numbered = data.layers.filter((l) => l.n != null).sort((a, b) => (a.n ?? 0) - (b.n ?? 0));
 const layers = [...numbered, ...data.layers.filter((l) => l.n == null)];
-const lastN = numbered.length ? numbered[numbered.length - 1].n : 4;
+const lastN = numbered.length ? numbered[numbered.length - 1].n : '';
 const spans = `Spans layers 1–${lastN}`;
+const range = `${numbered.length ? numbered[0].n : 1}–${lastN}`;
+/* marker positions in the drawing, keyed by layer id; the numbers come from stack.md */
+const MK: Record<string, [number, number]> = {
+  strategy: [300, 72],
+  safety: [433, 237],
+  flight: [562, 297],
+  localisation: [348, 368],
+  drones: [250, 412],
+};
+/* what the drawing shows for each layer, for the drawing's text alternative */
+const SHOWS: Record<string, string> = {
+  strategy: 'the drone and two teammates are linked peer to peer by dashed lines and share one plan; there is no central controller',
+  safety: 'a dashed ring around the drone, and a third teammate kept a safe distance away',
+  flight: 'dotted waypoints that become a solid flown line arriving just below the drone, labelled AirStack: plan to flight',
+  localisation: "the drone's own camera and a position fix beneath it",
+  drones: 'the Starling 2 Max airframe',
+};
+const intLayer = data.layers.find((l) => l.n == null);
+const illLabel = [
+  'Line drawing of a quadcopter drone and its teammates.',
+  ...numbered.filter((l) => SHOWS[l.id]).map((l) => `${l.n}, ${l.title}: ${SHOWS[l.id]}.`),
+  intLayer ? `${intLayer.title} spans layers 1 to ${lastN}; a thin frame round the drawing marks it when selected.` : '',
+].filter(Boolean).join(' ');
 
 const P = data.partners_in_display_order;
-const pt = !explain ? P.find((p) => p.id === partner) : undefined;
+const pt = mode === 'partner' ? P.find((p) => p.id === partner) : undefined;
+const whoOn = (layer: string) => P.filter((p) => p.work[layer]).map((p) => p.short).join(' · ');
 const work = (pt?.work ?? {}) as Record<string, string | undefined>;
 const lit = layers.filter((l) => !!work[l.id]).map((l) => l.id);
-const listWords = (a: string[]) => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
 
-const rootClass = ['pd', `pd--${mode}`, lit.length ? 'has-sel' : '', ...lit.map((l) => `lit-${l}`)].filter(Boolean).join(' ');
+const rootClass = ['pd', `pd--${mode}`, brief ? 'pd--brief' : '', lit.length ? 'has-sel' : '', ...lit.map((l) => `lit-${l}`)].filter(Boolean).join(' ');
 const on = (layer: string) => (lit.includes(layer) ? ' is-on' : '');
 
 const OPTS = {
   mode,
   target: target ?? null,
+  brief,
   scrollTo: scrollTo ?? null,
   lit,
+  /* the numbered layers in stack order, for the leader lines */
+  num: numbered.map((l) => l.id),
   /* which layers each partner works on, for selections made in the connection diagram */
   pw: Object.fromEntries(P.map((p) => [p.id, Object.keys(p.work)])),
 };
 const label = explain
   ? 'Annotated drone: what each layer of the system does'
-  : `Annotated drone: the layers ${pt?.short ?? ''} works on`;
+  : compact
+    ? 'Annotated drone: the layers of the system and who works on each'
+    : `Annotated drone: the layers ${pt?.short ?? ''} works on`;
 ---
 
 <div class={rootClass} role="group" aria-label={label}>
   {pt && <p class="pd-sr">{pt.short} works on {listWords(layers.filter((l) => work[l.id]).map((l) => l.title))}.</p>}
   <div class="pd-stage">
-    <svg class="pd-lines" aria-hidden="true" focusable="false"></svg>
+    {!compact && <svg class="pd-lines" aria-hidden="true" focusable="false"></svg>}
 
     <figure class="pd-fig">
-      <svg class="pd-ill" viewBox="0 0 600 440" role="img" aria-label="Line drawing of a quadcopter drone and its teammates. 1, Strategy: the drone and two teammates are linked peer to peer by dashed lines and share one plan; there is no central controller. 2, Safety: a dashed ring around the drone, and a third teammate kept a safe distance away. 3, Flight: dotted waypoints that become a solid flown line arriving just below the drone, labelled AirStack: plan to flight. 4, Drones: the Starling 2 Max airframe. Corner marks around the drawing stand for Integration, which spans layers 1 to 4.">
+      <svg class="pd-ill" viewBox="0 0 600 440" role="img" aria-label={illLabel}>
         <defs>
           <marker id={id('arr')} viewBox="0 0 10 10" refX="7.5" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
             <path class="pd-arrow" d="M2 1.5L7.5 5 2 8.5" />
@@ -100,19 +141,19 @@ const label = explain
           </g>
         </defs>
 
-        <!-- Integration: corner crop marks; the edge shows only when lit -->
+        <!-- Integration: a thin 1 px frame round the drawing, shown only when the layer is lit or peeked
+             (the bracket beside the callouts is its main mark) -->
         <g class={`pd-g pd-int${on('integration')}`} data-layer="integration">
           <rect class="pd-int-edge" x="4" y="4" width="592" height="432" rx="2" />
-          <path class="pd-crop" d="M4 28V4h24M572 4h24v24M596 412v24h-24M28 436H4v-24" />
         </g>
 
-        <!-- 2 Safety, back half of the ring (behind the drone) -->
+        <!-- Safety, back half of the ring (behind the drone) -->
         <g class={`pd-g${on('safety')}`} data-layer="safety">
           <ellipse class="pd-ringfill" cx="300" cy="276" rx="164" ry="66" />
           <path class="pd-ring" pathLength="380" d="M136 276A164 66 0 0 1 464 276" />
         </g>
 
-        <!-- 1 Strategy: three peers linked to each other, sharing one plan -->
+        <!-- Strategy: three peers linked to each other, sharing one plan -->
         <g class={`pd-g${on('strategy')}`} data-layer="strategy">
           <path class="pd-link" d="M216 118H384M188 136L288 240M412 136L312 240" />
           <g class="pd-plan">
@@ -122,25 +163,41 @@ const label = explain
           <text class="pd-lbl" x="300" y="194" text-anchor="middle">shared plan</text>
           <use class="pd-mate" href={`#${id('air')}`} transform="translate(170 120) scale(.32)" />
           <use class="pd-mate" href={`#${id('air')}`} transform="translate(430 120) scale(.32)" />
+          {explain && (
+            <g class="pd-pulse" aria-hidden="true">
+              <path pathLength="100" d="M216 118H384" />
+              <path pathLength="100" d="M188 136L288 240" />
+              <path pathLength="100" d="M412 136L312 240" />
+            </g>
+          )}
         </g>
 
-        <!-- 2 Safety: a teammate kept outside the ring -->
+        <!-- Safety: a teammate kept outside the ring -->
         <g class={`pd-g${on('safety')}`} data-layer="safety">
           <use class="pd-mate" href={`#${id('air')}`} transform="translate(62 300) scale(.32)" />
           <path class="pd-dim" d="M105 292V258M162 290V258M105 266H162M101 270l8-8M158 270l8-8" />
           <text class="pd-lbl pd-lbl-sm" x="134" y="252" text-anchor="middle">safe distance</text>
         </g>
 
-        <!-- 4 Drones: the airframe -->
+        <!-- Drones: the airframe -->
         <g class={`pd-g pd-air${on('drones')}`} data-layer="drones">
           <ellipse class="pd-shadow" cx="300" cy="362" rx="44" ry="17.6" />
           <use class="pd-main" href={`#${id('air')}`} transform="translate(300 270)" />
-          <path class="pd-tick" d="M326 316L318 392" />
-          <circle class="pd-tickdot" cx="326" cy="316" r="2" />
-          <text class="pd-lbl pd-lbl-air" x="298" y="408" text-anchor="end">Starling 2 Max</text>
+          <path class="pd-tick" d="M266 317L254 401" />
+          <circle class="pd-tickdot" cx="266" cy="317" r="2" />
+          <text class="pd-lbl pd-lbl-air" x="232" y="416" text-anchor="end">Starling 2 Max</text>
         </g>
 
-        <!-- 3 Flight: dotted waypoints smoothing into a flown line -->
+        <!-- Localisation: the drone's own camera looking forward-down, and the position fix it gives -->
+        <g class={`pd-g${on('localisation')}`} data-layer="localisation">
+          <path class="pd-link" d="M300 297L266 362M300 297L334 362" />
+          <path class="pd-link" d="M266 362Q300 371 334 362" />
+          <circle class="pd-dim" cx="300" cy="380" r="4.5" />
+          <path class="pd-dim" d="M290 380h20M300 370v20" />
+          <text class="pd-lbl pd-lbl-sm" x="300" y="402" text-anchor="middle">own camera</text>
+        </g>
+
+        <!-- Flight: dotted waypoints smoothing into a flown line -->
         <g class={`pd-g${on('flight')}`} data-layer="flight">
           <path class="pd-wp" d="M592 282C556 296 528 340 474 348" />
           <path class="pd-flown" d="M474 348C420 356 372 352 340 332" marker-end={`url(#${id('arr')})`} />
@@ -148,7 +205,7 @@ const label = explain
           <text class="pd-lbl pd-lbl-path" dy="-7"><textPath href={`#${id('fp')}`} startOffset="14%">AirStack: plan → flight</textPath></text>
         </g>
 
-        <!-- 2 Safety, front half of the ring (over the drone) -->
+        <!-- Safety, front half of the ring (over the drone) -->
         <g class={`pd-g${on('safety')}`} data-layer="safety">
           <path class="pd-ring" pathLength="380" d="M464 276A164 66 0 0 1 136 276" />
         </g>
@@ -160,18 +217,35 @@ const label = explain
             <rect class="pd-hit" data-layer="safety" x="12" y="250" width="160" height="70" />
             <path class="pd-hit pd-hit-path" data-layer="flight" d="M592 282C556 296 528 340 474 348C420 356 372 352 340 332" />
             <rect class="pd-hit" data-layer="drones" x="176" y="218" width="248" height="100" />
-            <path class="pd-hit" data-layer="integration" d="M0 0h40v40H0ZM560 0h40v40h-40ZM560 400h40v40h-40ZM0 400h40v40H0Z" />
+            <!-- after drones so it sits on top: covers the whole camera wedge, which starts inside the drones rect -->
+            <path class="pd-hit" data-layer="localisation" d="M300 293L260 365V408H340V365Z" />
           </g>
         )}
 
-        <!-- numbered markers: leader-line anchors, top to bottom -->
-        <g class={`pd-mk${on('strategy')}`} data-layer="strategy"><circle cx="300" cy="72" r="11" /><text x="300" y="72.5">1</text></g>
-        <g class={`pd-mk${on('safety')}`} data-layer="safety"><circle cx="433" cy="237" r="11" /><text x="433" y="237.5">2</text></g>
-        <g class={`pd-mk${on('flight')}`} data-layer="flight"><circle cx="562" cy="297" r="11" /><text x="562" y="297.5">3</text></g>
-        <g class={`pd-mk${on('drones')}`} data-layer="drones"><circle cx="318" cy="404" r="11" /><text x="318" y="404.5">4</text></g>
+        <!-- numbered markers: leader-line anchors; numbers from stack.md, positions by layer id -->
+        {numbered.filter((l) => MK[l.id]).map((l) => (
+          <g class={`pd-mk${on(l.id)}`} data-layer={l.id}><circle cx={MK[l.id][0]} cy={MK[l.id][1]} r="11" /><text x={MK[l.id][0]} y={MK[l.id][1] + 0.5}>{l.n}</text></g>
+        ))}
       </svg>
     </figure>
 
+    {compact ? (
+    <ol class="pd-rows">
+      {layers.map((l) => {
+        const span = l.n == null;
+        return (
+          <li class={`pd-row${span ? ' pd-row--span' : ''}`}>
+            <span class="pd-num" aria-hidden="true">{span ? range : l.n}</span>
+            <span class="pd-row-title">
+              {l.title}
+              {span && <span class="pd-row-tag">spans {range}</span>}
+            </span>
+            <span class="pd-row-who">{whoOn(l.id)}</span>
+          </li>
+        );
+      })}
+    </ol>
+    ) : (
     <ol class="pd-cos">
       {layers.map((l) => {
         const span = l.n == null;
@@ -187,7 +261,15 @@ const label = explain
             </span>
             <span class="pd-co-title" id={id('t-' + l.id)}>{l.title}</span>
             {span && <span class="pd-co-tag" id={id('s-' + l.id)}>{spans}</span>}
-            {explain && <span class="pd-cue" aria-hidden="true">Show partners <span class="pd-cue-a">↓</span></span>}
+            {explain && (brief ? (
+              <span class="pd-cue" aria-hidden="true">
+                <span class="pd-cue-off">Select</span><span class="pd-cue-on">Selected</span>
+              </span>
+            ) : (
+              <span class="pd-cue" aria-hidden="true">
+                Show partners <span class="pd-cue-a">↓</span>
+              </span>
+            ))}
           </span>
         );
         return explain ? (
@@ -201,6 +283,7 @@ const label = explain
             >
               {head}
               <span class="pd-co-desc" id={id('d-' + l.id)}>{l.desc}</span>
+              <span class="pd-co-who">{whoOn(l.id)}</span>
             </button>
           </li>
         ) : (
@@ -218,19 +301,24 @@ const label = explain
         );
       })}
     </ol>
+    )}
   </div>
 
   <script is:inline define:vars={{ OPTS }}>
   (function () {
     var root = document.currentScript && document.currentScript.closest('.pd');
-    if (!root) return;
+    if (!root || OPTS.mode === 'compact') return;
     var explain = OPTS.mode !== 'partner';
     var stage = root.querySelector('.pd-stage');
     var lines = root.querySelector('.pd-lines');
-    var NUM = ['strategy', 'safety', 'flight', 'drones'];
+    var NUM = OPTS.num || [];
     var ALL = NUM.concat('integration');
     var state = { layer: null, partner: null };
     var hoverPeek = null, focusPeek = null;
+    var reduceMq = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)');
+    var reduced = function () { return !!(reduceMq && reduceMq.matches); };
+    /* leader-line intro: null = not yet seen, a start time while drawing in, true = done */
+    var intro = null, STEP = 200, DUR = 400;
     var qa = function (s) { return Array.prototype.slice.call(root.querySelectorAll(s)); };
     var co = function (id) { return root.querySelector('.pd-co[data-layer="' + id + '"]'); };
 
@@ -251,6 +339,7 @@ const label = explain
         var id = el.getAttribute('data-layer');
         el.classList.toggle('is-on', L.indexOf(id) >= 0);
         el.classList.toggle('is-peek', peek === id);
+        if (explain && el.tagName === 'BUTTON') el.setAttribute('aria-pressed', L.indexOf(id) >= 0 ? 'true' : 'false');
       });
       draw();
     }
@@ -266,23 +355,33 @@ const label = explain
       lines.setAttribute('viewBox', '0 0 ' + sr.width + ' ' + sr.height);
       var L = litSet(), peek = hoverPeek || focusPeek;
       var cls = function (id, base) { return base + (L.indexOf(id) >= 0 ? ' is-on' : '') + (peek === id ? ' is-peek' : ''); };
-      NUM.forEach(function (id) {
+      /* while the intro runs, each line (1 to 5, then the bracket) draws in turn; a redraw
+         mid-intro (hover, resize) resumes where it was via a negative delay */
+      var t = typeof intro === 'number' ? performance.now() - intro : -1;
+      var anim = function (n, i) {
+        if (t < 0) return n;
+        n.classList.add('pd-in');
+        n.style.animationDelay = (i * STEP - t) + 'ms';
+        return n;
+      };
+      NUM.forEach(function (id, i) {
         var c = co(id), mk = root.querySelector('.pd-mk[data-layer="' + id + '"] circle');
         if (!c || !mk) return;
         var b = c.getBoundingClientRect(), n = c.querySelector('.pd-num').getBoundingClientRect(), m = mk.getBoundingClientRect();
         var sx = b.left - sr.left, sy = n.top + n.height / 2 - sr.top;
         var mx = m.left + m.width / 2 - sr.left, my = m.top + m.height / 2 - sr.top, r = m.width / 2;
         var kx = sx - 18, dx = kx - mx, dy = sy - my, d = Math.sqrt(dx * dx + dy * dy) || 1;
-        lines.appendChild(el('path', { 'class': cls(id, 'pd-ld'), d: 'M' + (mx + dx / d * r) + ' ' + (my + dy / d * r) + 'L' + kx + ' ' + sy + 'H' + (sx - 4) }));
-        lines.appendChild(el('circle', { 'class': cls(id, 'pd-ldot'), cx: sx - 4, cy: sy, r: 2.5 }));
+        /* drawn from the callout to the part, so the intro grows towards the drawing */
+        lines.appendChild(anim(el('path', { 'class': cls(id, 'pd-ld'), pathLength: 1, d: 'M' + (sx - 4) + ' ' + sy + 'H' + kx + 'L' + (mx + dx / d * r) + ' ' + (my + dy / d * r) }), i));
+        lines.appendChild(anim(el('circle', { 'class': cls(id, 'pd-ldot'), cx: sx - 4, cy: sy, r: 2.5 }), i));
       });
-      var c1 = co('strategy'), c4 = co('drones'), ci = co('integration');
-      if (c1 && c4 && ci) {
-        var a = c1.getBoundingClientRect(), z = c4.getBoundingClientRect(), g = ci.getBoundingClientRect();
-        var xr = a.right - sr.left, x = xr + 14, t = a.top - sr.top + 8, e = z.bottom - sr.top - 8, im = g.top + g.height / 2 - sr.top;
-        lines.appendChild(el('path', { 'class': cls('integration', 'pd-brk'),
-          d: 'M' + (x - 7) + ' ' + t + 'H' + x + 'V' + im + 'H' + (xr + 4) + 'M' + (x - 7) + ' ' + e + 'H' + x }));
-        lines.appendChild(el('circle', { 'class': cls('integration', 'pd-ldot'), cx: xr + 4, cy: im, r: 2.5 }));
+      var c1 = NUM.length && co(NUM[0]), c5 = NUM.length && co(NUM[NUM.length - 1]), ci = co('integration');
+      if (c1 && c5 && ci) {
+        var a = c1.getBoundingClientRect(), z = c5.getBoundingClientRect(), g = ci.getBoundingClientRect();
+        var xr = a.right - sr.left, x = xr + 14, tp = a.top - sr.top + 8, e = z.bottom - sr.top - 8, im = g.top + g.height / 2 - sr.top;
+        lines.appendChild(anim(el('path', { 'class': cls('integration', 'pd-brk'), pathLength: 1,
+          d: 'M' + (x - 7) + ' ' + tp + 'H' + x + 'V' + im + 'H' + (xr + 4) + 'M' + (x - 7) + ' ' + e + 'H' + x }), NUM.length));
+        lines.appendChild(anim(el('circle', { 'class': cls('integration', 'pd-ldot'), cx: xr + 4, cy: im, r: 2.5 }), NUM.length));
       }
     }
 
@@ -290,6 +389,25 @@ const label = explain
     else window.addEventListener('resize', draw);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
     render();
+
+    /* on screen: ambient effects run only while visible; the intro plays on first scroll-in */
+    function startIntro() {
+      if (intro !== null) return;
+      if (reduced() || !explain) { intro = true; return; }
+      intro = performance.now();
+      draw();
+      setTimeout(function () { intro = true; draw(); }, NUM.length * STEP + DUR + 60);
+    }
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          root.classList.toggle('is-vis', en.isIntersecting);
+          if (en.isIntersecting && en.intersectionRatio >= 0.3) startIntro();
+        });
+      }, { threshold: [0, 0.3] }).observe(stage);
+    } else {
+      intro = true;
+    }
     if (!explain) return;
 
     /* ── explain mode ───────────────────────────────────────────────── */
@@ -315,9 +433,32 @@ const label = explain
       btn.classList.add('pc-echo');
       btn.addEventListener('animationend', function off() { btn.classList.remove('pc-echo'); btn.removeEventListener('animationend', off); });
     }
-    function activate(id) {
+    /* one pulse along the Strategy links each time Strategy becomes selected */
+    var pulse = root.querySelector('.pd-pulse');
+    function firePulse() {
+      if (!pulse || reduced() || !root.classList.contains('is-vis')) return;
+      pulse.classList.remove('is-go');
+      void pulse.getBoundingClientRect();
+      pulse.classList.add('is-go');
+    }
+    if (pulse) pulse.addEventListener('animationend', function (e) {
+      if (e.target === pulse.lastElementChild) pulse.classList.remove('is-go');
+    });
+    function select(id) {
+      var was = state.layer;
       state.layer = id; state.partner = null;
       render();
+      if (id === 'strategy' && was !== 'strategy') firePulse();
+    }
+    function clear() {
+      if (!state.layer && !state.partner) return;
+      state.layer = null; state.partner = null;
+      render();
+      if (OPTS.target) document.dispatchEvent(new CustomEvent('sys:select', { detail: { layer: null, partner: null, source: 'drone' } }));
+    }
+    function activate(id) {
+      select(id);
+      if (!OPTS.target) return;
       document.dispatchEvent(new CustomEvent('sys:select', { detail: { layer: id, partner: null, source: 'drone' } }));
       var tgt = OPTS.target && document.querySelector(OPTS.target);
       var btn = tgt && tgt.querySelector('[data-sel="l:' + id + '"]');
@@ -352,19 +493,20 @@ const label = explain
       focusPeek = t ? t.getAttribute('data-layer') : null; render();
     });
     root.addEventListener('focusout', function () { focusPeek = null; render(); });
+    root.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' || e.key === 'Esc') { clear(); }
+    });
 
     /* one shared selection with the connection diagram */
     document.addEventListener('sys:select', function (e) {
       var d = e.detail || {};
       if (d.source === 'drone') return;
+      var was = state.layer;
       state.layer = d.layer || null; state.partner = d.partner || null;
       render();
+      if (state.layer === 'strategy' && was !== 'strategy') firePulse();
     });
 
-    /* the safety ring drifts only while on screen */
-    if (window.IntersectionObserver) {
-      new IntersectionObserver(function (es) { es.forEach(function (en) { root.classList.toggle('is-vis', en.isIntersecting); }); }).observe(stage);
-    }
   })();
   </script>
 </div>
@@ -380,16 +522,14 @@ const label = explain
 .pd .pd-stage{position:relative;display:grid;grid-template-columns:minmax(0,55fr) minmax(0,45fr);column-gap:52px;align-items:start;
   padding:28px 52px 28px 28px;
   background-color:var(--surface);
-  background-image:radial-gradient(circle,var(--grid) 1.3px,transparent 1.7px);
-  background-size:20px 20px;background-position:10px 10px;
   border:1px solid var(--border);border-radius:var(--radius)}
 .pd .pd-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
 .pd .pd-lines path{fill:none;stroke:var(--muted);stroke-width:1;transition:stroke .22s,stroke-width .22s}
 .pd .pd-lines circle{fill:var(--muted);transition:fill .22s}
 .pd .pd-lines .is-peek{stroke:var(--text);transition-duration:.12s}
 .pd .pd-lines circle.is-peek{fill:var(--text)}
-.pd.has-sel .pd-lines path:not(.is-on):not(.is-peek){stroke:var(--border)}
-.pd.has-sel .pd-lines circle:not(.is-on):not(.is-peek){fill:var(--border)}
+.pd.has-sel .pd-lines path:not(.is-on):not(.is-peek){stroke:var(--pd-dim)}
+.pd.has-sel .pd-lines circle:not(.is-on):not(.is-peek){fill:var(--pd-dim)}
 .pd .pd-lines path.is-on{stroke:var(--text);stroke-width:1.6}
 .pd .pd-lines circle.is-on{fill:var(--text)}
 
@@ -397,7 +537,7 @@ const label = explain
 .pd .pd-ill{display:block;width:100%;height:auto;overflow:visible}
 
 /* ── drawing ── */
-.pd .pd-ill{--pd-c:var(--text);--pd-k:1;fill:none;stroke:var(--muted);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+.pd .pd-ill{--pd-c:var(--text);--pd-k:1;fill:none;stroke:var(--muted);stroke-width:var(--pd-sw);stroke-linecap:round;stroke-linejoin:round}
 .pd .pd-ill .pd-g,.pd .pd-ill .pd-g *,.pd .pd-ill .pd-mk *{transition:stroke .22s,stroke-width .22s,fill .22s,opacity .22s}
 .pd .pd-ill .pd-g.is-peek,.pd .pd-ill .pd-g.is-peek *,.pd .pd-ill .pd-mk.is-peek *{transition-duration:.12s}
 /* airframe: 1.5 ink, 1.0 detail; scaled by --pd-k so the small teammates keep a visible line.
@@ -411,9 +551,9 @@ const label = explain
 .pd-a-inkfill{fill:var(--pd-c);stroke:none}
 .pd-a-tube-o{stroke:var(--pd-c);stroke-width:6}
 .pd-a-tube-i{stroke:var(--pd-t1);stroke-width:3.4}
-.pd-a-disc{fill:color-mix(in srgb,var(--surface) 55%,transparent);stroke:color-mix(in srgb,var(--pd-c) 65%,transparent);stroke-width:calc(.8px * var(--pd-k));stroke-dasharray:3 2.5}
+.pd-a-disc{fill:color-mix(in srgb,var(--surface) 55%,transparent);stroke:color-mix(in srgb,var(--pd-c) 65%,transparent);stroke-width:calc(var(--pd-disc) * var(--pd-k));stroke-dasharray:3 2.5}
 .pd-a-blade{fill:var(--pd-blade,color-mix(in srgb,var(--pd-c) 85%,transparent));stroke:none}
-.pd .pd-ill .pd-shadow{fill:var(--text);opacity:.045;stroke:none}
+.pd .pd-ill .pd-shadow{fill:var(--text);opacity:var(--pd-shadow);stroke:none}
 .pd .pd-ill .pd-mate{--pd-c:var(--muted);--pd-k:2.4}
 .pd .pd-ill .pd-g.is-on .pd-mate{--pd-c:var(--text)}
 .pd .pd-ill .pd-g.is-peek:not(.is-on) .pd-mate{--pd-c:color-mix(in srgb,var(--text) 70%,var(--muted))}
@@ -432,16 +572,15 @@ const label = explain
 .pd .pd-ill .pd-dim{stroke-width:.8}
 .pd .pd-ill .pd-wp{stroke-width:2.2;stroke-dasharray:0 7}
 .pd .pd-ill .pd-arrow{fill:none;stroke:var(--muted);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
-.pd .pd-ill .pd-crop{stroke-width:1.2}
 .pd .pd-ill .pd-int-edge{stroke:none}
 .pd .pd-ill .pd-lbl{font:500 10px var(--font-mono);fill:var(--muted);stroke:none;letter-spacing:.03em}
 .pd .pd-ill .pd-lbl-sm{font-size:9px}
 
 .pd .pd-ill .pd-g.is-peek .pd-ring,.pd .pd-ill .pd-g.is-peek .pd-link,.pd .pd-ill .pd-g.is-peek .pd-plan,
-.pd .pd-ill .pd-g.is-peek .pd-dim,.pd .pd-ill .pd-g.is-peek .pd-flown,.pd .pd-ill .pd-g.is-peek .pd-crop{stroke:var(--text);stroke-width:1.4}
+.pd .pd-ill .pd-g.is-peek .pd-dim,.pd .pd-ill .pd-g.is-peek .pd-flown{stroke:var(--text);stroke-width:1.4}
 .pd .pd-ill .pd-g.is-peek .pd-wp{stroke:var(--text)}
 .pd .pd-ill .pd-g.is-on .pd-ring,.pd .pd-ill .pd-g.is-on .pd-link,.pd .pd-ill .pd-g.is-on .pd-plan,
-.pd .pd-ill .pd-g.is-on .pd-flown,.pd .pd-ill .pd-g.is-on .pd-crop{stroke:var(--text);stroke-width:1.8}
+.pd .pd-ill .pd-g.is-on .pd-flown{stroke:var(--text);stroke-width:1.8}
 .pd .pd-ill .pd-g.is-on .pd-dim{stroke:var(--text);stroke-width:1}
 .pd .pd-ill .pd-g.is-on .pd-wp{stroke:var(--text);stroke-width:2.6}
 .pd .pd-ill .pd-g.is-on .pd-ringfill{fill:var(--text);opacity:.035}
@@ -454,16 +593,31 @@ const label = explain
 .pd .pd-ill .pd-mk text{font:500 11px var(--font-mono);fill:var(--text);stroke:none;text-anchor:middle;dominant-baseline:central}
 .pd .pd-ill .pd-mk{transform-box:fill-box;transform-origin:center}
 .pd .pd-ill .pd-mk.is-peek circle{stroke:var(--text);stroke-width:1.8}
-.pd.has-sel .pd-ill .pd-mk:not(.is-on):not(.is-peek) circle{stroke:var(--border)}
+.pd.has-sel .pd-ill .pd-mk:not(.is-on):not(.is-peek) circle{stroke:var(--pd-dim)}
 .pd.has-sel .pd-ill .pd-mk:not(.is-on):not(.is-peek) text{fill:var(--muted)}
 .pd .pd-ill .pd-mk.is-on circle{fill:var(--text);stroke:var(--text)}
 .pd .pd-ill .pd-mk.is-on text{fill:var(--surface)}
 
-/* ambient: the safety ring drifts while on screen (explain mode) */
+/* ── effects (explain mode; none under reduced motion; paused off screen via .is-vis) ──
+   The ring and the waypoints keep their animation and only pause, so they never snap back. */
+/* the safety ring drifts only while Safety is lit or peeked */
 @keyframes pd-drift{to{stroke-dashoffset:-120}}
-.pd--explain .pd-ill .pd-ring{animation:pd-drift 40s linear infinite;animation-play-state:paused}
-.pd--explain.is-vis .pd-ill .pd-ring{animation-play-state:running}
-.pd--explain .pd-stage:hover .pd-ill .pd-ring,.pd--explain .pd-stage:focus-within .pd-ill .pd-ring{animation-play-state:paused}
+.pd--explain .pd-ill .pd-ring{animation:pd-drift 24s linear infinite;animation-play-state:paused}
+.pd--explain.is-vis.lit-safety .pd-ill .pd-ring,.pd--explain.is-vis.peek-safety .pd-ill .pd-ring{animation-play-state:running}
+/* the flight waypoints march towards the drone only while Flight is lit */
+@keyframes pd-march{to{stroke-dashoffset:-7}}
+.pd--explain .pd-ill .pd-wp{animation:pd-march .9s linear infinite;animation-play-state:paused}
+.pd--explain.is-vis.lit-flight .pd-ill .pd-wp{animation-play-state:running}
+/* one pulse along the Strategy links when Strategy is selected */
+@keyframes pd-pulse{0%{stroke-dashoffset:14;opacity:0}8%{opacity:1}80%{opacity:1}100%{stroke-dashoffset:-100;opacity:0}}
+.pd .pd-ill .pd-pulse path{fill:none;stroke:none;stroke-width:2.4;stroke-dasharray:14 120;stroke-dashoffset:14}
+.pd .pd-ill .pd-pulse.is-go path{stroke:var(--text);animation:pd-pulse .9s cubic-bezier(.4,0,.2,1) both}
+.pd .pd-ill .pd-pulse.is-go path:nth-child(n+2){animation-delay:.25s}
+/* leader lines draw themselves once on first scroll-in (delays set by the script) */
+@keyframes pd-ld-in{from{stroke-dashoffset:-1}to{stroke-dashoffset:0}}
+@keyframes pd-dot-in{from{opacity:0}to{opacity:1}}
+.pd .pd-lines path.pd-in{stroke-dasharray:1 1;animation:pd-ld-in .4s cubic-bezier(.3,0,.2,1) both}
+.pd .pd-lines circle.pd-in{animation:pd-dot-in .15s linear both}
 
 /* hit-areas: fine pointers only, never focusable */
 .pd .pd-hits{display:none}
@@ -488,6 +642,8 @@ const label = explain
 .pd .pd-co-title{font:700 20px/1.1 var(--font-display);letter-spacing:.005em}
 .pd .pd-co-tag{font:500 11.5px/1.2 var(--font-mono);letter-spacing:.02em;color:var(--muted)}
 .pd .pd-co-desc{font-size:14px;line-height:1.45;color:var(--muted)}
+.pd .pd-co-who{font:500 11px/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.pd .pd-co.is-on .pd-co-who{color:var(--text)}
 .pd .pd-co-work{font-size:15px;line-height:1.45;color:var(--text)}
 .pd .pd-co-desc--sm{font-size:13px;line-height:1.4}
 
@@ -497,11 +653,18 @@ const label = explain
 .pd--explain .pd-co:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 .pd--explain .pd-co.is-on{border-color:var(--text);box-shadow:inset 0 0 0 1px var(--text)}
 .pd .pd-co.is-on .pd-num{background:var(--text);border-color:var(--text);color:var(--surface)}
-.pd--explain.has-sel .pd-co:not(.is-on) .pd-num{border-color:var(--border);color:var(--muted)}
+.pd--explain.has-sel .pd-co:not(.is-on) .pd-num{border-color:var(--pd-dim);color:var(--muted)}
 .pd .pd-cue{display:inline-flex;align-items:center;gap:5px;margin-left:auto;padding-left:8px;flex:none;font:500 12px/1 var(--font-mono);letter-spacing:.02em;color:var(--muted);transition:color .15s}
 .pd--explain .pd-co:hover .pd-cue,.pd--explain .pd-co:focus-visible .pd-cue,.pd--explain .pd-co.is-on .pd-cue{color:var(--text)}
 .pd .pd-cue-a{display:inline-block;transition:transform .15s}
 .pd--explain .pd-co:hover .pd-cue-a,.pd--explain .pd-co:focus-visible .pd-cue-a{transform:translateY(2px)}
+/* brief (home): only the selected callout shows its description; the cue reads Select / Selected */
+.pd--brief .pd-co:not(.is-on) .pd-co-desc{display:none}
+.pd .pd-cue-on{display:none}
+.pd--brief .pd-co.is-on .pd-cue-on{display:inline}
+.pd--brief .pd-co.is-on .pd-cue-off{display:none}
+.pd--brief .pd-cue-off::before{content:"";display:inline-block;width:9px;height:9px;margin-right:6px;border-radius:50%;border:1.5px solid currentColor;vertical-align:-1px}
+.pd--brief .pd-co.is-on .pd-cue-on::before{content:"";display:inline-block;width:9px;height:9px;margin-right:6px;border-radius:50%;background:currentColor;vertical-align:-1px}
 
 /* partner mode: static list items */
 .pd--partner .pd-co{cursor:default;border-style:dashed;border-color:var(--border)}
@@ -511,13 +674,15 @@ const label = explain
 .pd--partner .pd-ill .pd-g:not(.is-on){opacity:.28}
 .pd--partner .pd-ill .pd-g.pd-air:not(.is-on){opacity:.5}
 
-/* dark mode: blades in muted, no ground shadow */
+/* both themes: blades in muted; fills are text/surface mixes, so they invert with the theme.
+   Light (the default) draws with 1.4 strokes, 1.0 prop discs and a 6 % ground shadow; dark
+   (toggle, or the system setting when nothing is stored) keeps 1.2 / 0.8 lines and no shadow. */
+/* --pd-dim: unselected leader lines and markers; a muted/surface mix stays visible on the light surface */
+.pd{--pd-blade:var(--muted);--pd-sw:1.4;--pd-disc:1px;--pd-shadow:.06;--pd-dim:color-mix(in srgb,var(--muted) 40%,var(--surface))}
+:root[data-theme='dark'] .pd{--pd-sw:1.2;--pd-disc:.8px;--pd-shadow:0}
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme='light']) .pd{--pd-blade:var(--muted)}
-  :root:not([data-theme='light']) .pd .pd-ill .pd-shadow{display:none}
+  :root:not([data-theme='light']) .pd{--pd-sw:1.2;--pd-disc:.8px;--pd-shadow:0}
 }
-:root[data-theme='dark'] .pd{--pd-blade:var(--muted)}
-:root[data-theme='dark'] .pd .pd-ill .pd-shadow{display:none}
 
 /* narrower desktop */
 @media (max-width:1060px){
@@ -538,6 +703,7 @@ const label = explain
   .pd .pd-co-title{grid-column:2;grid-row:1;font-size:18px;line-height:1.25}
   .pd .pd-co-tag{grid-column:2 / -1;grid-row:4;margin:3px 0 0}
   .pd .pd-co-desc,.pd .pd-co-work{grid-column:2 / -1;grid-row:2;font-size:14px;line-height:1.4}
+  .pd .pd-co-who{grid-column:2 / -1}
   .pd .pd-co-desc--sm{grid-row:3;font-size:13px}
   .pd .pd-cue{grid-column:3;grid-row:1;margin:0;padding:0;align-self:center;font-size:0;gap:0}
   .pd .pd-cue-a{font-size:15px}
@@ -549,6 +715,29 @@ const label = explain
   .pd .pd-ill .pd-lbl{font-size:15px}
   .pd .pd-ill .pd-lbl-sm,.pd .pd-ill .pd-lbl-path{display:none}
   .pd .pd-ill .pd-lbl-air{transform:translateX(-14px)}
+}
+/* compact mode (home): drawing left, six static rows right */
+.pd--compact .pd-stage{grid-template-columns:minmax(0,460px) minmax(0,1fr);column-gap:clamp(16px,2.5vw,36px);align-items:center;
+  padding:18px clamp(16px,2.5vw,32px) 18px 18px}
+.pd .pd-rows{margin:0;padding:0;list-style:none}
+.pd .pd-row{display:grid;grid-template-columns:30px minmax(110px,.8fr) minmax(0,1.6fr);align-items:baseline;gap:4px 14px;padding:10px 0;border-bottom:1px solid var(--border)}
+.pd .pd-row:first-child{border-top:1px solid var(--border)}
+.pd .pd-row .pd-num{align-self:center;width:24px;height:24px;font-size:12px}
+.pd .pd-row-title{font:700 20px/1.2 var(--font-display)}
+.pd .pd-row-tag{margin-left:8px;font:500 11px/1.2 var(--font-mono);letter-spacing:.04em;color:var(--muted)}
+.pd .pd-row-who{font:500 12px/1.4 var(--font-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.pd .pd-row--span{border-bottom:0;border-top:1px dashed var(--muted);margin-top:8px}
+.pd .pd-row--span .pd-num{border-style:dashed;font-size:9.5px;letter-spacing:-.02em}
+@media (max-width:899px){
+  /* stacked: the six rows span the stage; only the drawing is centred */
+  .pd--compact .pd-stage{padding:12px 16px 8px;align-items:stretch}
+  .pd--compact .pd-fig{max-width:460px;align-self:center}
+  .pd--compact .pd-rows{width:100%}
+}
+@media (max-width:639px){
+  .pd .pd-row{grid-template-columns:30px minmax(0,1fr);row-gap:2px}
+  .pd .pd-row-who{grid-column:2}
+  .pd .pd-row-title{font-size:18px}
 }
 @media (prefers-reduced-motion:reduce){
   .pd *,.pd *::before,.pd *::after{transition:none!important;animation:none!important}

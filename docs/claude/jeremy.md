@@ -172,6 +172,168 @@ The implementer agent delivered the full spec in §6.
 
 Committed to `development`.
 
+## 10. Site restructure (3 Nov 2026)
+> Asks: a pure-black theme, a shorter home page, a Localisation layer, and the programme split into pages.
+
+**Answers (spec §9):** nothing confidential is published; layer 4 is Localisation (ST Engineering
+leads, CMU provides the simulator and technical advice); pure black with no toggle; the benchmark
+stays on Home; the "What they decide" line is approved.
+
+**What was done:**
+- Fable orchestrated. Sonnet and Opus agents did tasks 1 to 5 in parallel in one working tree, each
+  owning separate files and committing only its own paths.
+- Builds were serialised with `flock /tmp/svg-check.lock npm run check`. A scratchpad Playwright
+  harness (`shot.mjs`, Chrome channel) screenshots 1280 and 390 and reports overflow and console errors.
+- Node 24 is installed under `~/.local` on the laptop (no nvm).
+- The reports were read for context only; their text sits in `~/Documents/GitHub/Strike-Versus-Guard-sources/`,
+  outside the repo.
+
+**Outcome:** four pages (Home, Programme, Partners, Flights) plus Updates, five layers, one theme.
+Docs updated to match. Push to `development` and Jeremy's check come next, then the pull request to `main`.
+
+## 11. Round 2: UX panel, wider layout (3 Nov 2026)
+> After seeing the test site: "team photo at the bottom, no lone HTX block"; "home is still too long";
+> "a Partners hover menu listing the universities and ST, with links to their pages"; "each uni edits
+> its own .md" (already true, now visible); "footer logos in colour"; "use the full page width";
+> "a panel of UI/UX experts, with references to top university and corporate labs"; "update code,
+> standards and agent docs".
+
+**What was done:**
+- Three Opus agents (first screen, layout, navigation) reviewed the site and fetched theairlab.org,
+  asl.ethz.ch, rpg.ifi.uzh.ch, tri.global, rai-inst.com, deepmind.google and bostondynamics.com.
+- Jeremy saw a clickable draft with three switches
+  (https://claude.ai/artifact/2WqQ9uFtSXEzsAdcsJhk6j) and chose A compact drone, B no Benchmark nav
+  item, C clip hero ("follow your recommendation").
+- Built per `docs/superpowers/specs/2026-11-03-home-redesign-design.md`: new nav and Partners menu,
+  shorter home, 1320 px width, colour logos, team photo and logo strip last.
+- Panel saved as three agents in `.claude/agents/`; STANDARDS §3, §4, §5, CONTRIBUTING and the other docs updated.
+
+**Outcome:** home about 5 screens (from 6.5). Jeremy checks the test site, merges PR #6, and each partner
+reviews its page.
+
+## 12. Simulation work from the monthly report (3 Nov 2026)
+> "Put in the simulation stuff from the monthly reports." Then: "Do not put in all the content; make
+> something short, led by the visuals."
+
+**What was done:** the October report's figures were mapped to their sections; four GIFs became
+clips and one figure a still. Each partner page gained a short "In simulation" section (1–2 visuals,
+2–3 sentences; CMU's and UPenn's are text only, as the report has no simulation figures for them).
+The Programme page gained "Proven in simulation first" with three clips, and the localisation status
+now carries the 0.081 m simulation number. Items that appear only in the FR&PDR were left out.
+
+## 13. More from the FR&PDR and the localisation brief (3 Nov 2026)
+> The programme lead approved selected content from the July FR&PDR and the localisation brief, with
+> hard exclusions (budgets, IDs, markings, the contact scenario, extra names, papers under review).
+
+**What was done:** Programme gained "How a command travels" (strategy → AirStack → safety filter → PX4,
+drawn as boxes, as the deck slide is built from shapes) and a richer localisation section (three
+question cards, the rule, a targets table, a simulation figure). Flights gained CMU outdoors and the
+M1–M6 test ladder (as of July 2026). Each partner page gained July results with 1–2 visuals; figures
+with banned words baked in were cropped or skipped.
+
+## 14. Content from the reports, round 3 (3 Nov 2026)
+> The programme lead approved publishing selected content from the October monthly report, then the
+> July FR&PDR and the localisation brief: "there's no code involved".
+
+**Exclusions that still hold:** budgets, prices, contract and deliverable IDs, the physical-contact
+scenario and kinetic wording, people beyond those named on the site, work under review.
+
+**What was done:**
+- An "In simulation" section per partner, with clips made from the reports' GIFs.
+- Programme: "We try it in simulation first" and "How a command travels".
+- Flights: "Test ladder" (M1–M6, as of July 2026), an outdoor clip, and CMU's three extra clips and
+  Starling photo. These came from CMU's public `svg-website` repo, used with CMU's consent and credited
+  "Photo/Video: CMU AirLab". That repo was only read.
+
+## 15. Humanising, round 4 (3 Nov 2026)
+> The site read as machine-written.
+
+A three-reviewer panel (editor, art director, outside professor; ad-hoc, brief in
+`AGENTS_AND_SKILLS.md`) found: no names, no dates, nothing went wrong, tidy triads.
+
+**What was done:**
+- `people:` per partner, shown as a row with faces; the team photo caption names everyone left to right.
+- Slogans rewritten ("the game we test with", "Who builds which part", "We try it in simulation
+  first"). The hero title is unchanged.
+- Partner pages in first person, with their own headings.
+- `open:`/`openLabel:` lists ("What we haven't solved yet") on Localisation, Simulation and Flights.
+- Updates as a dated log with `author:`. Footer note shortened.
+- Research directions as a plain numbered list. The drone drawing lost its dot grid and corner marks.
+- Flights: lead clip + grid with mono stamps and "watch" cues, plus an annotated Singapore lab photo.
+- Logos sized by visual weight (`src/lib/logo.ts`): footer 2×2 partner wells with lab logos, card well
+  104 px, partner-page well 128 px.
+- STANDARDS §2 now holds the voice rules.
+
+## 16. Round 5: lab feedback, light/dark, Research (3 Nov 2026)
+> Nine points from the lab after they saw the test site, then "follow the panel" and picks from the
+> draft (https://claude.ai/artifact/Kxx7DfmQ51Hv3EoeFyBgFj).
+
+**What the lab asked for:** a light site (dark as a toggle), a bigger wordmark, updates first on home,
+the Programme page called Research, publications, an easier way for partners to contribute, partner
+pages that are obviously the partner's own, faces for every partner, and a drone that does something.
+
+**What was done:**
+- A three-lens panel (design system, content architecture, drone interaction) fed one draft; Jeremy
+  chose from it. Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-design.md`.
+- Theme: light default, dark navy-black (not pure black), sun/moon toggle; Archivo 700 headlines;
+  brand red/blue only as type, rules and bands; white logo wells with a 1 px border in light.
+- Nav is Updates · Research · Partners ▾ · Flights · Publications · Contribute. `/programme/`
+  redirects to `/research/`.
+- Home: hero (title above a 2:1 clip panel), logo row, updates strip, glance + latest, partner cards,
+  five research themes, interactive drone, flights, publications, people.
+- Drone effects restored on home; rule: ring drift only while Safety is lit, no count-ins or scan sweeps.
+  The Partners page keeps the connection diagram only.
+- Content model: `content/updates/<partner>/` (with `gallery:`, `link:`), `publications:` per partner,
+  `glance.md`, `themes.md`, site `start`/`end` (June 2026 – June 2029). STANDARDS §4 old updates path fixed.
+- Content: people photos for all partners from the labs' profile pictures; IROS 2026 posts and
+  posters; UPenn's STL-SVPIO paper; the A0 poster, top half only.
+- Wording rule added (STANDARDS §2): research themes are named by content.
+
+**Decisions on gaps:** the NUS workshop paper was not found publicly, so NUS shows none. "Derek" (ST)
+is listed without surname or role. The full A0 poster waits for Jeremy.
+
+**Outcome:** Jeremy checks the test site and merges PR #6; partners confirm people, roles and photos.
+
+## 17. Round 6: media replacement (4 Nov 2026)
+> Replace the flight videos with CMU's better clips.
+
+**The asks:** use the clips from CMU's `svg-website` (commit 6167492, read-only clone), keep them light
+enough for phones, and credit CMU under CC BY-SA 4.0.
+
+**The panel:** producer (shot list, ffmpeg), science-comms (what each clip proves, captions, credit),
+web-performance (ladder, budgets, licence); saved as `svg-media-panel-*`.
+
+**The picks:** the encoding ladder and caps, `preload` rules and wording for hand-flown drones are in
+STANDARDS §9. Lit and lights-off stay separate runs. CMU's overlay stays except in the cropped hero.
+
+## 18. Round 7: professors and labs (4 Nov 2026)
+> Add Prof Rahul Mangharam's photo; give a brief description of the professors and the labs. Propose
+> where first; consult the panel.
+
+**The panel:** editor (house style: PI bio third person, two sentences, 300 characters; lab blurb "we"
+voice, three sentences, 420; no awards; facts only from the lab's own site) and content architect
+(four placements; chose "About the lab" under the people row, nothing new on home or cards, no
+People page).
+
+**Jeremy's picks:** William Teo stays "Director of NEAR Lab" (not "Lead"); lab spelling switched to
+MARMoT; Sartoretti's facts from marmotlab.org/bio.html; lab role plus PhD line for William, no
+career history. Professors' `role:` = their verified title (Assistant Professor, ME; Professor, ESE;
+Research Professor, RI). Temasek Labs left out (not on the bio page).
+
+**Built:** `labBlurb:`, `people[].bio`, `people[].link` (schema, STANDARDS §4/§5, CONTRIBUTING §1a);
+UPenn `labFull: Safe Autonomous Systems Lab`. Each partner approves its own text (HANDOFF §5).
+
+**5 Nov follow-up (Jeremy's screenshot):** the card footer "NUS's page · written by NUS → / Last post:
+none yet" read as machine-written → "Partner page →" and "Latest update · <date>" only when there is
+one. "Lead" → "Principal investigator" / "PI" pill. The small chip row (other partners) at the foot of
+each partner page removed. "Principal investigators" row added to the Partners page from the same
+`bio:` data. Type: root size fluid (16 → 20 px by viewport), steps one notch larger, `--max` in rem,
+text columns in rem, so the page scales with the monitor. Also fixed a duplicated "and no central"
+in the positioning statement. Later the same day: the footer column "Each partner edits its own
+file:" with the four `content/partners/*.md` paths removed (Jeremy: visitors will see this); the
+Contribute page and each partner page's own Edit link still lead editors to the files. The home updates strip (three truncated titles under the
+logo row) was removed: the "Latest" rail beside "At a glance" already lists the posts.
+
 ---
 
 ## Review links (private claude.ai pages, owner: Jeremy)

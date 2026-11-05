@@ -4,11 +4,16 @@
  * The step titles and text come from content/programme/benchmark.md.
  * Respects prefers-reduced-motion (no auto-play; steps jump instead of animating)
  * and pauses when scrolled out of view.
+ *
+ * layout "list" (default): the drawing beside one column of steps.
+ * layout "grid" (home page): the drawing capped at ~600 px, the steps in a 2×2 grid, and any
+ * slotted content (the "What they decide" list, the note) under the steps in the same column.
  */
 interface Props {
   steps: { title: string; text?: string }[];
+  layout?: 'list' | 'grid';
 }
-const { steps } = Astro.props;
+const { steps, layout = 'list' } = Astro.props;
 const rotor = [
   [-6.5, -6.5],
   [6.5, -6.5],
@@ -19,7 +24,7 @@ const guards = ['g1', 'g2', 'g3'];
 const strikes = ['s1', 's2'];
 ---
 
-<div class="arena" data-arena>
+<div class:list={['arena', `arena--${layout}`]} data-arena>
   <figure class="arena__figure">
     <svg viewBox="0 0 480 480" role="img" aria-labelledby="arena-title arena-desc">
       <title id="arena-title">The Strike vs Guard game in four beats</title>
@@ -90,12 +95,13 @@ const strikes = ['s1', 's2'];
     </figcaption>
   </figure>
 
+  <div class="arena__side">
   <ol class="arena__steps">
     {
       steps.map((s, i) => (
         <li>
           <button type="button" class="arena__step" data-step={i} aria-pressed={i === 0 ? 'true' : 'false'}>
-            <span class="arena__num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="arena__num">{layout === 'grid' ? String(i + 1) : String(i + 1).padStart(2, '0')}</span>
             <span class="arena__step-body">
               <strong>{s.title}</strong>
               {s.text && <span>{s.text}</span>}
@@ -108,6 +114,8 @@ const strikes = ['s1', 's2'];
       ))
     }
   </ol>
+  <slot />
+  </div>
 </div>
 
 <script>
@@ -295,6 +303,79 @@ const strikes = ['s1', 's2'];
       gap: 48px;
     }
   }
+  /* The board keeps a faint dot grid (--grid, light #E6EAEE / dark #1F2D3D); teams in --strike / --guard. */
+  /* grid layout (home): drawing capped, steps 2×2 under a rule, extra content below */
+  @media (min-width: 900px) {
+    .arena--grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: clamp(28px, 4vw, 64px);
+      align-items: start;
+    }
+  }
+  .arena--grid .arena__figure {
+    width: 100%;
+    max-width: 600px;
+    box-shadow: none;
+  }
+  .arena--grid .arena__steps {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .arena--grid .arena__steps li {
+    border-bottom: 1px solid var(--border);
+    padding: 8px 0;
+  }
+  .arena--grid .arena__steps li:nth-child(even) {
+    border-left: 1px solid var(--border);
+    padding-left: 8px;
+  }
+  .arena--grid .arena__steps li:nth-child(odd) {
+    padding-right: 8px;
+  }
+  .arena--grid .arena__step {
+    gap: 12px;
+    padding: 10px 12px 12px;
+  }
+  .arena--grid .arena__num {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.5em;
+    padding: 0;
+    margin-top: 2px;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .arena--grid .arena__step[aria-pressed='true'] .arena__num {
+    color: var(--text);
+  }
+  .arena--grid .arena__step-body strong {
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+  .arena--grid .arena__step-body > span {
+    font-size: var(--step-0);
+    line-height: 1.5;
+  }
+  .arena--grid .arena__bar {
+    left: 12px;
+    right: 12px;
+  }
+  @media (max-width: 899px) {
+    .arena--grid .arena__figure {
+      max-width: 520px;
+    }
+  }
+  @media (max-width: 640px) {
+    .arena--grid .arena__steps {
+      grid-template-columns: 1fr;
+    }
+    .arena--grid .arena__steps li:nth-child(n) {
+      border-left: 0;
+      padding-inline: 0;
+    }
+  }
   .arena__figure {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -316,9 +397,7 @@ const strikes = ['s1', 's2'];
     stroke-dasharray: 6 6;
   }
   .arena__zone text {
-    font: 500 12px var(--font-mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font: 600 13px var(--font-body);
     fill: var(--muted);
   }
   .arena__intent {
@@ -379,9 +458,7 @@ const strikes = ['s1', 's2'];
     opacity: 0.6;
   }
   .arena__offline {
-    font: 500 11px var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font: 600 12px var(--font-body);
     fill: var(--muted);
     opacity: 0;
   }
@@ -446,9 +523,9 @@ const strikes = ['s1', 's2'];
     color: var(--muted);
     background: none;
     border: 1px solid var(--border);
-    border-radius: 999px;
+    border-radius: var(--radius);
     padding: 4px 12px;
-    min-height: 32px;
+    min-height: 44px;
     cursor: pointer;
   }
   .arena__toggle:hover {

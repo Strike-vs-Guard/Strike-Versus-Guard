@@ -1,0 +1,337 @@
+---
+/**
+ * "Partners" nav item with a ▾ button that opens a panel of the four partners.
+ * "Partners" stays a plain link (works without JS); the button is shown only once the script runs.
+ * Hover opens after 120 ms and closes after a 300 ms grace; click toggles; Enter/Space opens;
+ * ArrowDown moves into the rows; Escape closes and refocuses the button; focus leaving closes.
+ * Place it inside a <ul> in a positioned header: the panel is positioned against the nearest
+ * positioned ancestor of the <li> (the header row), so on phones it spans the header width.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { url } from '../lib/url';
+
+interface Props {
+  partners: CollectionEntry<'partners'>[];
+  current?: boolean;
+  path?: string;
+  /** Suffix for ids, so more than one menu can sit on a page. */
+  idSuffix?: string;
+}
+
+const { partners, current = false, path = '', idSuffix = 'main' } = Astro.props;
+const panelId = `pm-panel-${idSuffix}`;
+const sorted = [...partners].sort((a, b) => a.data.order - b.data.order);
+const rows = sorted.filter((p) => p.data.role !== 'Funding sponsor' && p.data.page);
+const funder = sorted.find((p) => p.data.role === 'Funding sponsor');
+
+/* The chip is 28 px inside its padding. It shows the partner's square `logoMark` if it has one, else the logo. */
+const CHIP = 28;
+/* A lab written as "Centre · Lab" shows only its last part, e.g. "NEAR Lab". */
+const labName = (lab?: string) => lab?.split(' · ').at(-1);
+const chip = (p: CollectionEntry<'partners'>) => {
+  const src = p.data.logoMark ?? p.data.logo;
+  const ar = src.width / src.height;
+  const size = ar >= 1 ? { width: CHIP, height: Math.round(CHIP / ar) } : { width: Math.round(CHIP * ar), height: CHIP };
+  return { src, ...size };
+};
+---
+
+<li class="pm" data-pm>
+  <a class="nav-link pm__link" href={url('partners/')} aria-current={current ? 'page' : undefined}>Partners</a>
+  <button type="button" class="pm__btn" aria-expanded="false" aria-controls={panelId} aria-label="Partners menu" hidden>
+    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+      <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+  <div class="pm__panel" id={panelId} hidden>
+    <p class="pm__head">Each partner has its own page</p>
+    <ul class="pm__list">
+      {
+        rows.map((p) => {
+          const href = url(`partners/${p.id}/`);
+          return (
+            <li>
+              <a class="pm__row" href={href} aria-current={path === href ? 'page' : undefined}>
+                <span class="pm__chip">
+                  <Image alt="" {...chip(p)} densities={[1, 2]} />
+                </span>
+                <span>
+                  <span class="pm__name">
+                    {p.data.short}
+                    {p.data.lab && <span class="pm__lab"> · {labName(p.data.lab)}</span>}
+                  </span>
+                  <span class="pm__desc">{p.data.contribution}</span>
+                </span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <div class="pm__foot">
+      {
+        funder && (
+          <a class="pm__row pm__row--muted" href={url('partners/#funder')}>
+            <span class="pm__chip">
+              <Image alt="" {...chip(funder)} densities={[1, 2]} />
+            </span>
+            <span>Funded by {funder.data.short}</span>
+          </a>
+        )
+      }
+      <a class="pm__all" href={url('partners/')}>All partners →</a>
+    </div>
+  </div>
+</li>
+
+<style>
+  .pm {
+    position: static;
+    display: flex;
+    align-items: center;
+  }
+  .pm a.pm__link {
+    padding-right: 2px;
+  }
+  .pm.is-open .pm__link {
+    color: var(--text);
+  }
+  .pm__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .pm__btn[hidden] {
+    display: none;
+  }
+  .pm__btn:hover,
+  .pm.is-open .pm__btn {
+    color: var(--text);
+  }
+  .pm.is-open .pm__btn svg {
+    transform: rotate(180deg);
+  }
+  .pm__panel {
+    position: absolute;
+    top: calc(100% - 2px);
+    right: var(--gutter);
+    z-index: 30;
+    width: min(440px, calc(100% - 2 * var(--gutter)));
+    padding: 14px 10px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-pop);
+  }
+  .pm__panel[hidden] {
+    display: none;
+  }
+  /* Hover bridge across the gap between the nav item and the panel. */
+  .pm__panel::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -14px;
+    height: 14px;
+  }
+  .pm__head {
+    margin: 0 10px 6px;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .pm__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .pm__row {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 12px;
+    align-items: center;
+    min-height: 44px;
+    padding: 9px 10px;
+    border-radius: var(--radius);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .pm__row:hover,
+  .pm__row:focus-visible {
+    background: var(--surface);
+  }
+  .pm__row[aria-current='page'] .pm__name {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .pm__name {
+    font-size: var(--step-0);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .pm__lab {
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .pm__desc {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: var(--step--1);
+    line-height: 1.4;
+  }
+  .pm__chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 4px;
+    background: var(--well);
+    border: 1px solid var(--well-border);
+    border-radius: var(--radius);
+  }
+  .pm__chip :global(img) {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+  }
+  .pm__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 12px;
+    margin: 6px 0 0;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+  .pm__row--muted {
+    color: var(--muted);
+    font-size: var(--step-0);
+  }
+  .pm__all {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 10px;
+    border-radius: var(--radius);
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--brand-red);
+    text-decoration: none;
+  }
+  .pm__all:hover {
+    text-decoration: underline;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pm__btn svg {
+      transition: transform 0.15s ease;
+    }
+  }
+  @media (max-width: 720px) {
+    .pm__panel {
+      top: 100%;
+      left: var(--gutter);
+      right: var(--gutter);
+      width: auto;
+    }
+    .pm__desc {
+      overflow-wrap: anywhere;
+    }
+  }
+</style>
+
+<script>
+  const OPEN_DELAY = 120;
+  const CLOSE_GRACE = 300;
+  const canHover = window.matchMedia('(hover: hover)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-pm]').forEach((item) => {
+    const btn = item.querySelector<HTMLButtonElement>('.pm__btn');
+    const panel = item.querySelector<HTMLElement>('.pm__panel');
+    if (!btn || !panel) return;
+    btn.hidden = false;
+
+    let openT: number | undefined;
+    let closeT: number | undefined;
+    let openedBy: 'hover' | 'click' | null = null;
+    const links = () => Array.from(panel.querySelectorAll<HTMLAnchorElement>('a'));
+    const isOpen = () => !panel.hidden;
+
+    const open = (by: 'hover' | 'click') => {
+      clearTimeout(openT);
+      clearTimeout(closeT);
+      panel.hidden = false;
+      item.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+      if (openedBy !== 'click') openedBy = by;
+    };
+    const close = (refocus: boolean) => {
+      clearTimeout(openT);
+      clearTimeout(closeT);
+      panel.hidden = true;
+      item.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+      openedBy = null;
+      if (refocus) btn.focus();
+    };
+
+    item.addEventListener('mouseenter', () => {
+      if (!canHover) return;
+      clearTimeout(closeT);
+      if (!isOpen()) openT = window.setTimeout(() => open('hover'), OPEN_DELAY);
+    });
+    item.addEventListener('mouseleave', () => {
+      if (!canHover) return;
+      clearTimeout(openT);
+      if (isOpen() && openedBy === 'hover') closeT = window.setTimeout(() => close(false), CLOSE_GRACE);
+    });
+    btn.addEventListener('click', () => {
+      // A click on a hover-opened panel pins it open rather than closing it under the pointer.
+      if (isOpen() && openedBy === 'hover') {
+        openedBy = 'click';
+        clearTimeout(closeT);
+        return;
+      }
+      if (isOpen()) close(false);
+      else open('click');
+    });
+    item.addEventListener('keydown', (e) => {
+      const all = links();
+      const idx = all.indexOf(document.activeElement as HTMLAnchorElement);
+      if (e.key === 'Escape' && isOpen()) {
+        e.preventDefault();
+        close(true);
+      } else if (e.key === 'ArrowDown' && (document.activeElement === btn || idx > -1)) {
+        e.preventDefault();
+        if (!isOpen()) open('click');
+        /* an empty list has nothing to move to; the panel stays open and Escape still closes it */
+        if (all.length > 0) all[Math.min(idx + 1, all.length - 1)].focus();
+      } else if (e.key === 'ArrowUp' && idx > -1) {
+        e.preventDefault();
+        if (idx === 0) btn.focus();
+        else all[idx - 1].focus();
+      }
+    });
+    item.addEventListener('focusout', (e) => {
+      const next = e.relatedTarget as Node | null;
+      if (isOpen() && next && !item.contains(next)) close(false);
+    });
+    document.addEventListener('click', (e) => {
+      if (isOpen() && !item.contains(e.target as Node)) close(false);
+    });
+  });
+</script>

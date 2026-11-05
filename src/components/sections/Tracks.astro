@@ -1,0 +1,136 @@
+---
+/**
+ * Two tracks, one stack (content/programme/tracks.md). Holds the #programme anchor, and one anchor per
+ * track (`icon:` if set, else #learning and #formal) for the Research page and the home themes rows.
+ */
+import { Image } from 'astro:assets';
+import PartnerChips from '../PartnerChips.astro';
+import Icon from '../Icon.astro';
+import { section } from './content';
+
+const tracks = await section('tracks');
+---
+
+<section id="programme" class="section section--alt">
+  <div class="wrap">
+    <header class="section__head">
+      <p class="eyebrow">{tracks.eyebrow}</p>
+      <h2>{tracks.title}</h2>
+      <div class="prose"><tracks.Content /></div>
+    </header>
+    <div class="tracks">
+      {
+        tracks.items.map((t, i) => (
+          <article class="card track" id={t.icon ?? ['learning', 'formal'][i]}>
+            <p class="eyebrow">{t.label}</p>
+            <h3>{t.title}</h3>
+            <PartnerChips ids={t.partners} />
+            <p class="track__text">{t.text}</p>
+            {t.image && (
+              <div class="track__fig">
+                <Image src={t.image} alt={t.alt ?? ''} widths={[480, 800]} sizes="(min-width: 900px) 520px, 100vw" />
+              </div>
+            )}
+            <ul class="track__pm">
+              {t.plus && (
+                <li>
+                  <span aria-hidden="true">+</span>
+                  <span class="visually-hidden">Strength: </span>
+                  {t.plus}
+                </li>
+              )}
+              {t.minus && (
+                <li>
+                  <span aria-hidden="true">–</span>
+                  <span class="visually-hidden">Trade-off: </span>
+                  {t.minus}
+                </li>
+              )}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+    {
+      tracks.note && (
+        <p class="shared-stack">
+          <Icon name="drones" size={22} />
+          <span>{tracks.note}</span>
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  /* Tracks */
+  .tracks {
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 900px) {
+    .tracks {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto auto 1fr auto;
+    }
+    .track {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 6;
+    }
+  }
+  .track {
+    padding: clamp(20px, 3vw, 32px);
+    gap: 12px;
+  }
+  .track h3 {
+    font-size: var(--step-3);
+    margin: 0;
+  }
+  .track .eyebrow {
+    margin: 0;
+  }
+  .track__text {
+    margin: 0;
+  }
+  .track__fig {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    align-self: start;
+  }
+  .track__pm {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+    display: grid;
+    gap: 4px;
+    font-size: var(--step-0);
+  }
+  .track__pm li {
+    display: flex;
+    gap: 10px;
+  }
+  .track__pm li > span:first-child {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    width: 1ch;
+  }
+  .shared-stack {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    margin: 20px 0 0;
+    padding: 16px 20px;
+    border: 1px dashed var(--muted);
+    border-radius: var(--radius);
+    font-weight: 600;
+  }
+  .shared-stack :global(svg) {
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+</style>

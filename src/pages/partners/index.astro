@@ -1,0 +1,51 @@
+---
+/** Partners page: the partner cards, the principal investigators, then who works on each layer (the connection diagram). */
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/sections/PageHead.astro';
+import PartnerCards from '../../components/sections/PartnerCards.astro';
+import Investigators from '../../components/sections/Investigators.astro';
+import ConnectionDiagram from '../../components/ConnectionDiagram.astro';
+import { getSystemData } from '../../lib/system';
+import { section } from '../../components/sections/content';
+
+const stack = await section('stack');
+const system = await getSystemData();
+---
+
+<Base title="Partners" description="ST Engineering, NUS, UPenn and CMU work across the five layers of one system, funded by HTX.">
+  <PageHead eyebrow="Partners" title="Who does what">
+    <stack.Content />
+  </PageHead>
+  <PartnerCards />
+  <Investigators />
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="sys-part" id="who">
+        <h2 class="sys-part__h">Who works on each layer</h2>
+        <p class="sys-part__hint">Select a partner or a layer to trace the links.</p>
+      </div>
+      <div id="who-links">
+        <ConnectionDiagram data={system} />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sys-part {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 14px;
+    margin: 0 0 18px;
+  }
+  .sys-part__h {
+    font-size: var(--step-3);
+    margin: 0;
+  }
+  .sys-part__hint {
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--step-0);
+  }
+</style>

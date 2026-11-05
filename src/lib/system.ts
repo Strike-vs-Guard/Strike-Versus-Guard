@@ -8,7 +8,7 @@ import { getCollection, getEntry } from 'astro:content';
 import { getImage } from 'astro:assets';
 import { url } from './url';
 
-export const LAYER_IDS = ['strategy', 'safety', 'flight', 'drones', 'integration'] as const;
+export const LAYER_IDS = ['strategy', 'safety', 'flight', 'localisation', 'drones', 'integration'] as const;
 export type LayerId = (typeof LAYER_IDS)[number];
 
 export async function getSystemData() {

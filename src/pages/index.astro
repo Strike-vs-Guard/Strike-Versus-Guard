@@ -1,724 +1,255 @@
 ---
-import { getCollection, getEntry, render } from 'astro:content';
-import { Image } from 'astro:assets';
+/**
+ * Home (v3, spec 2026-11-03): title above a rounded 2:1 clip panel → logo row →
+ * At a glance + Latest → partner cards → research themes → the annotated drone (Layers) → flights
+ * (lead + 3) → publications → people. The footer is in Base.
+ */
+import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Wordmark from '../components/Wordmark.astro';
-import Arena from '../components/Arena.astro';
-import PartnerChips from '../components/PartnerChips.astro';
-import Clip from '../components/Clip.astro';
-import Icon from '../components/Icon.astro';
 import { url } from '../lib/url';
-import { getSystemData } from '../lib/system';
-import DroneDiagram from '../components/DroneDiagram.astro';
-import ConnectionDiagram from '../components/ConnectionDiagram.astro';
-
-const section = async (id: string) => {
-  const entry = await getEntry('programme', id);
-  if (!entry) throw new Error(`Missing content/programme/${id}.md`);
-  const { Content } = await render(entry);
-  return { ...entry.data, Content };
-};
+import { section } from '../components/sections/content';
+import LogoRow from '../components/sections/LogoRow.astro';
+import Glance from '../components/sections/Glance.astro';
+import PartnerCards from '../components/sections/PartnerCards.astro';
+import Themes from '../components/sections/Themes.astro';
+import Layers from '../components/sections/Layers.astro';
+import Clips from '../components/sections/Clips.astro';
+import PublicationsTeaser from '../components/sections/PublicationsTeaser.astro';
+import People from '../components/sections/People.astro';
 
 const overview = await section('overview');
-const tracks = await section('tracks');
-const benchmark = await section('benchmark');
-const stack = await section('stack');
 const flights = await section('flights');
-const progress = await section('progress');
-const milestones = await section('milestones');
-const directions = await section('directions');
-
-const partners = (await getCollection('partners')).sort((a, b) => a.data.order - b.data.order);
-const sponsors = partners.filter((p) => p.data.role === 'Funding sponsor');
-
-const system = await getSystemData();
-const updates = (await getCollection('updates', (u) => !u.data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-const partnerName = (id: string) => partners.find((p) => p.id === id)?.data.short ?? id;
+/* the still photo: the clip's poster, and what reduced-motion visitors see instead of the clip */
+const still = overview.image ? await getImage({ src: overview.image, width: 1600, format: 'webp' }) : undefined;
+const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?? overview.imageAlt ?? overview.caption ?? '';
 ---
 
 <Base>
-  <!-- ───────────────────────── Hero ───────────────────────── -->
-  <section class="hero">
-    <div class="wrap hero__grid">
-      <div class="hero__text">
-        <p class="eyebrow">{overview.eyebrow} · Decentralised multi-drone autonomy</p>
-        <Wordmark as="h1" />
-        <span class="hero__rule" aria-hidden="true"></span>
-        <p class="hero__title">{overview.title}</p>
-        <div class="prose hero__body"><overview.Content /></div>
-        <div class="hero__actions">
-          <a class="btn" href="#programme">How it works</a>
-          <a class="btn btn--ghost" href="#partners">Meet the partners</a>
-        </div>
+  <!-- ───────────────────────── Hero: title above a rounded 2:1 clip panel ───────────────────────── -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero__text">
+      <h1 id="hero-title">{overview.title}</h1>
+      <div class="hero__sum"><overview.Content /></div>
+      <div class="hero__btns">
+        <a class="btn" href="#updates">Latest updates</a>
+        <a class="btn btn--ghost" href={url('partners/')}>Meet the partners</a>
       </div>
-      {
-        overview.image && (
-          <figure class="hero__figure">
-            <Image
-              src={overview.image}
-              alt={overview.imageAlt ?? ''}
-              widths={[560, 900, 1400]}
-              sizes="(min-width: 960px) 560px, 100vw"
-              loading="eager"
-              fetchpriority="high"
-            />
-            {overview.caption && <figcaption>{overview.caption}</figcaption>}
-          </figure>
-        )
-      }
     </div>
-    <div class="wrap">
-      <dl class="facts">
-        <div><dt>Funded by</dt><dd>HTX</dd></div>
-        <div><dt>Partners</dt><dd>ST Engineering · CMU · UPenn · NUS</dd></div>
-        <div><dt>Hardware</dt><dd>Starling 2 Max · AirStack</dd></div>
-        <div><dt>Timeline</dt><dd>2026 to 2029</dd></div>
-      </dl>
-    </div>
-  </section>
-
-  <!-- ─────────────────── Two tracks, one stack ─────────────────── -->
-  <section id="programme" class="section section--alt">
-    <div class="wrap">
-      <header class="section__head">
-        <p class="eyebrow">{tracks.eyebrow}</p>
-        <h2>{tracks.title}</h2>
-        <div class="prose"><tracks.Content /></div>
-      </header>
-      <div class="tracks">
-        {
-          tracks.items.map((t) => (
-            <article class="card track">
-              <p class="eyebrow">{t.label}</p>
-              <h3>{t.title}</h3>
-              <PartnerChips ids={t.partners} />
-              <p class="track__text">{t.text}</p>
-              {t.image && (
-                <div class="track__fig">
-                  <Image src={t.image} alt={t.alt ?? ''} widths={[480, 800]} sizes="(min-width: 900px) 520px, 100vw" />
-                </div>
-              )}
-              <ul class="track__pm">
-                {t.plus && (
-                  <li>
-                    <span aria-hidden="true">+</span>
-                    <span class="visually-hidden">Strength: </span>
-                    {t.plus}
-                  </li>
-                )}
-                {t.minus && (
-                  <li>
-                    <span aria-hidden="true">–</span>
-                    <span class="visually-hidden">Trade-off: </span>
-                    {t.minus}
-                  </li>
-                )}
-              </ul>
-            </article>
-          ))
-        }
-      </div>
-      {
-        tracks.note && (
-          <p class="shared-stack">
-            <Icon name="drones" size={22} />
-            <span>{tracks.note}</span>
-          </p>
-        )
-      }
-    </div>
-  </section>
-
-  <!-- ─────────────────────── Benchmark ─────────────────────── -->
-  <section id="benchmark" class="section">
-    <div class="wrap">
-      <header class="section__head">
-        <p class="eyebrow">{benchmark.eyebrow}</p>
-        <h2>{benchmark.title}</h2>
-        <div class="prose"><benchmark.Content /></div>
-      </header>
-      <Arena steps={benchmark.items} />
-      {benchmark.note && <p class="section__note">{benchmark.note}</p>}
-    </div>
-  </section>
-
-  <!-- ──────────────── Who does what: layers × partners ──────────────── -->
-  <section id="partners" class="section section--alt">
-    <div class="wrap">
-      <header class="section__head">
-        <p class="eyebrow">{stack.eyebrow}</p>
-        <h2>{stack.title}</h2>
-        <div class="prose"><stack.Content /></div>
-      </header>
-
-      <div class="sys-part">
-        <h3 class="sys-part__h">What each layer does, top to bottom</h3>
-        <p class="sys-part__hint">Select a layer to see who works on it below ↓</p>
-      </div>
-      <DroneDiagram data={system} mode="explain" target="#who-links" scrollTo="#who" />
-
-      <div class="sys-part sys-part--rule" id="who">
-        <h3 class="sys-part__h">Who works on each layer</h3>
-        <p class="sys-part__hint">Select a partner or a layer to trace the links.</p>
-      </div>
-      <div id="who-links">
-        <ConnectionDiagram data={system} />
-      </div>
-
-      {
-        sponsors.length > 0 && (
-          <div class="sponsor">
-            <p class="eyebrow">Funded by</p>
-            {sponsors.map((s) => (
-              <a class="logo-well sponsor__logo" href={s.data.website} title={s.data.institution}>
-                <Image src={s.data.logo} alt={s.data.logoAlt ?? s.data.institution} height={96} densities={[1, 2]} />
-              </a>
-            ))}
+    {
+      (overview.video || still) && (
+        <figure class="wrap hero__fig">
+          <div class:list={['hero__panel', { 'has-video': !!overview.video }]} data-hero-clip>
+            {overview.video && (
+              <video
+                class="hero__video"
+                src={url(`media/${overview.video}`)}
+                poster={still?.src}
+                muted
+                loop
+                playsinline
+                preload="none"
+                aria-label={`Flight clip: ${clipTitle}`}
+              />
+            )}
+            {still && (
+              <img
+                class="hero__still"
+                src={still.src}
+                alt={overview.imageAlt ?? ''}
+                width={still.attributes.width}
+                height={still.attributes.height}
+                loading="eager"
+                decoding="async"
+              />
+            )}
+            {overview.video && (
+              <button type="button" class="hero__toggle" aria-label="Play the flight clip" hidden>
+                <svg class="hero__i-play" width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
+                  <path d="M5 3l10 6-10 6z" fill="currentColor" />
+                </svg>
+                <svg class="hero__i-pause" width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
+                  <path d="M5 3h3v12H5zM10 3h3v12h-3z" fill="currentColor" />
+                </svg>
+              </button>
+            )}
           </div>
-        )
-      }
-      {
-        stack.image && (
-          <figure class="team-photo">
-            <Image src={stack.image} alt={stack.imageAlt ?? ''} widths={[600, 1000, 1400]} sizes="(min-width: 1160px) 1100px, 100vw" />
-            {stack.caption && <figcaption>{stack.caption}</figcaption>}
-          </figure>
-        )
-      }
-    </div>
+          {overview.caption && <figcaption>{overview.caption}</figcaption>}
+        </figure>
+      )
+    }
   </section>
 
-  <!-- ─────────────────────── Flights ─────────────────────── -->
-  <section id="flights" class="section">
-    <div class="wrap">
-      <header class="section__head">
-        <p class="eyebrow">{flights.eyebrow}</p>
-        <h2>{flights.title}</h2>
-        <div class="prose"><flights.Content /></div>
-      </header>
-      <div class="clips">
-        {
-          flights.items.map((c) => (
-            <figure class="clip-card">
-              {c.video && <Clip video={c.video} poster={c.poster} title={c.title} />}
-              <figcaption>
-                <strong>{c.title}</strong>
-                <span>{c.text}</span>
-              </figcaption>
-            </figure>
-          ))
-        }
-      </div>
-      {flights.note && <p class="section__note">{flights.note}</p>}
+  <LogoRow />
 
-      <header class="section__head section__head--sub">
-        <p class="eyebrow">{progress.eyebrow}</p>
-        <h2 class="h2--sub">{progress.title}</h2>
-        <div class="prose"><progress.Content /></div>
-      </header>
-      <ol class="progress">
-        {
-          progress.items.map((c) => (
-            <li class="progress__step">
-              {c.video && <Clip video={c.video} poster={c.poster} title={c.title} />}
-              <p class="eyebrow">{c.label}</p>
-              <h3>{c.title}</h3>
-              <p class="muted">{c.text}</p>
-              <PartnerChips ids={c.partners} />
-            </li>
-          ))
-        }
-      </ol>
-    </div>
-  </section>
-
-  <!-- ─────────────────────── Milestones ─────────────────────── -->
-  <section id="milestones" class="section section--alt">
-    <div class="wrap">
-      <header class="section__head">
-        <p class="eyebrow">{milestones.eyebrow}</p>
-        <h2>{milestones.title}</h2>
-        <div class="prose"><milestones.Content /></div>
-      </header>
-      <ol class="timeline">
-        {
-          milestones.items.map((m) => (
-            <li class:list={['timeline__item', { 'is-current': m.current }]}>
-              <span class="timeline__dot" aria-hidden="true" />
-              <p class="eyebrow">
-                {m.label} · {m.when}
-                {m.current && <span class="timeline__now">We are here</span>}
-              </p>
-              <h3>{m.title}</h3>
-              <p class="muted">{m.text}</p>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
-  </section>
-
-  <!-- ─────────────────────── Directions ─────────────────────── -->
-  <section id="directions" class="section">
-    <div class="wrap">
-      <header class="section__head">
-        <p class="eyebrow">{directions.eyebrow}</p>
-        <h2>{directions.title}</h2>
-      </header>
-      <ul class="directions">
-        {
-          directions.items.map((d) => (
-            <li>
-              <Icon name={d.icon ?? 'drones'} />
-              <h3>{d.title}</h3>
-              <p class="muted">{d.text}</p>
-            </li>
-          ))
-        }
-      </ul>
-      {
-        directions.tags.length > 0 && (
-          <div class="tags">
-            <p class="eyebrow">{directions.tagsLabel}</p>
-            <ul>
-              {directions.tags.map((t) => (
-                <li class="chip">{t}</li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
-    </div>
-  </section>
-
-  <!-- ─────────────────────── Updates ─────────────────────── -->
-  {
-    updates.length > 0 && (
-      <section id="updates" class="section">
-        <div class="wrap">
-          <header class="section__head section__head--row">
-            <div>
-              <p class="eyebrow">Updates</p>
-              <h2>Latest from the programme</h2>
-            </div>
-            <a class="btn btn--ghost" href={url('updates/')}>All updates</a>
-          </header>
-          <ul class="updates">
-            {updates.map((u) => (
-              <li class="card update">
-                <p class="eyebrow">
-                  <time datetime={u.data.date.toISOString().slice(0, 10)}>{fmt(u.data.date)}</time> ·{' '}
-                  {partnerName(u.data.partner)}
-                </p>
-                <h3>
-                  <a href={url(`updates/${u.id}/`)}>{u.data.title}</a>
-                </h3>
-                <p class="muted">{u.data.summary}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    )
-  }
+  <div class="home">
+    <Glance />
+    <PartnerCards heading="Partners" funderLine={false} />
+    <Themes />
+    <Layers />
+    <Clips id="flights" lead log limit={4} skip={overview.video ? [overview.video] : []} more={{ href: url('flights/'), label: 'All flights →' }} />
+    <PublicationsTeaser />
+    <People />
+  </div>
 </Base>
 
+<script>
+  /*
+   * Hero clip: no autoplay attribute and preload="none", so nothing loads until the script starts it.
+   * It plays muted on load unless the visitor prefers reduced motion; they get the still photo and a
+   * play button instead. Shares the play/pause wiring (and one-clip-at-a-time) with Clip.astro.
+   * It pauses while scrolled out of view or while the tab is hidden, and resumes only if it was playing
+   * then: a visitor's pause, or another clip starting, keeps it paused.
+   */
+  import { bindToggle } from '../lib/clip-player';
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for (const panel of document.querySelectorAll<HTMLElement>('[data-hero-clip]')) {
+    const video = panel.querySelector('video');
+    const button = panel.querySelector<HTMLButtonElement>('.hero__toggle');
+    if (!video || !button) continue;
+    video.addEventListener('playing', () => video.classList.add('is-started'));
+    bindToggle({
+      root: panel,
+      video,
+      button,
+      pressed: false,
+      label: (on) => (on ? 'Pause the flight clip' : 'Play the flight clip'),
+      beforePlay: () => panel.classList.add('is-on'),
+    });
+    button.hidden = false;
+
+    /* `wanted`: should the clip play whenever it is visible? Pausing it off screen or in a hidden tab keeps it. */
+    let wanted = !reduce;
+    let inView = true;
+    const apply = () => {
+      const run = wanted && inView && !document.hidden;
+      if (run && video.paused) video.play().catch(() => {});
+      else if (!run && !video.paused) video.pause();
+    };
+    /* a pause while the clip is on screen and the tab is shown came from the visitor or another clip */
+    video.addEventListener('pause', () => {
+      if (inView && !document.hidden) wanted = false;
+    });
+    video.addEventListener('play', () => (wanted = true));
+    document.addEventListener('visibilitychange', apply);
+    new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        apply();
+      },
+      { threshold: 0.1 },
+    ).observe(panel);
+    if (!reduce) {
+      panel.classList.add('is-on');
+      apply();
+    }
+  }
+</script>
+
 <style>
-  /* Hero */
-  .hero {
-    padding-block: clamp(40px, 7vw, 88px) clamp(32px, 5vw, 56px);
+  /* Rules between the home sections, as in the draft */
+  .home > :global(.section ~ .section) {
+    border-top: 1px solid var(--border);
   }
-  .hero__grid {
-    display: grid;
-    gap: 40px;
-    align-items: center;
+  /* Hero: title, positioning statement and buttons above the panel */
+  .hero__text {
+    padding-top: clamp(44px, 6vw, 72px);
   }
-  @media (min-width: 960px) {
-    .hero__grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 56px;
-    }
+  .hero h1 {
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1.06;
+    max-width: 14em;
+    margin: 0;
   }
-  .hero__text :global(.wordmark) {
-    margin-top: 4px;
+  .hero__sum {
+    margin-top: 18px;
+    max-width: 47.5rem;
   }
-  .hero__rule {
-    display: block;
-    width: 32px;
-    height: 3px;
-    background: var(--accent);
-    margin: 22px 0 20px;
-  }
-  .hero__title {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: var(--step-4);
-    line-height: 1.15;
-    max-width: 22ch;
-    margin-bottom: 18px;
-  }
-  .hero__body :global(p) {
+  .hero__sum :global(p) {
+    font-size: var(--step-0);
+    line-height: 1.6;
     color: var(--muted);
+    margin: 0;
   }
-  .hero__body :global(strong) {
+  .hero__sum :global(strong) {
     color: var(--text);
     font-weight: 600;
   }
-  .hero__actions {
+  .hero__btns {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 24px;
+    gap: 12px;
+    margin-top: 28px;
   }
-  .hero__figure :global(img) {
-    width: 100%;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
+  .hero__fig {
+    margin: 40px auto 0;
   }
-  @media (max-width: 420px) {
-    .hero :global(.wordmark--lg) {
-      font-size: 2.35rem;
-    }
-  }
-  .facts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1px;
-    margin: clamp(32px, 5vw, 56px) 0 0;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+  .hero__panel {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    border-radius: 12px;
     overflow: hidden;
+    background: var(--media);
   }
-  .facts div {
-    background: var(--surface);
-    padding: 14px 16px;
-  }
-  @media (max-width: 719px) {
-    .facts div:last-child:nth-child(odd) {
-      grid-column: 1 / -1;
-    }
-  }
-  .facts dt {
-    font: 500 var(--step--1) var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-  }
-  .facts dd {
-    margin: 4px 0 0;
-    font-weight: 600;
-    font-size: var(--step-0);
-  }
-
-  /* Tracks */
-  .tracks {
-    display: grid;
-    gap: 20px;
-  }
-  @media (min-width: 900px) {
-    .tracks {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto auto auto auto 1fr auto;
-    }
-    .track {
-      display: grid;
-      grid-template-rows: subgrid;
-      grid-row: span 6;
-    }
-  }
-  .track {
-    padding: clamp(20px, 3vw, 32px);
-    gap: 12px;
-  }
-  .track h3 {
-    font-size: var(--step-3);
-    margin: 0;
-  }
-  .track .eyebrow {
-    margin: 0;
-  }
-  .track__text {
-    margin: 0;
-  }
-  .track__fig {
-    background: #fff;
-    border-radius: 8px;
-    padding: 12px;
-    border: 1px solid var(--border);
-    align-self: start;
-  }
-  .track__pm {
-    list-style: none;
-    padding: 0;
-    margin: 4px 0 0;
-    display: grid;
-    gap: 4px;
-    font-size: var(--step-0);
-  }
-  .track__pm li {
-    display: flex;
-    gap: 10px;
-  }
-  .track__pm li > span:first-child {
-    font-family: var(--font-mono);
-    color: var(--muted);
-    width: 1ch;
-  }
-  .shared-stack {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    justify-content: center;
-    text-align: left;
-    margin: 20px 0 0;
-    padding: 16px 20px;
-    border: 1px dashed var(--muted);
-    border-radius: var(--radius);
-    font-weight: 600;
-  }
-  .shared-stack :global(svg) {
-    flex-shrink: 0;
-    color: var(--muted);
-  }
-
-  /* Flights */
-  .clips {
-    display: grid;
-    gap: 20px 14px;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr));
-  }
-  .clip-card figcaption {
-    font-family: var(--font-body);
-    font-size: var(--step-0);
-    letter-spacing: 0;
-    display: grid;
-    gap: 2px;
-  }
-  .clip-card figcaption strong {
-    color: var(--text);
-  }
-  .section__head--sub {
-    margin-top: clamp(48px, 8vw, 88px);
-  }
-  .h2--sub {
-    font-size: var(--step-4);
-  }
-  .progress {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 28px;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    counter-reset: step;
-  }
-  .progress__step :global(.clip) {
-    margin-bottom: 14px;
-  }
-  .progress__step :global(video) {
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-  .progress__step .eyebrow {
-    margin-bottom: 4px;
-  }
-  .progress__step h3 {
-    margin-bottom: 4px;
-  }
-  .progress__step p.muted {
-    margin-bottom: 10px;
-  }
-
-  /* Timeline */
-  .timeline {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 0;
-    position: relative;
-  }
-  .timeline__item {
-    position: relative;
-    padding: 0 0 32px 32px;
-    border-left: 2px solid var(--border);
-    margin-left: 7px;
-  }
-  .timeline__item:last-child {
-    padding-bottom: 0;
-  }
-  .timeline__dot {
-    position: absolute;
-    left: -9px;
-    top: 2px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--bg);
-    border: 2px solid var(--muted);
-  }
-  .is-current .timeline__dot {
-    border-color: var(--accent);
-    background: var(--accent);
-    box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent);
-  }
-  .timeline__now {
-    display: inline-block;
-    margin-left: 10px;
-    padding: 1px 8px;
-    border-radius: 999px;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-  }
-  .timeline h3 {
-    margin-bottom: 4px;
-  }
-  @media (min-width: 860px) {
-    .timeline {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-    .timeline__item {
-      border-left: 0;
-      margin-left: 0;
-      padding: 36px 0 0;
-      border-top: 2px solid var(--border);
-    }
-    .timeline__item:last-child {
-      padding-bottom: 0;
-    }
-    .timeline__dot {
-      left: 0;
-      top: -9px;
-    }
-  }
-
-  /* Directions */
-  .directions {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 32px 28px;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  }
-  .directions li {
-    border-top: 1px solid var(--border);
-    padding-top: 18px;
-  }
-  .directions :global(svg) {
-    color: var(--text);
-    margin-bottom: 12px;
-  }
-  .directions h3 {
-    margin-bottom: 4px;
-  }
-  .tags {
-    margin-top: 40px;
-  }
-  .tags ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .tags .chip {
-    font-size: var(--step--1);
-    padding: 4px 12px;
-    color: var(--text);
-  }
-
-  /* How it fits together: the two parts */
-  .sys-part {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 4px 14px;
-    margin: 8px 0 18px;
-  }
-  .sys-part--rule {
-    margin-top: 48px;
-    padding-top: 28px;
-    border-top: 1px solid var(--border);
-    /* with the page's 72px scroll-padding this lands ~80px down, clear of the sticky header */
-    scroll-margin-top: 8px;
-  }
-  .sys-part__h {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: var(--step-3);
-    margin: 0;
-  }
-  .sys-part__hint {
-    margin: 0;
-    color: var(--muted);
-    font-size: var(--step-0);
-  }
-
-  .sponsor {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 24px;
-  }
-  .sponsor .eyebrow {
-    margin: 0;
-  }
-  .sponsor__logo {
-    height: 64px;
-    border: 1px solid var(--border);
-  }
-  .sponsor__logo :global(img) {
-    max-height: 40px;
-  }
-  .team-photo {
-    margin-top: 32px;
-  }
-  .team-photo :global(img) {
+  .hero__panel video,
+  .hero__panel img {
     width: 100%;
-    border-radius: var(--radius);
-    aspect-ratio: 21 / 9;
+    height: 100%;
     object-fit: cover;
-    object-position: center 60%;
+    border: 0;
   }
-
-  /* Updates */
-  .section__head--row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    justify-content: space-between;
-    gap: 16px;
+  /* the hero loop is cropped to 2:1 from the room camera, so it fills the panel centred */
+  .hero__panel video {
+    object-position: 50% 50%;
   }
-  .section__head--row h2 {
-    margin: 0;
+  .hero__panel.has-video .hero__still {
+    display: none;
   }
-  .updates {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  @media (prefers-reduced-motion: reduce) {
+    .hero__panel.has-video:not(.is-on) .hero__video {
+      display: none;
+    }
+    .hero__panel.has-video:not(.is-on) .hero__still {
+      display: block;
+    }
+  }
+  .hero__toggle {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius);
+    border: 1px solid rgb(255 255 255 / 0.45);
+    background: color-mix(in srgb, var(--media) 45%, transparent);
+    color: #fff;
+    cursor: pointer;
     display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    place-items: center;
+    padding: 0;
   }
-  .update {
-    padding: 22px;
+  .hero__toggle:hover {
+    background: color-mix(in srgb, var(--media) 70%, transparent);
   }
-  .update h3 a {
-    text-decoration: none;
+  .hero__toggle[hidden] {
+    display: none;
   }
-  .update h3 a:hover {
-    text-decoration: underline;
+  .hero__i-pause,
+  .is-playing .hero__i-play {
+    display: none;
   }
-  .update p:last-child {
-    margin: 0;
+  .is-playing .hero__i-pause {
+    display: block;
+  }
+  .hero__fig figcaption {
+    margin-top: 10px;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  @media (max-width: 720px) {
+    /* a little taller on phones; the 2:1 loop trims its sides */
+    .hero__panel {
+      aspect-ratio: 16 / 9;
+    }
   }
 </style>

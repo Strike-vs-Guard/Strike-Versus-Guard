@@ -1,0 +1,103 @@
+---
+/**
+ * Home: the five research themes as rows (name, owner, status, one line, "Read →" to the theme's
+ * anchor on the Research page). Rows come from content/programme/themes.md when it exists, else they
+ * are derived from the track, command, localisation and simulation files (see data.ts `themes`).
+ */
+import { url } from '../../lib/url';
+import { themes as loadThemes, optionalSection } from './data';
+
+const file = await optionalSection('themes');
+const rows = await loadThemes(file);
+---
+
+<section id="research" class="section th-sec" aria-labelledby="research-title">
+  <div class="wrap">
+    <header class="section__head section__head--row">
+      <div>
+        <h2 id="research-title">{file?.title ?? 'Research'}</h2>
+        {file?.hasBody && <div class="prose muted th__intro"><file.Content /></div>}
+      </div>
+      <a class="arrow-link" href={url('research/')}>All research →</a>
+    </header>
+    <ul class="th">
+      {
+        rows.map((t) => (
+          <li>
+            <h3>{t.name}</h3>
+            <span class="th__own">{t.owner}</span>
+            <span class="th__st">{t.status ?? ''}</span>
+            <p class="th__one">{t.line}</p>
+            <a class="arrow-link th__rd" href={url(`research/#${t.id}`)} aria-label={`Read about ${t.name}`}>
+              Read →
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .th__intro :global(p) {
+    margin: 8px 0 0;
+    color: var(--muted);
+  }
+  .th {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .th li {
+    display: grid;
+    grid-template-columns: 200px 180px 110px minmax(0, 1fr) 70px;
+    gap: 24px;
+    align-items: baseline;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+  }
+  .th li:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  .th h3 {
+    font-size: var(--step-2);
+    margin: 0;
+  }
+  .th__own {
+    font-size: var(--step-0);
+    color: var(--muted);
+  }
+  .th__st {
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--link);
+  }
+  .th__one {
+    font-size: var(--step-0);
+    margin: 0;
+  }
+  .th__rd {
+    justify-self: end;
+  }
+  @media (max-width: 1080px) {
+    .th li {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 4px 16px;
+    }
+    .th h3 {
+      grid-column: 1;
+    }
+    .th__st {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .th__own,
+    .th__one {
+      grid-column: 1 / -1;
+    }
+    .th__rd {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+</style>

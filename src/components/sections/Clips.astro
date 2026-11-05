@@ -1,0 +1,163 @@
+---
+/**
+ * A section of clips from one content/programme/<id>.md file: eyebrow and h2 from the file's
+ * `eyebrow`/`title`, the clips with their captions, the note, then the open problems (`open:`).
+ * `id` names the file and is the section anchor (#flights on the Flights page, #simulation on the
+ * Programme page). `body` shows the file's Markdown body under the title; `alt` uses the alternate
+ * background; `aspect` sets the clip frame (default: the tall flight clips).
+ * `lead` (Flights page, home flights block): the first clip runs at full content width in its own shape;
+ * the rest sit three to a row, each in the same 16:9 frame on the dark --media backdrop (`object-fit:
+ * contain`). An item with `videoAlt` gets the Lit / Lights off switch; `credit` ends its caption.
+ * `log` (Flights page): each caption starts with a mono stamp line (label · when ·
+ * partners) and gives `text` as "What to watch:".
+ * `skip` leaves out clips by video file name (the home page skips the hero clip); `limit` caps the number
+ * of clips (lead included); `more` adds a link beside the title, e.g. "All flights →".
+ */
+import { getCollection } from 'astro:content';
+import Clip from '../Clip.astro';
+import OpenList from './OpenList.astro';
+import { section } from './content';
+
+interface Props {
+  id: string;
+  body?: boolean;
+  alt?: boolean;
+  aspect?: string;
+  lead?: boolean;
+  log?: boolean;
+  skip?: string[];
+  limit?: number;
+  more?: { href: string; label: string };
+}
+const { id, body = false, alt = false, aspect, lead = false, log = false, skip = [], limit, more } = Astro.props;
+const data = await section(id);
+const { Content } = data;
+const titleId = `${id}-title`;
+const short = Object.fromEntries((await getCollection('partners')).map((p) => [p.id, p.data.short]));
+const stamp = (c: (typeof data.items)[number]) =>
+  [c.label, c.when, c.partners.map((p) => short[p] ?? p).join(', ')].filter(Boolean).join(' · ');
+const items = data.items.filter((c) => !c.video || !skip.includes(c.video)).slice(0, limit);
+const [first, ...rest] = items;
+const leadItem = lead && first?.video ? first : undefined;
+const gridItems = leadItem ? rest : items;
+---
+
+<section id={id} class:list={['section', 'section--clips-large', { 'section--alt': alt }]} aria-labelledby={titleId}>
+  <div class="wrap">
+    <header class:list={['section__head', { 'section__head--row': !!more }]}>
+      <div>
+        <p class="eyebrow">{data.eyebrow}</p>
+        <h2 id={titleId}>{data.title}</h2>
+        {
+          body && (
+            <div class="prose">
+              <Content />
+            </div>
+          )
+        }
+      </div>
+      {more && <a class="arrow-link" href={more.href}>{more.label}</a>}
+    </header>
+    {
+      leadItem && (
+        <figure class="clip-card clip-card--lead">
+          <Clip
+            video={leadItem.video!}
+            poster={leadItem.poster}
+            videoAlt={leadItem.videoAlt}
+            posterAlt={leadItem.posterAlt}
+            altLabel={leadItem.altLabel}
+            title={leadItem.title}
+            natural
+          />
+          <figcaption>
+            {log && stamp(leadItem) && <span class="clip-card__stamp">{stamp(leadItem)}</span>}
+            <strong>{leadItem.title}</strong>
+            {leadItem.text && <span>{leadItem.text}</span>}
+            {leadItem.credit && <span class="clip-card__credit">{leadItem.credit}</span>}
+          </figcaption>
+        </figure>
+      )
+    }
+    {
+      gridItems.length > 0 && (
+        <div class:list={['clips', { 'clips--three': lead }]}>
+          {gridItems.map((c) => (
+            <figure class="clip-card">
+              {c.video && (
+                <Clip
+                  video={c.video}
+                  poster={c.poster}
+                  videoAlt={c.videoAlt}
+                  posterAlt={c.posterAlt}
+                  altLabel={c.altLabel}
+                  title={c.title}
+                  aspect={lead ? '16 / 9' : aspect}
+                  media={lead}
+                />
+              )}
+              <figcaption>
+                {log && stamp(c) && <span class="clip-card__stamp">{stamp(c)}</span>}
+                <strong>{c.title}</strong>
+                {c.text && <span>{c.text}</span>}
+                {c.credit && <span class="clip-card__credit">{c.credit}</span>}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      )
+    }
+    {data.note && <p class="section__note">{data.note}</p>}
+    <OpenList items={data.open} label={data.openLabel} />
+  </div>
+</section>
+
+<style>
+  .clips {
+    display: grid;
+    align-items: start;
+    gap: 32px 28px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  }
+  .clip-card figcaption {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    letter-spacing: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .clip-card figcaption strong {
+    color: var(--text);
+  }
+  .clip-card figcaption em {
+    font-style: normal;
+    color: var(--text);
+  }
+  .clip-card__stamp {
+    font: 500 var(--step--1) var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .clip-card__credit {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .clip-card--lead {
+    margin-bottom: clamp(32px, 4vw, 48px);
+  }
+  .clip-card--lead figcaption {
+    max-width: 68ch;
+  }
+  @media (min-width: 760px) {
+    .clips {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1000px) {
+    .clips--three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

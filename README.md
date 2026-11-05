@@ -16,21 +16,24 @@ University of Singapore, working toward decentralised multi-drone autonomy.
 
 ```
 content/                     ← everything people edit (Markdown + images)
-  partners/NUS.md  NUS/        one file + one image folder per partner
+  partners/NUS.md  NUS/        one file + one image folder per partner (people/ holds team photos)
   partners/UPenn.md UPenn/
   partners/CMU.md  CMU/
   partners/ST.md   ST/
   partners/HTX.md  HTX/        sponsor card (no separate page)
-  programme/*.md               shared home-page sections (ST-owned)
-  updates/*.md                 news posts
+  programme/*.md               shared page sections (ST-owned), incl. glance.md, themes.md, localisation.md
+  updates/<partner>/*.md       news posts, one folder per partner (st, nus, upenn, cmu) + images/
   site.yml                     site title, footer
-public/media/                ← flight clips (MP4) and their poster frames
+public/media/                ← flight clips (MP4) and their poster frames (8 MB per file, 60 MB total; STANDARDS §9)
 src/                         ← layout, styles, components (ST-owned)
   content.config.ts            the rules every content file is checked against
 .github/workflows/
   ci.yml                       build + link check on pull requests and development
   deploy.yml                   publishes main (live) and development (/preview/) together
 ```
+
+Pages: Home, Updates, Research (`/research/`; `/programme/` redirects), Partners (`/partners/`, also a header menu that lists every partner's page), Flights, Publications and Contribute.
+Light theme by default, dark (navy-black) with a toggle in the header. Each partner edits its own Markdown file, including its `people:`, `publications:` and its own update folder `content/updates/<partner>/` (`author:`).
 
 Built with [Astro](https://astro.build) (static output, no server). Hosted on GitHub Pages, deployed by
 GitHub Actions. The repository keeps only two branches: `main` (live) and `development` (edits and test site).

@@ -1,0 +1,45 @@
+---
+/** The head of a sub-page: eyebrow, h1 and an optional intro (slot). */
+interface Props {
+  eyebrow: string;
+  title: string;
+}
+const { eyebrow, title } = Astro.props;
+---
+
+<header class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{title}</h1>
+    {Astro.slots.has('default') && <div class="prose page-head__body"><slot /></div>}
+  </div>
+</header>
+
+<style>
+  .page-head {
+    padding-block: clamp(40px, 6vw, 72px) clamp(32px, 5vw, 56px);
+    border-bottom: 1px solid var(--border);
+  }
+  .page-head h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step-hero);
+    letter-spacing: -0.01em;
+    max-width: 22ch;
+    margin: 0;
+  }
+  /* the section right under the head needs less air: the head's rule already separates them */
+  .page-head + :global(.section) {
+    padding-top: clamp(32px, 5vw, 56px);
+  }
+  .page-head__body {
+    margin-top: 1rem;
+  }
+  .page-head__body :global(p) {
+    color: var(--muted);
+  }
+  .page-head__body :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,273 @@
+---
+/**
+ * Home, screen 2 (holds #updates): "At a glance" beside the "Latest" rail.
+ * At a glance: programme, funder, partners with one-line roles, timeline (site.yml `start`/`end`, the
+ * current milestone year), the next milestone (the "Target:" sentence of the current year in
+ * milestones.md, labelled a target), and status today from content/programme/glance.md (or status.md):
+ * one item per line, grouped by `state:` (Done, In progress, Not yet); its `note:` is the "as of" line.
+ * Latest: the five newest posts (date, partner, author, title, summary).
+ */
+import { getEntry } from 'astro:content';
+import { url } from '../../lib/url';
+import { fmtDate } from '../../lib/text';
+import { section } from './content';
+import { allUpdates, isoDay, lowerFirst, optionalSection, partnersInOrder, shortNames, upperFirst } from './data';
+
+const site = (await getEntry('site', 'main'))!.data;
+const overview = await section('overview');
+const milestones = await section('milestones');
+const { partners, funder } = await partnersInOrder();
+const latest = (await allUpdates()).slice(0, 5);
+const short = await shortNames();
+
+const years = milestones.items;
+const currentIdx = years.findIndex((m) => m.current);
+const current = years[currentIdx];
+/* The current year's "Target: …" sentence; else the next year's title. */
+const target = current?.text?.match(/Target:\s*([^]+?)\.?\s*$/)?.[1];
+const next = target ? upperFirst(target) : years[currentIdx + 1]?.title;
+
+const status = (await optionalSection('glance')) ?? (await optionalSection('status'));
+const order = ['Done', 'In progress', 'Not yet'];
+const groups = status
+  ? [...new Set([...order, ...status.items.map((i) => i.state ?? '')])]
+      .map((state) => ({ state, lines: status.items.filter((i) => (i.state ?? '') === state) }))
+      .filter((g) => g.lines.length > 0)
+  : [];
+---
+
+<section id="updates" class="section glance-sec">
+  <div class="wrap gl">
+    <div>
+      <h2 class="gl__h">At a glance</h2>
+      <dl class="gl__dl">
+        <div>
+          <dt>Programme</dt>
+          <dd>{site.title}: {lowerFirst(site.tagline)}. {overview.gameNote}</dd>
+        </div>
+        {
+          funder && (
+            <div>
+              <dt>Funder</dt>
+              <dd>
+                {funder.data.website ? <a href={funder.data.website}>{funder.data.short}</a> : funder.data.short},{' '}
+                {funder.data.institution}
+              </dd>
+            </div>
+          )
+        }
+        <div>
+          <dt>Partners</dt>
+          <dd>
+            <ul>
+              {partners.map((p) => (
+                <li>
+                  <a href={url(`partners/${p.id}/`)}>{p.data.short}</a>
+                  {p.data.role === 'Lead partner' && ', lead partner'}: {p.data.contribution}
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+        {
+          (site.start || current) && (
+            <div>
+              <dt>Timeline</dt>
+              <dd>
+                {site.start && site.end && <span class="gl__mono">{site.start} – {site.end}</span>}
+                {site.start && site.end && current && ', '}
+                {current?.label && `${current.label} of ${years.length}`}
+              </dd>
+            </div>
+          )
+        }
+        {
+          next && (
+            <div>
+              <dt>Next milestone</dt>
+              <dd>
+                {next} <span class="muted">(target)</span>
+              </dd>
+            </div>
+          )
+        }
+        {
+          /* TODO: status today needs content/programme/glance.md (or status.md): items with `state:` Done / In progress / Not yet. */
+          groups.length > 0 && (
+            <div>
+              <dt>
+                Status today
+                {status?.note && <span class="gl__asof">{status.note}</span>}
+              </dt>
+              <dd>
+                {groups.map((g) => (
+                  <div class="gl__grp">
+                    <b>{g.state}</b>
+                    <ul>
+                      {g.lines.map((l) => (
+                        <li>{l.text ?? l.title}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </div>
+    <div>
+      <h2 class="gl__h">Latest</h2>
+      <ol class="rail">
+        {
+          latest.map((u) => (
+            <li>
+              <p class="rail__meta">
+                <time datetime={isoDay(u.data.date)}>{fmtDate(u.data.date, 'short')}</time> · {short(u.data.partner)}
+                {u.data.author && ` · ${u.data.author}`}
+              </p>
+              <h3 class="rail__title">
+                <a href={url(`updates/${u.id}/`)}>{u.data.title}</a>
+              </h3>
+              <p class="rail__sum">{u.data.summary}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <a class="arrow-link" href={url('updates/')}>All updates →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gl {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 72px;
+  }
+  .gl__h {
+    font-size: var(--step-3);
+    margin: 0 0 18px;
+  }
+  .gl__dl {
+    margin: 0;
+  }
+  .gl__dl > div {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 16px;
+    padding: 13px 0;
+    border-top: 1px solid var(--border);
+  }
+  .gl__dl > div:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  .gl__dl dt {
+    font-weight: 600;
+    font-size: var(--step-0);
+  }
+  .gl__dl dd {
+    margin: 0;
+    font-size: var(--step-0);
+  }
+  .gl__dl dd ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .gl__dl dd li {
+    line-height: 1.45;
+    padding: 2px 0;
+  }
+  .gl__dl dd li a {
+    font-weight: 600;
+  }
+  .gl__mono,
+  .gl__asof {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+  .gl__asof {
+    display: block;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .gl__grp + .gl__grp {
+    margin-top: 10px;
+  }
+  .gl__grp b {
+    display: block;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .gl__grp ul {
+    padding-left: 14px !important;
+  }
+  .gl__grp li {
+    position: relative;
+  }
+  .gl__grp li::before {
+    content: '';
+    position: absolute;
+    left: -13px;
+    top: 0.8em;
+    width: 7px;
+    height: 1px;
+    background: var(--muted);
+  }
+  .rail {
+    list-style: none;
+    margin: 0 0 8px;
+    padding: 0;
+  }
+  .rail li {
+    border-top: 1px solid var(--border);
+    padding: 14px 0;
+  }
+  .rail li:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  .rail__meta {
+    font-size: var(--step--1);
+    color: var(--muted);
+    margin: 0;
+  }
+  .rail__meta time {
+    font-family: var(--font-mono);
+    color: var(--text);
+  }
+  .rail__title {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--step-1);
+    letter-spacing: 0;
+    margin: 3px 0 2px;
+  }
+  .rail__title a {
+    text-decoration: none;
+  }
+  .rail__title a:hover,
+  .rail__title a:focus-visible {
+    text-decoration: underline;
+  }
+  .rail__sum {
+    font-size: var(--step-0);
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+  @media (max-width: 960px) {
+    .gl {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 56px;
+    }
+  }
+  @media (max-width: 720px) {
+    .gl__dl > div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
+  }
+</style>

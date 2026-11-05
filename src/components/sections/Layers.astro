@@ -1,0 +1,29 @@
+---
+/**
+ * Home page: the five layers on the interactive annotated drone (DroneDiagram explain mode,
+ * no target, so nothing scrolls). Selecting a layer lights its parts of the drawing and shows
+ * that layer's description; every callout names the partners on it (from each partner's
+ * `work:` lines). The connection diagram lives on the Partners page; "Who works on each
+ * layer →" leads there.
+ */
+import DroneDiagram from '../DroneDiagram.astro';
+import { getSystemData } from '../../lib/system';
+import { url } from '../../lib/url';
+import { section } from './content';
+
+const stack = await section('stack');
+const system = await getSystemData();
+---
+
+<section class="section section--layers">
+  <div class="wrap">
+    <header class="section__head section__head--row">
+      <div>
+        <p class="eyebrow">{stack.eyebrow}</p>
+        <h2>{stack.title}</h2>
+      </div>
+      <a class="arrow-link" href={url('partners/#who')}>Who works on each layer →</a>
+    </header>
+    <DroneDiagram data={system} mode="explain" />
+  </div>
+</section>

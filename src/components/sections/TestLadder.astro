@@ -1,0 +1,82 @@
+---
+/**
+ * The test ladder (content/programme/ladder.md) on the Flights page: the file's eyebrow, title and short
+ * body (the safety order), then one card per step with its `state:` as a text chip, then the note.
+ * Anything passed as children (e.g. a photo of the lab) goes at the end. Holds #test-ladder.
+ */
+import { section } from './content';
+
+interface Props {
+  alt?: boolean;
+}
+const { alt = false } = Astro.props;
+const d = await section('ladder');
+const { Content } = d;
+---
+
+<section id="test-ladder" class:list={['section', { 'section--alt': alt }]} aria-labelledby="test-ladder-title">
+  <div class="wrap">
+    <header class="section__head">
+      <p class="eyebrow">{d.eyebrow}</p>
+      <h2 id="test-ladder-title">{d.title}</h2>
+      <div class="prose"><Content /></div>
+    </header>
+    <ol class="tl">
+      {
+        d.items.map((s) => (
+          <li class="card tl__step">
+            <p class="tl__top">
+              <span class="eyebrow">{s.label}</span>
+              {s.state && <span class:list={['chip', 'tl__state', { 'is-done': s.state === 'Done' }]}>{s.state}</span>}
+            </p>
+            <h3>{s.title}</h3>
+            {s.text && <p class="muted">{s.text}</p>}
+          </li>
+        ))
+      }
+    </ol>
+    {d.note && <p class="section__note">{d.note}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .tl {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+  @media (min-width: 960px) {
+    .tl {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .tl__step {
+    padding: 18px 20px;
+  }
+  .tl__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 8px;
+  }
+  .tl__top .eyebrow {
+    margin: 0;
+  }
+  .tl__step h3 {
+    font-size: var(--step-1);
+    margin: 0 0 6px;
+  }
+  .tl__step .muted {
+    margin: 0;
+    font-size: var(--step-0);
+  }
+  .tl__state.is-done {
+    color: var(--text);
+    border-color: var(--text);
+  }
+</style>
