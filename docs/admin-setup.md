@@ -28,8 +28,9 @@ A push to `main`, or a push to `development` that passes the CI check, runs *Dep
    (no deletion, no force push, pull request required with a merge commit, status check
    "Build and check" required) and "only development and main" (branch creation blocked for every
    other name). Re-create them from these descriptions if they are ever removed.
-5. **Auto-delete branches:** Settings → General → tick **Automatically delete head branches**, so that
-   any branch someone does create is removed when its pull request is merged.
+5. **Auto-delete branches (done 5 Nov 2026):** Settings → General → **Automatically delete head
+   branches** is on, so any branch that does get created is removed when its pull request is merged.
+   The four leftover branches (`claude/…`, two `dependabot/…`, `gh-pages`) were deleted the same day.
 6. **Partner teams:** Organisation → Teams: `st-web`, `nus`, `upenn`, `cmu`. Add each partner's
    editors and give every team **Write** access. CODEOWNERS rules are ignored for teams without write
    access. Or replace the team names in [`.github/CODEOWNERS`](../.github/CODEOWNERS) with usernames.

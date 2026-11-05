@@ -128,7 +128,6 @@ spelling. Root font size is fluid and `--max` is in rem, so the site scales with
 | Review your partner page; the Partners menu and cards now lead visitors to it, and "Maintained by" sits in its "At a glance" box | Each partner |
 | Review the new Localisation line in your partner file (`work.localisation`, drafted for ST Engineering and CMU only) | Partners |
 | The home drone's click now lights locally and links to the Partners page; check it reads well on the test site | Jeremy |
-| Delete leftover branches `claude/brave-bell-onicwy`, `gh-pages`, `dependabot/github_actions/actions/checkout-7`, `dependabot/github_actions/actions/setup-node-7`; close PRs #1 and #2 (bot) | Jeremy (Claude's session can't delete branches) |
 | Two Word documents (`MR-Strike vs Guard-1.0-OCT29.docx`, `D3-Strike_vs_Guard-FR&PDR-1.2-29July26.docx`) were never received; too large with embedded videos. Asked for .txt/PDF exports | Jeremy |
 | UPenn's Drones line "Runs the formal-track strategy on the shared Starling 2 Max drones." is a placeholder | UPenn to confirm |
 | Partner pages were drafted from the deck. Each partner should review its page, people list and publications; lab website URLs need verifying | Each partner |

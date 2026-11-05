@@ -14,6 +14,22 @@ Carnegie Mellon University, working toward decentralised multi-drone autonomy.
 - **Rules every change follows:** [STANDARDS.md](STANDARDS.md).
 - **Working on this with Claude:** [CLAUDE.md](CLAUDE.md), [handoff](docs/claude/HANDOFF.md), [debugging process](docs/claude/DEBUGGING.md), [agents and skills](docs/claude/AGENTS_AND_SKILLS.md), [conversation history](docs/claude/jeremy.md).
 
+## How to edit your lab's page (short version)
+
+1. Open your file on the `development` branch: `content/partners/NUS.md`, `UPenn.md`, `CMU.md` or `ST.md`.
+   On GitHub: switch the branch menu to `development`, open the file, click the pencil.
+2. Edit the front matter (people, bios, publications, your `labBlurb`) or the body text. Field limits
+   are in the tables in [CONTRIBUTING.md §2](CONTRIBUTING.md#2-the-partner-file).
+3. Commit directly to `development`. The test site updates in a few minutes:
+   https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+4. A news post is one file in `content/updates/<nus|upenn|cmu|st>/YYYY-MM-DD-slug.md`
+   ([CONTRIBUTING.md §3](CONTRIBUTING.md#3-posts)).
+5. Tell ST Engineering when it looks right; they merge `development` into `main` (the live site).
+   Pushing to `main` directly is blocked for everyone.
+
+Full guide, with every field, media rules, checks and error messages: [CONTRIBUTING.md](CONTRIBUTING.md)
+(also under the **Contributing** tab beside this README on GitHub).
+
 ## How it fits together
 
 ```
