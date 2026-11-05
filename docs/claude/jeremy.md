@@ -329,7 +329,9 @@ one. "Lead" → "Principal investigator" / "PI" pill. The small chip row (other 
 each partner page removed. "Principal investigators" row added to the Partners page from the same
 `bio:` data. Type: root size fluid (16 → 20 px by viewport), steps one notch larger, `--max` in rem,
 text columns in rem, so the page scales with the monitor. Also fixed a duplicated "and no central"
-in the positioning statement.
+in the positioning statement. Later the same day: the footer column "Each partner edits its own
+file:" with the four `content/partners/*.md` paths removed (Jeremy: visitors will see this); the
+Contribute page and each partner page's own Edit link still lead editors to the files.
 
 ---
 

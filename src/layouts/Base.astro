@@ -32,8 +32,6 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
 const funder = partners.find((p) => p.data.role === 'Funding sponsor');
 const logoPartners = partners.filter((p) => p !== funder);
 /* The partner's own file, e.g. content/partners/NUS.md, and its edit link on GitHub (development branch). */
-const partnerFile = (p: (typeof partners)[number]) => p.filePath ?? `content/partners/${p.id}.md`;
-const editUrl = (file: string) => `${site.repository}/edit/development/${file}`;
 /* Footer logos: base 84 px, capped at the well's 64 px inner height (src/lib/logo.ts); the funder smaller. */
 const logo = (img: ImageMetadata) => logoSize(img, 84, 64);
 const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
@@ -159,21 +157,6 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
               <li><a href={url('publications/')}>Publications</a></li>
               <li><a href={url('contribute/')}>Contribute</a></li>
               <li><a href={site.repository}>Source on GitHub</a></li>
-            </ul>
-          </div>
-          <div>
-            <h2 class="site-footer__h" id="footer-files">Each partner edits its own file:</h2>
-            <ul class="site-footer__files" aria-labelledby="footer-files">
-              {
-                logoPartners.map((p) => (
-                  <li>
-                    <a href={editUrl(partnerFile(p))}>
-                      {partnerFile(p)}
-                      <span class="visually-hidden"> (edit {p.data.short}'s file on GitHub)</span>
-                    </a>
-                  </li>
-                ))
-              }
             </ul>
           </div>
         </div>
@@ -423,7 +406,7 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
   }
   @media (min-width: 800px) {
     .site-footer__cols {
-      grid-template-columns: 1.2fr 1fr 1.2fr;
+      grid-template-columns: 1.2fr 1fr;
       gap: 40px;
     }
   }
@@ -439,8 +422,7 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
     color: var(--muted);
     margin: 0 0 8px;
   }
-  .site-footer__links,
-  .site-footer__files {
+  .site-footer__links {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -450,17 +432,10 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
     flex-wrap: wrap;
     gap: 0 18px;
   }
-  .site-footer__links a,
-  .site-footer__files a {
+  .site-footer__links a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-  }
-  .site-footer__files a {
-    font-family: var(--font-mono);
-    font-weight: 500;
-    font-size: var(--step--1);
-    overflow-wrap: anywhere;
   }
   .site-footer__small {
     color: var(--muted);
