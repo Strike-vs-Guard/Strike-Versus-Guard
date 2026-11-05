@@ -8,12 +8,17 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro build && node scripts/check-links.mjs"
+    "check": "astro build && node scripts/check-links.mjs",
+    "shots": "node scripts/shots.mjs",
+    "prepare": "git config core.hooksPath .githooks && git config push.default current || true"
   },
   "engines": {
     "node": ">=22.23.4"
   },
   "dependencies": {
     "astro": "7.4.4"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.64.1"
   }
 }

@@ -6,6 +6,24 @@ so in Claude Code you can call them by name (e.g. "use the svg-design-critic age
 
 ---
 
+## Skills (the standard process, in `.claude/skills/`)
+
+Every Claude session, from any lab, runs the same steps. Full description: `PROCESS.md`.
+
+| Skill | Use | What it enforces |
+|---|---|---|
+| `svg-start` | Start of every session | Read CLAUDE.md, STANDARDS §2/§4/§7/§8, HANDOFF §4/§5; on `development`; intent stated before editing |
+| `svg-change` | Any edit | Content in `content/`, schema before field, `npm run check`, `npm run shots` ×3, docs row, commit by path, push to `development`, preview URL |
+| `svg-debug` | Anything broken | DEBUGGING.md process; never loosen a check |
+| `svg-post` | A partner's news post | Right folder, fields, wording, `draft: true` until approved |
+| `svg-panel` | Layout or look | Three agents → reconcile → clickable draft → user picks → build |
+| `svg-release` | Publish to the live site | PR from `development`; merge only on the owner's say-so with `SVG_ALLOW_MAIN=1`; deploy verified |
+
+Hooks (`.claude/settings.json`, `scripts/claude/guard.mjs`, `.githooks/`) and GitHub rulesets make
+the branch rules mechanical; see `PROCESS.md`.
+
+---
+
 ## How the work was organised
 
 The same pattern was used every time: **brief several agents in parallel, each with a different

@@ -293,6 +293,10 @@ The page sections live as section components under `src/components/sections/`.
 - **Interactivity must look interactive.** Labels such as "Select", "Show partners ↓" and "See more →",
   a pressed state and a cursor. Hover-only discovery is not enough.
 - **No empty grids.** If a matrix would be mostly empty, choose another representation.
+- **Tooling in the repo:** `npm run check` (build, schema, links, size budget) and `npm run shots`
+  (`scripts/shots.mjs`: one page in real Chrome, reports overflow, console errors and failed
+  requests, PNG in `.shots/`). Claude sessions follow `docs/claude/PROCESS.md` and the
+  `.claude/skills/svg-*` skills.
 
 ---
 
@@ -310,20 +314,26 @@ The page sections live as section components under `src/components/sections/`.
   push to `main`, and also after CI passes on `development` (via `workflow_run`, because only the
   default branch may publish to Pages).
 - **GitHub Pages source must be "GitHub Actions"** (not "Deploy from a branch").
-- Before every push, `npm run check` must pass locally.
-- Claude may push to `development`. It should push to `main` only when the site owner says so.
+- Before every push, `npm run check` must pass locally. The git hooks in `.githooks/` (installed
+  by `npm ci`) run it and refuse pushes to `main`, to a new branch, or that delete a branch;
+  `push.default=current` so a plain `git push` goes to the branch you are on.
+- GitHub rulesets: `main` accepts only merged pull requests whose "Build and check" passed, with a
+  merge commit; no branch other than `development` and `main` can be created.
+- Claude may push to `development`. `main` changes only by merging the pull request, and only when
+  the site owner says so in that conversation (`svg-release` skill; the `SVG_ALLOW_MAIN=1` prefix is
+  the record of that approval).
 
 ---
 
 ## 8. Definition of done for any change
 
 - [ ] `npm run check` passes (schema, build, internal links, size budget).
-- [ ] Checked in a real browser (Playwright screenshots) at 1280px and 390px, in both themes:
-      no overflow, no console errors.
+- [ ] `npm run shots -- /<page>/` at 1280 light, 1280 dark and 390 wide, each `"ok": true`
+      (no overflow, no console errors, no failed requests), and the PNGs looked at.
 - [ ] Wording follows §2; colours and fonts follow §3 (checked in light **and** dark); the partner order is correct.
 - [ ] Interactive parts tested by mouse **and** keyboard.
 - [ ] Docs updated if the structure or workflow changed (`README.md`, `CONTRIBUTING.md`,
-      `docs/design-decisions.md`, this file).
+      `docs/design-decisions.md`, this file); decisions and open items in `docs/claude/HANDOFF.md`.
 - [ ] Pushed to `development`; the test site checked after the deploy finishes.
 
 ---

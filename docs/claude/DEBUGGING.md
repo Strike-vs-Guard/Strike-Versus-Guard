@@ -47,15 +47,15 @@ npm run check                # astro build + scripts/check-links.mjs (links + si
 
 ### 5. Verify the same way the failure was seen
 - **Build failure:** `npm run check` passes locally, then the CI run passes.
-- **Visual or interaction bug:** check in a real browser with Playwright
-  (`require('playwright')` works; Chromium is pre-installed):
+- **Visual or interaction bug:** check in a real browser:
   ```bash
-  npx astro preview --port 4322 &      # serves dist/ under the base path
-  # then a Playwright script: goto http://localhost:4322/Strike-Versus-Guard/<page>,
-  # screenshot at 1280 and 390 (one theme),
-  # record pageerror/console errors and document.documentElement.scrollWidth - innerWidth
+  npm run check                                     # builds dist/
+  npm run shots -- /<page>/                         # 1280 light; add --theme dark, --width 390
   ```
-  Look at the screenshots. Test interactions with **mouse and keyboard** (`click()` vs `press('Enter')`).
+  Each call prints overflow (must be 0), console errors and failed requests (must be none) and the
+  PNG path in `.shots/`. Look at the screenshots. For interactions write a short playwright-core
+  script in the scratchpad (see `scripts/shots.mjs` for the launch code) and test **mouse and
+  keyboard** (`click()` vs `press('Enter')`).
 - **Deploy issue:** after pushing, check the run conclusion **and** fetch the published page
   (`curl -s <url> | grep <something unique to the change>`).
 
@@ -83,6 +83,10 @@ npm run check                # astro build + scripts/check-links.mjs (links + si
 | Content build error `… does not match collection schema` | Front matter breaks a rule in `src/content.config.ts` | Fix the content file (the error names file and field). Change the schema only if the rule itself is wrong. |
 | `Could not find requested image` | Path not relative to the content file, wrong case, or not uploaded to the same branch | Use `./FOLDER/name.jpg`. Paths are case-sensitive. |
 | Push to a branch refused with `403` | The session's git proxy allows pushes to specific branches only, and no branch deletion | Ask the user to do it in the GitHub UI. Never work around it. |
+| `pre-push: refusing to push to main` / `refusing to push branch` | The repo's git hooks (`.githooks/`, installed by `npm ci`) enforce STANDARDS §7 | Push to `development`. Publishing is a pull request (`svg-release` skill). Not a bug. |
+| `BLOCKED by scripts/claude/guard.mjs: …` | The Claude PreToolUse hook stopped a command that breaks §7 | Do what the message says. Never edit the guard to get past it. |
+| Home page unstyled for a few minutes after a deploy; a `_astro/*.css` request is 404 | The Pages CDN served the previous HTML with the new build's asset names (`cache-control: max-age=600`) | Wait up to 10 minutes, hard-refresh. Do not revert or redeploy. |
+| `gh api … rulesets` returns 403 | Only repository admins can change rulesets | Ask an admin (docs/admin-setup.md). |
 
 ---
 
@@ -90,5 +94,6 @@ npm run check                # astro build + scripts/check-links.mjs (links + si
 - Use the GitHub MCP tools (`mcp__github__*`) for runs, logs and PRs. `gh` works only for search.
 - `curl` to `api.github.com/repos/.../pages` is blocked by the proxy. Infer the Pages settings from
   which runs appear (see step 1).
-- Screenshot and browser checks: Playwright plus the pre-installed Chromium. Don't run `playwright install`.
+- Screenshot and browser checks: `npm run shots` with the Chrome on the machine, or
+  `SVG_BROWSER=/path/to/chromium`. Don't run `playwright install`.
 - Put throwaway scripts in the session scratchpad, not in the repo.

@@ -139,6 +139,9 @@ spelling. Root font size is fluid and `--max` is in rem, so the site scales with
 | Confirm captions and the drone numbering behind "CORRECTING drone N" in CMU's clips | CMU |
 
 ## 6. How to continue (process that worked)
+0. **The process is now in the repo** (5 Nov 2026): skills `.claude/skills/svg-*`, hooks in
+   `.claude/settings.json` + `.githooks/`, `npm run shots`, GitHub rulesets on `main`. Read
+   `PROCESS.md`; run `svg-start`. The points below are the habits those skills encode.
 1. **Clarify, then explore in parallel.** For anything visual, brief 3–4 agents with different
    directions or lenses (see `.claude/agents/`). Show Jeremy a **clickable draft** (an Artifact page)
    **before** touching the site; he wants to see drafts first.

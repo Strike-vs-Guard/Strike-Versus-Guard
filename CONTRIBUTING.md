@@ -28,6 +28,9 @@ The repository only has these two branches. Never edit `main` directly; every ch
 | CMU | `content/partners/CMU.md` | `content/partners/CMU/` |
 | ST Engineering | `content/partners/ST.md` | `content/partners/ST/` |
 
+If you use Claude Code: open the repo and say "run svg-start". The repository carries the process
+(`docs/claude/PROCESS.md`); `npm ci` installs git hooks that keep you off `main`.
+
 Each file has two parts:
 
 ```markdown
