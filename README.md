@@ -1,12 +1,14 @@
 # Strike vs Guard: programme website
 
 Source for the website of **Strike vs Guard**, a research programme funded by HTX and carried out by
-ST Engineering with Carnegie Mellon University, the University of Pennsylvania and the National
-University of Singapore, working toward decentralised multi-drone autonomy.
+ST Engineering with the National University of Singapore, the University of Pennsylvania and
+Carnegie Mellon University, working toward decentralised multi-drone autonomy.
 
 - **Live site** (branch `main`): https://strike-vs-guard.github.io/Strike-Versus-Guard/
 - **Test site** (branch `development`): https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
-- **Partners editing their page:** read [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Editing your lab's page, posting an update or adding a publication:** read
+  [CONTRIBUTING.md](CONTRIBUTING.md). It covers the browser editor (no install) and a local clone.
+  Field rules: [`src/content.config.ts`](src/content.config.ts); starting file: [docs/partner-template.md](docs/partner-template.md).
 - **Repo admins, first-time setup:** read [docs/admin-setup.md](docs/admin-setup.md).
 - **Why it's built this way:** [docs/design-decisions.md](docs/design-decisions.md).
 - **Rules every change follows:** [STANDARDS.md](STANDARDS.md).
@@ -42,9 +44,10 @@ GitHub Actions. The repository keeps only two branches: `main` (live) and `devel
 
 | Command | What it does |
 |---|---|
-| `npm ci` | Install (first time) |
+| `npm ci` | Install (first time). Also installs the git hooks that refuse pushes to `main`, new branches and failing checks |
 | `npm run dev` | Live preview at http://localhost:4321/Strike-Versus-Guard/ |
-| `npm run check` | Build the whole site and check every internal link (same as CI) |
+| `npm run check` | Build the whole site; check the schema, every internal link and the size budget (same as CI) |
+| `npm run shots -- /<page>/ [--theme dark] [--width 390]` | Screenshot one built page in Google Chrome (or `SVG_BROWSER=/path`); PNG in `.shots/`, must print `"ok": true` |
 | `npm run preview` | Serve the built site from `dist/` |
 
 Requires Node.js 24 LTS, or 22.23.4 or newer (see `.nvmrc`), or use the included Codespaces / dev container.
