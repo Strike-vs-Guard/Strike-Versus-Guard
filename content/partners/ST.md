@@ -31,15 +31,15 @@ logoAlt: ST Engineering
 lead: William Teo
 website: https://www.stengg.com
 order: 2
-updated: 2026-11-04
+updated: 2026-11-05
 people:
   - name: William Teo
-    role: Principal Investigator, Director of NEAR Lab
+    role: Director and Founder of NEAR Lab
     photo: ./ST/people/william-teo.jpg
     lead: true
     bio: >-
-      William Teo directs NEAR Lab at ST Engineering and is the programme's
-      principal investigator. He studies how teams of robots learn to coordinate,
+      William Teo founded and directs NEAR Lab at ST Engineering and leads
+      Strike vs Guard for the lab. He studies how teams of robots learn to coordinate,
       and when that coordination holds or breaks, as a PhD researcher at the
       MARMoT Lab, NUS, supervised by Guillaume Sartoretti.
     link: https://nearlab.ai/#/people
