@@ -367,11 +367,18 @@ Chrome, `opacity` dimming, logo boxes in light, figure glare in dark, clip bars,
 flash, browser-bar colour, an iOS home-screen icon. `npm run shots` gained `--system` and touch.
 
 **Root URL:** GitHub serves an organisation's root only from a repository named
-`strike-vs-guard.github.io`, so the repository was renamed (see HANDOFF). The build works out its
+`strike-vs-guard.github.io`, so the repository has to be renamed (owner's step, pending; see HANDOFF). The build works out its
 base path from the repository name; the 404 page forwards old `/Strike-Versus-Guard/…` links.
 
 **Also:** "Automatically delete head branches" (switched on 5 Nov) deleted `development` when
 William merged PR #7. Switched off; a ruleset now protects `development`.
+
+**Samsung Internet (same day, from Jeremy's phone):** the opt-out did not hold there. In our dark
+theme the white logo wells came out dark grey and the see-through Penn and ST Engineering logos
+vanished. Samsung offers no reliable site-side switch, so the site now survives the repaint: the five
+see-through logo files have white baked in, `mix-blend-mode` is gone, wells are white in both themes,
+and `npm run check` refuses a see-through image. Verified on stand-ins only (measured repaint values
+from the screenshots; Chrome forced dark with the opt-out stripped); the real test is the phone.
 
 ---
 

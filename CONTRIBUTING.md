@@ -84,7 +84,7 @@ over its limit stops the build, with a message naming the file and the field.
 | `contribution` | yes | 70 characters; label on your card | `Learning-based strategy track` |
 | `summary` | yes | 320 characters; one or two sentences for your card | `The NUS MARMoT Lab leads …` |
 | `work` | no | one line per layer, 90 characters each (below) | `strategy: "Leads the …"` |
-| `logo` | yes | image path relative to the file | `./NUS/nus.png` |
+| `logo` | yes | image path relative to the file; white background, not see-through (section on images) | `./NUS/nus.png` |
 | `logoMark` | no | square emblem for the Partners menu; falls back to `logo` | `./NUS/mark.png` |
 | `labLogo` | no | lab logo on your page | `./NUS/marmot-lab.png` |
 | `logoAlt` | no | logo description; defaults to `institution` | `National University of Singapore` |
@@ -227,7 +227,9 @@ names, dates and numbers, and end with what is still open.
 - Insert an image in the body with a description in the brackets, which screen readers read aloud:
   `![Starling 2 Max drones flying in the CMU flight cage](./CMU/starling-flight-cage.jpg)`.
 - Check each figure on a white page and on a dark navy page (the header button switches theme).
-  Avoid transparent PNGs with black text. Logos get a white background automatically.
+- **No see-through backgrounds.** Save every PNG (logos included) with a white background. Some
+  phone browsers force their own dark mode and repaint the page behind a see-through image, so dark
+  artwork disappears. `npm run check` refuses a see-through image and prints the fix.
 - Check figures for words baked into them. Crop out wording the site avoids (section 8).
 - Credit material from another lab in the caption: "Photo: CMU AirLab." Only publish what you have the
   right to publish. The test site is public too.
@@ -268,8 +270,9 @@ after the commit. A red cross: click it, read the message, fix the file on `deve
 is never affected.
 
 **`npm run check`** (local clone) builds the whole site the way CI does. It checks every field
-against the schema, every internal link and image, and the size caps for images and clips. It ends
-with `✓ … internal links and images checked, none broken.` when all is well.
+against the schema, every internal link and image, the size caps for images and clips, and that no
+image under `content/` has a see-through background. It ends with
+`✓ … content images checked, none see-through.` when all is well.
 
 **`npm run shots`** takes a screenshot of one page of the built site in a real Chrome. Run
 `npm run check` first. It needs Google Chrome installed, or `SVG_BROWSER` set to the path of a

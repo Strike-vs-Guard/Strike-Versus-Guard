@@ -27,8 +27,9 @@
   --zone: color-mix(in srgb, var(--muted) 8%, transparent);
   --well: #ffffff;
   --well-border: var(--border);
-  /* behind logos: none in light (logos sit on the page), the white --well in dark and on dark bands */
-  --well-bg: transparent;
+  /* behind logos: the white --well in both themes (invisible on the white page in light, a soft tile on
+     tinted bands and in dark). Logo files carry their own white background too: see "Phones" in STANDARDS §3. */
+  --well-bg: var(--well);
   --halo: rgb(255 255 255 / 0.85);
   --shadow: none;
   --shadow-pop: 0 12px 32px rgb(10 25 40 / 0.14);
@@ -312,8 +313,9 @@ p {
  * height: each <img> gets --logo-k = 1/√(width÷height) from its component (0.9× that for square
  * solid-colour tiles), so height = --logo-base × --logo-k, capped at the well's inner height
  * --logo-max. Every logo then covers about the same area. Each use sets --logo-base and --logo-max.
- * Light: no background and no border (--well-bg is transparent; white logo backgrounds multiply away
- * into the page). Dark, and on the dark footer band: a soft white well, same box, so nothing shifts.
+ * The well is white with no border in both themes: invisible on the white page in light, a soft tile
+ * on tinted bands, in dark and on the dark footer band. Logo files are opaque (white baked in) and
+ * there is no blend mode, so a phone browser that repaints CSS colours cannot make a logo disappear.
  */
 .logo-well {
   --logo-base: 48px;
@@ -334,8 +336,6 @@ p {
   width: auto;
   max-width: 100%;
   object-fit: contain;
-  /* a logo's own white background disappears on a light page; on a white well this changes nothing */
-  mix-blend-mode: multiply;
 }
 /* Institution and lab in one well: institution left, a hairline, lab right. */
 .logo-well__half {

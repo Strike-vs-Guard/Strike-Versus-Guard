@@ -25,11 +25,12 @@ UPenn, CMU; HTX is the funder.
 - Paths: `url('…')` in templates, `./FOLDER/file.jpg` relative paths in content. Never hard-code
   `/Strike-Versus-Guard/`.
 - Keep unrelated changes out. One commit per concern.
+- Logos and figures: opaque PNG with a white background (STANDARDS §3 "Phones"; the check refuses see-through).
 - Photos: 400 px square JPG, 80 KB or less. Clips: STANDARDS §9 ladder, 8 MB per file.
 
 ## 4. Verify (all of it, every time)
 ```bash
-npm run check                                   # build + links + size budget; must pass
+npm run check                                   # build + links + size budget + no see-through images; must pass
 npm run shots -- /<page>/                       # for any visible change: light 1280
 npm run shots -- /<page>/ --theme dark          # and dark
 npm run shots -- /<page>/ --width 390           # and a phone

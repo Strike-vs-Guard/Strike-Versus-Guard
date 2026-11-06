@@ -197,13 +197,12 @@ const chip = (p: CollectionEntry<'partners'>) => {
     width: 36px;
     height: 36px;
     padding: 4px;
-    /* like every logo: no box in light, the white well in dark */
+    /* like every logo: the white well (invisible on the white panel in light) */
     background: var(--well-bg);
     border: 0;
     border-radius: var(--radius);
   }
   .pm__chip :global(img) {
-    mix-blend-mode: multiply;
     display: block;
     max-width: 100%;
     max-height: 100%;

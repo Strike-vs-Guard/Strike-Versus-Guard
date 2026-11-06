@@ -8,7 +8,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro build && node scripts/check-links.mjs",
+    "check": "astro build && node scripts/check-links.mjs && node scripts/check-images.mjs",
     "shots": "node scripts/shots.mjs",
     "prepare": "git config core.hooksPath .githooks && git config push.default current || true"
   },

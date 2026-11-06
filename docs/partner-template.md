@@ -28,7 +28,7 @@ work:                                        # one line per layer you work on, 9
   # localisation: "..."
   # drones: "..."
   # integration: "..."
-logo: ./ABC/logo.png                         # required; must exist
+logo: ./ABC/logo.png                         # required; must exist; white background, not see-through
 logoMark: ./ABC/mark.png                     # optional square emblem for the Partners menu
 labLogo: ./ABC/lab-logo.png                  # optional
 logoAlt: Full Institution Name               # optional; defaults to institution

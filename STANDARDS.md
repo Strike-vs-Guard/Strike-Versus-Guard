@@ -90,7 +90,7 @@ sets `data-theme` before first paint (no flash). If CMU's video overlay is kept,
 | `--media` | #0B1622 | #0B1622 | behind and over video only: hero panel, play-button discs |
 | `--strike` | #D9542C | #F2766A | **only** the Strike team inside game figures |
 | `--guard` | #2D6FD0 | #6FA3F5 | **only** the Guard team inside game figures |
-| `--well` / `--well-bg` | #FFFFFF / none | #FFFFFF / `--well` | logos: no background or border in light; a soft white well (no border) in dark and on the footer band |
+| `--well` / `--well-bg` | #FFFFFF / `--well` | #FFFFFF / `--well` | logos: a white well with no border in both themes; invisible on the white page in light, a soft tile on tinted bands, in dark and on the footer band |
 | `--max` | 75rem | 75rem | content width, with the gutter: 1200 px at root 16 px, 1500 px at root 20 px |
 | `--pop` | `--bg` | `--surface` | menus and popovers, so they read as a layer above the page in dark |
 | `--well-rule` | #E3E6EA | #E3E6EA | divider inside a logo well (wells are light in both themes) |
@@ -104,8 +104,14 @@ sets `data-theme` before first paint (no flash). If CMU's video overlay is kept,
   by the inline head script and the toggle (#FFFFFF / #0B1622).
 - The sticky header is **solid** `--bg`. No `backdrop-filter`: the build keeps only the `-webkit-`
   form, which Chrome ignores, so a translucent header let page text ghost through.
-- Logos never get a box in light, anywhere (cards, connection diagram, Partners menu): `--well-bg`,
-  no border, `mix-blend-mode: multiply` on the image.
+- **Samsung Internet's dark mode cannot be switched off from the site.** It repaints CSS colours even
+  with the opt-out above (white wells become dark grey; the light theme becomes grey-black) but leaves
+  image pixels alone. So every PNG and WebP under `content/` is **opaque, with its own white
+  background**: a logo with a see-through background sat dark-on-dark and vanished (Penn, ST
+  Engineering, 6 Nov 2026). `npm run check` fails on a see-through image (`scripts/check-images.mjs`,
+  which also gives the one-line fix).
+- No `mix-blend-mode` on logos: under a forced dark mode it blends them into the repainted
+  background. Wells are plain white `--well-bg` with no border.
 - "Dimmed" is a muted colour plus a greyed logo, never `opacity` on a card (it turns white wells grey).
 - `:hover` effects sit inside `@media (hover: hover)`; on touch, hover sticks after a tap.
 - Clip letterbox bars are `--media` (Clip component) or `--bg` (clips inside partner Markdown).
@@ -126,10 +132,11 @@ Section padding is 96 to 112 px. Corners are 3 px. Rules, not boxed cards. Text 
 - No numbered circles, pill chips or dot grid. Mono labels appear at page level only.
 - **Never** colour partners, tracks, buttons or banners blue or red. Red never means "alarm".
 - No crosshairs, HUD styling, radar sweeps or military imagery.
-- Logos are shown **in colour**. In light mode they sit straight on the page (no well, no border; a
-  logo's own white background multiplies away). In dark mode, and on the dark footer band in both
-  themes, each sits in a soft white `--well` (no border, 3 px corners) of the same size, so nothing
-  shifts. "Funded by" HTX gets the same treatment. (4 Nov 2026; greyscale-until-hover withdrawn 3 Nov.)
+- Logos are shown **in colour**, each in a white `--well` (no border, 3 px corners) of the same size
+  in both themes. On the white page in light mode the well cannot be seen; on tinted bands, in dark
+  mode and on the dark footer band it is a soft white tile. Logo files are opaque with a white
+  background (see "Phones"). "Funded by" HTX gets the same treatment. (6 Nov 2026; greyscale-until-hover
+  withdrawn 3 Nov.)
 - **Logo sizing is by visual weight** (`src/lib/logo.ts`): height = base × 1/√(width ÷ height), 10 %
   less for square solid-colour tiles, capped at the well's inner height. A wide wordmark and a square
   badge then look the same size. Do not set logo heights by hand. Bases (box height): home row 72 px (104 px),
@@ -313,7 +320,7 @@ The page sections live as section components under `src/components/sections/`.
 - **Interactivity must look interactive.** Labels such as "Select", "Show partners ↓" and "See more →",
   a pressed state and a cursor. Hover-only discovery is not enough.
 - **No empty grids.** If a matrix would be mostly empty, choose another representation.
-- **Tooling in the repo:** `npm run check` (build, schema, links, size budget) and `npm run shots`
+- **Tooling in the repo:** `npm run check` (build, schema, links, size budget, no see-through images) and `npm run shots`
   (`scripts/shots.mjs`: one page in real Chrome, reports overflow, console errors and failed
   requests, PNG in `.shots/`). Claude sessions follow `docs/claude/PROCESS.md` and the
   `.claude/skills/svg-*` skills.
@@ -347,7 +354,7 @@ The page sections live as section components under `src/components/sections/`.
 
 ## 8. Definition of done for any change
 
-- [ ] `npm run check` passes (schema, build, internal links, size budget).
+- [ ] `npm run check` passes (schema, build, internal links, size budget, no see-through images).
 - [ ] `npm run shots -- /<page>/` at 1280 light, 1280 dark and 390 wide, each `"ok": true`
       (no overflow, no console errors, no failed requests), and the PNGs looked at.
 - [ ] Wording follows §2; colours and fonts follow §3 (checked in light **and** dark); the partner order is correct.
