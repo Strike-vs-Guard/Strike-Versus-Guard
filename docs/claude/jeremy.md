@@ -379,6 +379,11 @@ vanished. Samsung offers no reliable site-side switch, so the site now survives 
 see-through logo files have white baked in, `mix-blend-mode` is gone, wells are white in both themes,
 and `npm run check` refuses a see-through image. Verified on stand-ins only (measured repaint values
 from the screenshots; Chrome forced dark with the opt-out stripped); the real test is the phone.
+The logos were then legible but sat as small light tiles inside dark-grey boxes. Jeremy wanted the
+whole tile big and white everywhere, so each logo is now drawn at build time onto a white canvas
+(a "plate", `src/lib/logo.ts` and `src/lib/plates.ts`) that fills the tile; no CSS colour shows
+around a logo. Plates are drawn wider than 64 px, because Chromium's forced dark may invert smaller
+images (the NEAR Lab, xLab and Penn marks did in the stand-in).
 
 ---
 

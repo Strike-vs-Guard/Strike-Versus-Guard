@@ -8,7 +8,7 @@
  * positioned ancestor of the <li> (the header row), so on phones it spans the header width.
  */
 import type { CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets';
+import { squarePlate } from '../lib/logo';
 import { url } from '../lib/url';
 
 interface Props {
@@ -25,16 +25,8 @@ const sorted = [...partners].sort((a, b) => a.data.order - b.data.order);
 const rows = sorted.filter((p) => p.data.role !== 'Funding sponsor' && p.data.page);
 const funder = sorted.find((p) => p.data.role === 'Funding sponsor');
 
-/* The chip is 28 px inside its padding. It shows the partner's square `logoMark` if it has one, else the logo. */
-const CHIP = 28;
 /* A lab written as "Centre · Lab" shows only its last part, e.g. "NEAR Lab". */
 const labName = (lab?: string) => lab?.split(' · ').at(-1);
-const chip = (p: CollectionEntry<'partners'>) => {
-  const src = p.data.logoMark ?? p.data.logo;
-  const ar = src.width / src.height;
-  const size = ar >= 1 ? { width: CHIP, height: Math.round(CHIP / ar) } : { width: Math.round(CHIP * ar), height: CHIP };
-  return { src, ...size };
-};
 ---
 
 <li class="pm" data-pm>
@@ -53,8 +45,8 @@ const chip = (p: CollectionEntry<'partners'>) => {
           return (
             <li>
               <a class="pm__row" href={href} aria-current={path === href ? 'page' : undefined}>
-                <span class="pm__chip">
-                  <Image alt="" {...chip(p)} densities={[1, 2]} />
+                <span class="logo-well pm__chip">
+                  <img {...squarePlate(p)} decoding="async" />
                 </span>
                 <span>
                   <span class="pm__name">
@@ -73,8 +65,8 @@ const chip = (p: CollectionEntry<'partners'>) => {
       {
         funder && (
           <a class="pm__row pm__row--muted" href={url('partners/#funder')}>
-            <span class="pm__chip">
-              <Image alt="" {...chip(funder)} densities={[1, 2]} />
+            <span class="logo-well pm__chip">
+              <img {...squarePlate(funder)} decoding="async" />
             </span>
             <span>Funded by {funder.data.short}</span>
           </a>
@@ -190,24 +182,22 @@ const chip = (p: CollectionEntry<'partners'>) => {
     font-size: var(--step--1);
     line-height: 1.4;
   }
+  /*
+   * Like every logo, a white plate (global .logo-well) with the partner's `logoMark` (else its logo).
+   * The plate is 80 px and the chip shows its centre 36 px: Chromium's forced dark may invert an
+   * image drawn at 64 px or less (src/lib/logo.ts).
+   */
   .pm__chip {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 36px;
     height: 36px;
-    padding: 4px;
-    /* like every logo: the white well (invisible on the white panel in light) */
-    background: var(--well-bg);
-    border: 0;
-    border-radius: var(--radius);
   }
-  .pm__chip :global(img) {
-    display: block;
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
+  .pm__chip img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 80px;
+    max-width: none;
+    margin: -40px 0 0 -40px;
   }
   .pm__foot {
     display: flex;

@@ -27,8 +27,8 @@
   --zone: color-mix(in srgb, var(--muted) 8%, transparent);
   --well: #ffffff;
   --well-border: var(--border);
-  /* behind logos: the white --well in both themes (invisible on the white page in light, a soft tile on
-     tinted bands and in dark). Logo files carry their own white background too: see "Phones" in STANDARDS §3. */
+  /* behind logo tiles, as a fallback only: the tile itself is a white plate image (src/lib/logo.ts), which
+     a browser that repaints CSS colours leaves white. See "Phones" in STANDARDS §3. */
   --well-bg: var(--well);
   --halo: rgb(255 255 255 / 0.85);
   --shadow: none;
@@ -56,7 +56,7 @@
   --max: 75rem; /* 1200 px at root 16, 1500 at root 20 */
   --section: clamp(96px, 10vw, 112px);
   --pop: var(--bg); /* menus and popovers; lifted to --surface in dark so they read as a layer */
-  --well-rule: #e3e6ea; /* divider inside a logo well; wells are light in both themes */
+  --well-rule: #e3e6ea; /* hairline between institution and lab; drawn into the pair plate (src/lib/plates.ts) */
   --fig-filter: none; /* white-background figures and plots: dimmed a little in dark so they do not glare */
   color-scheme: only light; /* "only": phone browsers must not force-darken the light theme */
 }
@@ -309,46 +309,26 @@ p {
 }
 
 /*
- * Logo wells (STANDARDS §3): logos in colour. Logos are sized by visual weight, not by
- * height: each <img> gets --logo-k = 1/√(width÷height) from its component (0.9× that for square
- * solid-colour tiles), so height = --logo-base × --logo-k, capped at the well's inner height
- * --logo-max. Every logo then covers about the same area. Each use sets --logo-base and --logo-max.
- * The well is white with no border in both themes: invisible on the white page in light, a soft tile
- * on tinted bands, in dark and on the dark footer band. Logo files are opaque (white baked in) and
- * there is no blend mode, so a phone browser that repaints CSS colours cannot make a logo disappear.
+ * Logo tiles (STANDARDS §3). Each logo is a "plate": the logo on an opaque white canvas, drawn at
+ * build time (src/lib/logo.ts sets the size by visual weight, src/lib/plates.ts draws it). The plate
+ * fills the tile edge to edge, so the white tile is image pixels, which a phone browser that repaints
+ * CSS colours (Samsung Internet's dark mode) leaves white. --well-bg under it is only a fallback while
+ * the image loads. Each use sets only the tile width; the plate sets the height and the logo size.
+ * No padding, border, blend mode or opacity. Light theme: invisible on the white page. Plates are
+ * drawn wider than 64 CSS px (see src/lib/logo.ts: Chromium's forced dark may invert smaller images).
  */
 .logo-well {
-  --logo-base: 48px;
-  --logo-max: 56px;
-  background: var(--well-bg);
-  border: 0;
+  display: block;
+  position: relative;
+  overflow: hidden;
   border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 12px 16px;
+  background: var(--well-bg);
+  line-height: 0;
 }
 .logo-well img {
   display: block;
-  flex: none;
-  height: min(calc(var(--logo-base) * var(--logo-k, 1)), var(--logo-max));
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
-}
-/* Institution and lab in one well: institution left, a hairline, lab right. */
-.logo-well__half {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-}
-.logo-well__rule {
-  flex: none;
-  align-self: stretch;
-  width: 1px;
-  background: var(--well-rule);
+  width: 100%;
+  height: auto;
 }
 
 .chip {

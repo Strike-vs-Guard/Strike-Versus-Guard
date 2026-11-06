@@ -90,10 +90,10 @@ sets `data-theme` before first paint (no flash). If CMU's video overlay is kept,
 | `--media` | #0B1622 | #0B1622 | behind and over video only: hero panel, play-button discs |
 | `--strike` | #D9542C | #F2766A | **only** the Strike team inside game figures |
 | `--guard` | #2D6FD0 | #6FA3F5 | **only** the Guard team inside game figures |
-| `--well` / `--well-bg` | #FFFFFF / `--well` | #FFFFFF / `--well` | logos: a white well with no border in both themes; invisible on the white page in light, a soft tile on tinted bands, in dark and on the footer band |
+| `--well` / `--well-bg` | #FFFFFF / `--well` | #FFFFFF / `--well` | fallback behind logo tiles only: the tile is a white plate image that covers it completely (see "Phones") |
 | `--max` | 75rem | 75rem | content width, with the gutter: 1200 px at root 16 px, 1500 px at root 20 px |
 | `--pop` | `--bg` | `--surface` | menus and popovers, so they read as a layer above the page in dark |
-| `--well-rule` | #E3E6EA | #E3E6EA | divider inside a logo well (wells are light in both themes) |
+| `--well-rule` | #E3E6EA | #E3E6EA | hairline between institution and lab; drawn into the pair plate (`src/lib/plates.ts`) |
 | `--fig-filter` | none | brightness(0.9) | white-background figures, plots and sim clips: softened in dark so they do not glare |
 
 **Phones (rules found by the mobile audit, 6 Nov 2026):**
@@ -109,10 +109,13 @@ sets `data-theme` before first paint (no flash). If CMU's video overlay is kept,
   image pixels alone. So every PNG and WebP under `content/` is **opaque, with its own white
   background**: a logo with a see-through background sat dark-on-dark and vanished (Penn, ST
   Engineering, 6 Nov 2026). `npm run check` fails on a see-through image (`scripts/check-images.mjs`,
-  which also gives the one-line fix).
-- No `mix-blend-mode` on logos: under a forced dark mode it blends them into the repainted
-  background. Wells are plain white `--well-bg` with no border.
-- "Dimmed" is a muted colour plus a greyed logo, never `opacity` on a card (it turns white wells grey).
+  which also gives the one-line fix). The white logo tile is **part of the image**: each logo is
+  drawn at build time onto a white "plate" (`src/lib/logo.ts`, `src/lib/plates.ts`, served at
+  `/plates/<name>.png`) that fills the tile edge to edge. The CSS well under it is only a fallback.
+  Every plate is drawn wider than 64 CSS px: Chromium's forced dark may invert smaller images.
+- No `mix-blend-mode` and no `opacity` on logos: under a forced dark mode they blend the tile into the
+  repainted background. No padding, border or gap where a CSS colour could show around a plate.
+- "Dimmed" is a muted colour plus a faded logo (a filter that keeps white white), never `opacity`.
 - `:hover` effects sit inside `@media (hover: hover)`; on touch, hover sticks after a tap.
 - Clip letterbox bars are `--media` (Clip component) or `--bg` (clips inside partner Markdown).
 - Check with `npm run shots -- /<page>/ --width 390 --theme dark --system` (phone, system dark,
@@ -132,15 +135,16 @@ Section padding is 96 to 112 px. Corners are 3 px. Rules, not boxed cards. Text 
 - No numbered circles, pill chips or dot grid. Mono labels appear at page level only.
 - **Never** colour partners, tracks, buttons or banners blue or red. Red never means "alarm".
 - No crosshairs, HUD styling, radar sweeps or military imagery.
-- Logos are shown **in colour**, each in a white `--well` (no border, 3 px corners) of the same size
-  in both themes. On the white page in light mode the well cannot be seen; on tinted bands, in dark
-  mode and on the dark footer band it is a soft white tile. Logo files are opaque with a white
-  background (see "Phones"). "Funded by" HTX gets the same treatment. (6 Nov 2026; greyscale-until-hover
-  withdrawn 3 Nov.)
-- **Logo sizing is by visual weight** (`src/lib/logo.ts`): height = base × 1/√(width ÷ height), 10 %
-  less for square solid-colour tiles, capped at the well's inner height. A wide wordmark and a square
-  badge then look the same size. Do not set logo heights by hand. Bases (box height): home row 72 px (104 px),
-  footer 84 px (100 px), partner card 70 px (112 px), partner page 106 px (164 px).
+- Logos are shown **in colour**, each on a white plate image (3 px corners) of the same size in both
+  themes: 2:1 for a single logo (home row, footer, "Funded by" HTX), 3:1 for institution + lab with a
+  hairline between them, and a square chip in the Partners menu. On the white page in light mode the
+  tile cannot be seen; on tinted bands, in dark mode and on the dark footer band it is a white tile
+  (see "Phones"). (6 Nov 2026; greyscale-until-hover withdrawn 3 Nov.)
+- **Logo sizing is by visual weight**, baked into the plates (`RECIPE` in `src/lib/logo.ts`): height =
+  a × plate height × 1/√(width ÷ height), 10 % less for square solid-colour tiles, capped in height and
+  width (so a long wordmark keeps a white margin). A wide wordmark and a square badge then look the same
+  size. Do not set logo heights by hand; a page sets only the tile width. Tiles: home row 170 × 85 px,
+  footer 198 × 99, partner card 270 × 90, partner page 450 × 150, diagram card 196 × 65, menu chip 36.
 - **Portraits are circles** everywhere (`border-radius: 50%`, `object-fit: cover`, one diameter per
   row); the initials fallback is a circle too.
 - The drone drawing has no dot grid and no corner marks. Research directions is a plain numbered list.

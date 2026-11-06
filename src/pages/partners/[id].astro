@@ -8,8 +8,7 @@
  */
 import { getCollection, getEntry, render } from 'astro:content';
 import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-import { logoSize } from '../../lib/logo';
+import LogoPair from '../../components/LogoPair.astro';
 import Base from '../../layouts/Base.astro';
 import { url } from '../../lib/url';
 import { fmtDate } from '../../lib/text';
@@ -30,8 +29,6 @@ const repo = site.repository.replace(/\/$/, '');
 const filePath = `content/partners/${fileName(partner)}`;
 const editUrl = `${repo}/edit/development/${filePath}`;
 const pubs = [...d.publications].sort((a, b) => b.year - a.year);
-/* Head logos: base 106 px, capped at the well's 132 px inner height (src/lib/logo.ts). */
-const logo = (img: ImageMetadata) => logoSize(img, 106, 132);
 const people = d.people ?? [];
 /* "About the lab": the lab blurb and every person with a bio, lead first. */
 const bios = [...people.filter((m) => m.lead && m.bio), ...people.filter((m) => !m.lead && m.bio)];
@@ -73,21 +70,7 @@ const layerNames: Record<string, string> = {
           <h1>{d.lab ? `${d.short} ${d.lab}` : d.short}</h1>
           <p class="pp-inst">{d.labFull ? `${d.labFull}, ${d.institution}` : d.institution}</p>
           <p class="lede">{d.summary}</p>
-          <div class="logo-well pp-logos">
-            <span class="logo-well__half">
-              <Image src={d.logo} alt={d.logoAlt ?? d.institution} {...logo(d.logo)} densities={[1, 2]} />
-            </span>
-            {
-              d.labLogo && (
-                <>
-                  <span class="logo-well__rule" aria-hidden="true"></span>
-                  <span class="logo-well__half">
-                    <Image src={d.labLogo} alt={d.lab ?? ''} {...logo(d.labLogo)} densities={[1, 2]} />
-                  </span>
-                </>
-              )
-            }
-          </div>
+          <LogoPair partner={partner} class="pp-logos" />
         </div>
         <aside class="card pp-meta" aria-label="At a glance">
           <dl>
@@ -312,25 +295,10 @@ const layerNames: Record<string, string> = {
     background: var(--bg);
     box-shadow: none;
   }
-  /* One wide well under the lede: institution left, hairline, lab right. */
-  .pp-logos {
-    --logo-base: 106px;
-    --logo-max: 132px;
-    width: fit-content;
-    min-width: min(100%, 440px);
-    max-width: 100%;
-    height: 164px;
+  /* One 3:1 tile under the lede (LogoPair): 450 px wide at most (150 px tall), full width on phones. */
+  .pp-head :global(.pp-logos) {
+    width: min(100%, 450px);
     margin-top: 28px;
-    padding: 16px 40px;
-    gap: 28px;
-  }
-  @media (max-width: 520px) {
-    .pp-logos {
-      --logo-max: 96px;
-      height: 128px;
-      padding: 16px 14px;
-      gap: 14px;
-    }
   }
   .pp-meta dl {
     margin: 0;
