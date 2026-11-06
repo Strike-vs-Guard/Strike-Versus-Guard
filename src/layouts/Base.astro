@@ -25,7 +25,6 @@ const navBefore = [
 const navAfter = [
   { href: url('flights/'), label: 'Flights' },
   { href: url('publications/'), label: 'Publications' },
-  { href: url('contribute/'), label: 'Contribute' },
 ];
 /* A page is current when its path starts with the nav link's path (anchors on the home page never are). */
 const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href);
@@ -155,7 +154,6 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
               <li><a href={url('partners/')}>Partners</a></li>
               <li><a href={url('flights/')}>Flights</a></li>
               <li><a href={url('publications/')}>Publications</a></li>
-              <li><a href={url('contribute/')}>Contribute</a></li>
               <li><a href={site.repository}>Source on GitHub</a></li>
             </ul>
           </div>

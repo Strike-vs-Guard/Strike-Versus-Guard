@@ -50,7 +50,7 @@ src/                         ← layout, styles, components (ST-owned)
   deploy.yml                   publishes main (live) and development (/preview/) together
 ```
 
-Pages: Home, Updates, Research (`/research/`; `/programme/` redirects), Partners (`/partners/`, also a header menu that lists every partner's page), Flights, Publications and Contribute.
+Pages: Home, Updates, Research (`/research/`; `/programme/` redirects), Partners (`/partners/`, also a header menu that lists every partner's page), Flights and Publications.
 Light theme by default, dark (navy-black) with a toggle in the header. Each partner edits its own Markdown file, including its `people:`, `publications:` and its own update folder `content/updates/<partner>/` (`author:`).
 
 Built with [Astro](https://astro.build) (static output, no server). Hosted on GitHub Pages, deployed by

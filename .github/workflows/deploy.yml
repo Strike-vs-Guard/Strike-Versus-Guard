@@ -35,9 +35,19 @@ jobs:
     # After CI on development, only publish if the check passed.
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    env:
-      REPO_PATH: /${{ github.event.repository.name }}/
     steps:
+      # An organisation site (repository "<org>.github.io") is served at the root; any other
+      # repository is served under "/<repository name>/".
+      - name: Work out the base path
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          shopt -s nocasematch
+          case "$REPO_NAME" in
+            *.github.io) echo "REPO_PATH=/" >> "$GITHUB_ENV" ;;
+            *) echo "REPO_PATH=/$REPO_NAME/" >> "$GITHUB_ENV" ;;
+          esac
+
       - name: Check out main (live site)
         uses: actions/checkout@v5
         with:

@@ -4,7 +4,7 @@
  * The layout is shared; each partner only edits their own Markdown file. The top line names that file
  * with an Edit link; then the head, people (the PI tagged "PI"), "About the lab" (`labBlurb:` plus the bios of people with
  * `bio:`, lead first; skipped when both are empty), the partner's own text, "Updates from <Short>" (always shown;
- * empty → "No posts yet. Post one →") and its publications. No chip row to other partners: the header menu does that. The layer drawing lives on the home page.
+ * empty → "No posts yet.") and its publications. No chip row to other partners: the header menu does that. The layer drawing lives on the home page.
  */
 import { getCollection, getEntry, render } from 'astro:content';
 import { Image } from 'astro:assets';
@@ -224,7 +224,7 @@ const layerNames: Record<string, string> = {
             </ul>
           ) : (
             <p class="pp-none">
-              No posts yet. <a href={url('contribute/#update')}>Post one →</a>
+              No posts yet.
             </p>
           )
         }
@@ -237,7 +237,7 @@ const layerNames: Record<string, string> = {
             <PubList pubs={pubs.map((pub) => ({ pub }))} images />
           ) : (
             <p class="pp-none">
-              None yet. <a href={url('contribute/#publication')}>Add one →</a>
+              None yet.
             </p>
           )
         }

@@ -183,7 +183,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 
 ## 5. Page structure (current)
 
-Nav: **Updates · Research · Partners ▾ · Flights · Publications · Contribute**, then the sun/moon
+Nav: **Updates · Research · Partners ▾ · Flights · Publications**, then the sun/moon
 theme toggle. There is no Benchmark item; the game stays on the Research page. `/programme/` is a
 redirect to `/research/` (an `#anchor` is not carried over). Moved addresses are `redirects:` in
 `astro.config.mjs`, never redirect pages under `src/pages/`.
@@ -248,8 +248,9 @@ since 4 Nov 2026.)
 **Publications (`/publications/`):** every partner's `publications:`, one section per partner (anchor
 = partner id), in partner order. A partner with none shows "None yet (as of <date>)".
 
-**Contribute (`/contribute/`):** "Which file is mine?" table, then add a person or photo, post an
-update, add a publication, and a link to CONTRIBUTING.md for the rest.
+**No Contribute page** (removed 6 Nov 2026; `/contribute/` redirects to home). How to edit is for
+editors, not visitors: it lives in CONTRIBUTING.md and the README on GitHub. Empty states say "No
+posts yet." / "None yet." with no how-to link.
 
 **Updates (`/updates/`):** a dated log with a partner filter; each post shows its `author:`, its
 `gallery:` as a photo strip and its optional `link:`. Posts are `updates/[...id]` (the id includes

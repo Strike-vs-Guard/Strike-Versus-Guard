@@ -24,7 +24,7 @@ Full description: `docs/claude/PROCESS.md`.
 - **Branches:** only `development` (edits; test site at `/preview/`) and `main` (live, via a PR from
   `development`). Never create other branches.
 - **Theme:** light by default, dark navy-black with a header toggle; tokens in STANDARDS §3. Brand red/blue are type, rules and bands only; test both themes.
-- **Nav:** Updates · Research · Partners ▾ · Flights · Publications · Contribute (STANDARDS §5). `/programme/` redirects to `/research/`.
+- **Nav:** Updates · Research · Partners ▾ · Flights · Publications (STANDARDS §5; no Contribute page, editing help is CONTRIBUTING.md). `/programme/` redirects to `/research/`.
 - **Paths:** copy lives in `content/`, never in templates. Never hard-code the base path; use `url()`.
 - **Before pushing:** `npm run check`. For visual changes, `npm run shots -- /<page>/` at 1280 light,
   1280 dark (`--theme dark`) and 390 (`--width 390`): each must print `"ok": true`.

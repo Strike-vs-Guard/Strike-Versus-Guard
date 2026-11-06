@@ -98,7 +98,7 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
 | Area | State |
 |---|---|
 | Theme | Light default, dark navy-black, header toggle; tokens in STANDARDS §3; Archivo 700 headlines; larger wordmark |
-| Nav | Updates · Research · Partners ▾ · Flights · Publications · Contribute |
+| Nav | Updates · Research · Partners ▾ · Flights · Publications (Contribute page removed 6 Nov 2026; `/contribute/` redirects home) |
 | Pages | Research replaces Programme (`/programme/` redirects); new Publications and Contribute; Partners keeps only the connection diagram |
 | Home | Hero (title above a 2:1 clip panel), logo row, glance + latest (the only updates list on home; the strip was removed 5 Nov), partner cards, five themes, interactive drone, flights, publications, people |
 | Drone | Effects list in STANDARDS §5; ring drift only while Safety is lit; no count-ins or scan sweeps |

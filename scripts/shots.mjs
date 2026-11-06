@@ -26,7 +26,7 @@ const page = args.find((a) => a.startsWith('/')) ?? '/';
 const theme = opt('theme', 'light');
 const width = Number(opt('width', '1280'));
 const out = opt('out', '.shots');
-const base = (process.env.BASE_PATH || '/Strike-Versus-Guard/').replace(/\/?$/, '/');
+const base = (process.env.BASE_PATH || '/').replace(/\/?$/, '/');
 const dist = new URL('../dist/', import.meta.url).pathname;
 if (!fs.existsSync(path.join(dist, 'index.html'))) {
   console.error('dist/ is missing or empty. Run `npm run check` first.');

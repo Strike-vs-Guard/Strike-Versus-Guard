@@ -50,7 +50,7 @@ const filters = all.filter((p) => p.data.page || updates.some((u) => u.data.part
     {
       filters.map((p) => (
         <p class="up__empty" data-empty={p.id} hidden>
-          No posts from {p.data.short} yet. <a href={url('contribute/#update')}>Post one →</a>
+          No posts from {p.data.short} yet.
         </p>
       ))
     }
