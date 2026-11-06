@@ -90,8 +90,36 @@ sets `data-theme` before first paint (no flash). If CMU's video overlay is kept,
 | `--media` | #0B1622 | #0B1622 | behind and over video only: hero panel, play-button discs |
 | `--strike` | #D9542C | #F2766A | **only** the Strike team inside game figures |
 | `--guard` | #2D6FD0 | #6FA3F5 | **only** the Guard team inside game figures |
-| `--well` / `--well-bg` | #FFFFFF / none | #FFFFFF / `--well` | logos: no background or border in light; a soft white well (no border) in dark and on the footer band |
+| `--well` / `--well-bg` | #FFFFFF / `--well` | #FFFFFF / `--well` | fallback behind logo tiles only: the tile is a white plate image that covers it completely (see "Phones") |
 | `--max` | 75rem | 75rem | content width, with the gutter: 1200 px at root 16 px, 1500 px at root 20 px |
+| `--pop` | `--bg` | `--surface` | menus and popovers, so they read as a layer above the page in dark |
+| `--well-rule` | #E3E6EA | #E3E6EA | hairline between institution and lab; drawn into the pair plate (`src/lib/plates.ts`) |
+| `--fig-filter` | none | brightness(0.9) | white-background figures, plots and sim clips: softened in dark so they do not glare |
+
+**Phones (rules found by the mobile audit, 6 Nov 2026):**
+- `color-scheme` is `only light` / `only dark`, with `<meta name="color-scheme" content="light dark">`.
+  Plain `light` let Android Chrome and Samsung Internet force-darken the light theme into grey-black
+  and blend the logos away. Never drop the word `only`.
+- `<meta name="theme-color">` colours the browser bar: system-driven until a theme is stored, then set
+  by the inline head script and the toggle (#FFFFFF / #0B1622).
+- The sticky header is **solid** `--bg`. No `backdrop-filter`: the build keeps only the `-webkit-`
+  form, which Chrome ignores, so a translucent header let page text ghost through.
+- **Samsung Internet's dark mode cannot be switched off from the site.** It repaints CSS colours even
+  with the opt-out above (white wells become dark grey; the light theme becomes grey-black) but leaves
+  image pixels alone. So every PNG and WebP under `content/` is **opaque, with its own white
+  background**: a logo with a see-through background sat dark-on-dark and vanished (Penn, ST
+  Engineering, 6 Nov 2026). `npm run check` fails on a see-through image (`scripts/check-images.mjs`,
+  which also gives the one-line fix). The white logo tile is **part of the image**: each logo is
+  drawn at build time onto a white "plate" (`src/lib/logo.ts`, `src/lib/plates.ts`, served at
+  `/plates/<name>.png`) that fills the tile edge to edge. The CSS well under it is only a fallback.
+  Every plate is drawn wider than 64 CSS px: Chromium's forced dark may invert smaller images.
+- No `mix-blend-mode` and no `opacity` on logos: under a forced dark mode they blend the tile into the
+  repainted background. No padding, border or gap where a CSS colour could show around a plate.
+- "Dimmed" is a muted colour plus a faded logo (a filter that keeps white white), never `opacity`.
+- `:hover` effects sit inside `@media (hover: hover)`; on touch, hover sticks after a tap.
+- Clip letterbox bars are `--media` (Clip component) or `--bg` (clips inside partner Markdown).
+- Check with `npm run shots -- /<page>/ --width 390 --theme dark --system` (phone, system dark,
+  nothing stored) as well as the stored themes.
 
 **Fluid scale:** the root font size is `clamp(1rem, 0.75rem + 0.45vw, 1.25rem)`: 16 px on phones,
 about 18 px at 1280 wide, 20 px from 1780 wide. Every type step and the content width are in rem, so
@@ -107,14 +135,16 @@ Section padding is 96 to 112 px. Corners are 3 px. Rules, not boxed cards. Text 
 - No numbered circles, pill chips or dot grid. Mono labels appear at page level only.
 - **Never** colour partners, tracks, buttons or banners blue or red. Red never means "alarm".
 - No crosshairs, HUD styling, radar sweeps or military imagery.
-- Logos are shown **in colour**. In light mode they sit straight on the page (no well, no border; a
-  logo's own white background multiplies away). In dark mode, and on the dark footer band in both
-  themes, each sits in a soft white `--well` (no border, 3 px corners) of the same size, so nothing
-  shifts. "Funded by" HTX gets the same treatment. (4 Nov 2026; greyscale-until-hover withdrawn 3 Nov.)
-- **Logo sizing is by visual weight** (`src/lib/logo.ts`): height = base × 1/√(width ÷ height), 10 %
-  less for square solid-colour tiles, capped at the well's inner height. A wide wordmark and a square
-  badge then look the same size. Do not set logo heights by hand. Bases (box height): home row 72 px (104 px),
-  footer 84 px (100 px), partner card 70 px (112 px), partner page 106 px (164 px).
+- Logos are shown **in colour**, each on a white plate image (3 px corners) of the same size in both
+  themes: 2:1 for a single logo (home row, footer, "Funded by" HTX), 3:1 for institution + lab with a
+  hairline between them, and a square chip in the Partners menu. On the white page in light mode the
+  tile cannot be seen; on tinted bands, in dark mode and on the dark footer band it is a white tile
+  (see "Phones"). (6 Nov 2026; greyscale-until-hover withdrawn 3 Nov.)
+- **Logo sizing is by visual weight**, baked into the plates (`RECIPE` in `src/lib/logo.ts`): height =
+  a × plate height × 1/√(width ÷ height), 10 % less for square solid-colour tiles, capped in height and
+  width (so a long wordmark keeps a white margin). A wide wordmark and a square badge then look the same
+  size. Do not set logo heights by hand; a page sets only the tile width. Tiles: home row 170 × 85 px,
+  footer 198 × 99, partner card 270 × 90, partner page 450 × 150, diagram card 196 × 65, menu chip 36.
 - **Portraits are circles** everywhere (`border-radius: 50%`, `object-fit: cover`, one diameter per
   row); the initials fallback is a circle too.
 - The drone drawing has no dot grid and no corner marks. Research directions is a plain numbered list.
@@ -183,7 +213,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 
 ## 5. Page structure (current)
 
-Nav: **Updates · Research · Partners ▾ · Flights · Publications · Contribute**, then the sun/moon
+Nav: **Updates · Research · Partners ▾ · Flights · Publications**, then the sun/moon
 theme toggle. There is no Benchmark item; the game stays on the Research page. `/programme/` is a
 redirect to `/research/` (an `#anchor` is not carried over). Moved addresses are `redirects:` in
 `astro.config.mjs`, never redirect pages under `src/pages/`.
@@ -248,8 +278,9 @@ since 4 Nov 2026.)
 **Publications (`/publications/`):** every partner's `publications:`, one section per partner (anchor
 = partner id), in partner order. A partner with none shows "None yet (as of <date>)".
 
-**Contribute (`/contribute/`):** "Which file is mine?" table, then add a person or photo, post an
-update, add a publication, and a link to CONTRIBUTING.md for the rest.
+**No Contribute page** (removed 6 Nov 2026; `/contribute/` redirects to home). How to edit is for
+editors, not visitors: it lives in CONTRIBUTING.md and the README on GitHub. Empty states say "No
+posts yet." / "None yet." with no how-to link.
 
 **Updates (`/updates/`):** a dated log with a partner filter; each post shows its `author:`, its
 `gallery:` as a photo strip and its optional `link:`. Posts are `updates/[...id]` (the id includes
@@ -293,7 +324,7 @@ The page sections live as section components under `src/components/sections/`.
 - **Interactivity must look interactive.** Labels such as "Select", "Show partners ↓" and "See more →",
   a pressed state and a cursor. Hover-only discovery is not enough.
 - **No empty grids.** If a matrix would be mostly empty, choose another representation.
-- **Tooling in the repo:** `npm run check` (build, schema, links, size budget) and `npm run shots`
+- **Tooling in the repo:** `npm run check` (build, schema, links, size budget, no see-through images) and `npm run shots`
   (`scripts/shots.mjs`: one page in real Chrome, reports overflow, console errors and failed
   requests, PNG in `.shots/`). Claude sessions follow `docs/claude/PROCESS.md` and the
   `.claude/skills/svg-*` skills.
@@ -327,7 +358,7 @@ The page sections live as section components under `src/components/sections/`.
 
 ## 8. Definition of done for any change
 
-- [ ] `npm run check` passes (schema, build, internal links, size budget).
+- [ ] `npm run check` passes (schema, build, internal links, size budget, no see-through images).
 - [ ] `npm run shots -- /<page>/` at 1280 light, 1280 dark and 390 wide, each `"ok": true`
       (no overflow, no console errors, no failed requests), and the PNGs looked at.
 - [ ] Wording follows §2; colours and fonts follow §3 (checked in light **and** dark); the partner order is correct.

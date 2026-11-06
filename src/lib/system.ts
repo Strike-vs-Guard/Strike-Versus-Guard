@@ -5,8 +5,8 @@
  * still only edit their own file.
  */
 import { getCollection, getEntry } from 'astro:content';
-import { getImage } from 'astro:assets';
 import { url } from './url';
+import { pairPlate } from './logo';
 
 export const LAYER_IDS = ['strategy', 'safety', 'flight', 'localisation', 'drones', 'integration'] as const;
 export type LayerId = (typeof LAYER_IDS)[number];
@@ -28,12 +28,8 @@ export async function getSystemData() {
   const members = all.filter((p) => p.data.role !== 'Funding sponsor');
   const sponsor = all.find((p) => p.data.role === 'Funding sponsor');
 
-  const logos: Record<string, string> = {};
-  const labs: Record<string, string> = {};
-  for (const p of members) {
-    logos[p.id] = (await getImage({ src: p.data.logo, height: 96, format: 'png' })).src;
-    labs[p.id] = p.data.labLogo ? (await getImage({ src: p.data.labLogo, height: 96, format: 'png' })).src : logos[p.id];
-  }
+  /* each partner's institution + lab plate (src/lib/logo.ts) */
+  const plates = Object.fromEntries(members.map((p) => [p.id, pairPlate(p)]));
 
   return {
     section: { eyebrow: stack.data.eyebrow, title: stack.data.title, intro: '' },
@@ -49,8 +45,7 @@ export async function getSystemData() {
       work: Object.fromEntries(Object.entries(p.data.work).filter(([, v]) => !!v)),
     })),
     sponsor: { id: sponsor?.id ?? 'htx', name: sponsor?.data.short ?? 'HTX', note: `Funded by ${sponsor?.data.short ?? 'HTX'}` },
-    logos,
-    labs,
+    plates,
   };
 }
 export type SystemData = Awaited<ReturnType<typeof getSystemData>>;

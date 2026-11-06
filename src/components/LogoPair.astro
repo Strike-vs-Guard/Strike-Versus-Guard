@@ -1,0 +1,19 @@
+---
+/**
+ * A partner's institution and lab logos as one white tile: a single 3:1 plate (src/lib/logo.ts),
+ * institution left, a hairline, lab right, all in the image. The tile's width is set by `class`.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { pairPlate } from '../lib/logo';
+
+interface Props {
+  partner: CollectionEntry<'partners'>;
+  class?: string;
+}
+const { partner, class: cls } = Astro.props;
+const plate = pairPlate(partner);
+---
+
+<div class:list={['logo-well', cls]}>
+  <img {...plate} loading="lazy" decoding="async" />
+</div>

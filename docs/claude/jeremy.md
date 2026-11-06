@@ -354,6 +354,39 @@ config); the content is in `scripts/claude/settings.template.json` for Jeremy to
 
 ---
 
+## 20. Contribute page out, root URL, mobile colours (6 Nov 2026)
+> Remove the Contribute page. Change the main page to https://strike-vs-guard.github.io. Use agents to
+> check dark and light on mobile; some colours are wrong on a phone.
+
+**Contribute:** page, nav item, footer link and "Post one →" links removed; `/contribute/` redirects.
+
+**Mobile audit:** a pixel diff first showed "toggle dark" and "system dark" render identically on all
+11 pages, so the fault was not the theme switch. Three Opus agents then reviewed code and 348 phone
+tiles. Findings fixed: forced dark mode on Android (the big one), translucent header without blur in
+Chrome, `opacity` dimming, logo boxes in light, figure glare in dark, clip bars, sticky hover, tap
+flash, browser-bar colour, an iOS home-screen icon. `npm run shots` gained `--system` and touch.
+
+**Root URL:** GitHub serves an organisation's root only from a repository named
+`strike-vs-guard.github.io`, so the repository has to be renamed (owner's step, pending; see HANDOFF). The build works out its
+base path from the repository name; the 404 page forwards old `/Strike-Versus-Guard/…` links.
+
+**Also:** "Automatically delete head branches" (switched on 5 Nov) deleted `development` when
+William merged PR #7. Switched off; a ruleset now protects `development`.
+
+**Samsung Internet (same day, from Jeremy's phone):** the opt-out did not hold there. In our dark
+theme the white logo wells came out dark grey and the see-through Penn and ST Engineering logos
+vanished. Samsung offers no reliable site-side switch, so the site now survives the repaint: the five
+see-through logo files have white baked in, `mix-blend-mode` is gone, wells are white in both themes,
+and `npm run check` refuses a see-through image. Verified on stand-ins only (measured repaint values
+from the screenshots; Chrome forced dark with the opt-out stripped); the real test is the phone.
+The logos were then legible but sat as small light tiles inside dark-grey boxes. Jeremy wanted the
+whole tile big and white everywhere, so each logo is now drawn at build time onto a white canvas
+(a "plate", `src/lib/logo.ts` and `src/lib/plates.ts`) that fills the tile; no CSS colour shows
+around a logo. Plates are drawn wider than 64 px, because Chromium's forced dark may invert smaller
+images (the NEAR Lab, xLab and Penn marks did in the stand-in).
+
+---
+
 ## Review links (private claude.ai pages, owner: Jeremy)
 - Partner picker draft (rejected layout): https://claude.ai/artifact/TbmrKo8Y2Z3RzRPnmLwE1w
 - Four proposals A–D: https://claude.ai/artifact/EGWt5XGuHB5VdtvLGxF1jC

@@ -8,7 +8,7 @@ import { readFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
 const dist = new URL('../dist/', import.meta.url).pathname;
-const base = (process.env.BASE_PATH || '/Strike-Versus-Guard/').replace(/\/?$/, '/');
+const base = (process.env.BASE_PATH || '/').replace(/\/?$/, '/');
 
 function* walk(dir) {
   for (const name of readdirSync(dir)) {

@@ -27,8 +27,9 @@
   --zone: color-mix(in srgb, var(--muted) 8%, transparent);
   --well: #ffffff;
   --well-border: var(--border);
-  /* behind logos: none in light (logos sit on the page), the white --well in dark and on dark bands */
-  --well-bg: transparent;
+  /* behind logo tiles, as a fallback only: the tile itself is a white plate image (src/lib/logo.ts), which
+     a browser that repaints CSS colours leaves white. See "Phones" in STANDARDS §3. */
+  --well-bg: var(--well);
   --halo: rgb(255 255 255 / 0.85);
   --shadow: none;
   --shadow-pop: 0 12px 32px rgb(10 25 40 / 0.14);
@@ -54,7 +55,10 @@
   --gutter: clamp(16px, 4vw, 64px);
   --max: 75rem; /* 1200 px at root 16, 1500 at root 20 */
   --section: clamp(96px, 10vw, 112px);
-  color-scheme: light;
+  --pop: var(--bg); /* menus and popovers; lifted to --surface in dark so they read as a layer */
+  --well-rule: #e3e6ea; /* hairline between institution and lab; drawn into the pair plate (src/lib/plates.ts) */
+  --fig-filter: none; /* white-background figures and plots: dimmed a little in dark so they do not glare */
+  color-scheme: only light; /* "only": phone browsers must not force-darken the light theme */
 }
 /* Dark: chosen with the toggle, or the system setting when nothing is stored. Keep the two lists equal. */
 :root[data-theme='dark'] {
@@ -72,7 +76,9 @@
   --well-bg: var(--well);
   --halo: rgb(0 0 0 / 0.7);
   --shadow-pop: 0 16px 40px rgb(0 0 0 / 0.55);
-  color-scheme: dark;
+  --pop: var(--surface);
+  --fig-filter: brightness(0.9);
+  color-scheme: only dark;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
@@ -90,7 +96,9 @@
     --well-bg: var(--well);
     --halo: rgb(0 0 0 / 0.7);
     --shadow-pop: 0 16px 40px rgb(0 0 0 / 0.55);
-    color-scheme: dark;
+    --pop: var(--surface);
+    --fig-filter: brightness(0.9);
+    color-scheme: only dark;
   }
 }
 
@@ -101,6 +109,7 @@
 }
 
 html {
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--text) 12%, transparent);
   /* Fluid root size: 16 px up to ~890 px wide, then 0.45 px per 100 px of viewport, capped at 20 px. */
   font-size: clamp(1rem, 0.75rem + 0.45vw, 1.25rem);
   -webkit-text-size-adjust: 100%;
@@ -300,47 +309,26 @@ p {
 }
 
 /*
- * Logo wells (STANDARDS §3): logos in colour. Logos are sized by visual weight, not by
- * height: each <img> gets --logo-k = 1/√(width÷height) from its component (0.9× that for square
- * solid-colour tiles), so height = --logo-base × --logo-k, capped at the well's inner height
- * --logo-max. Every logo then covers about the same area. Each use sets --logo-base and --logo-max.
- * Light: no background and no border (--well-bg is transparent; white logo backgrounds multiply away
- * into the page). Dark, and on the dark footer band: a soft white well, same box, so nothing shifts.
+ * Logo tiles (STANDARDS §3). Each logo is a "plate": the logo on an opaque white canvas, drawn at
+ * build time (src/lib/logo.ts sets the size by visual weight, src/lib/plates.ts draws it). The plate
+ * fills the tile edge to edge, so the white tile is image pixels, which a phone browser that repaints
+ * CSS colours (Samsung Internet's dark mode) leaves white. --well-bg under it is only a fallback while
+ * the image loads. Each use sets only the tile width; the plate sets the height and the logo size.
+ * No padding, border, blend mode or opacity. Light theme: invisible on the white page. Plates are
+ * drawn wider than 64 CSS px (see src/lib/logo.ts: Chromium's forced dark may invert smaller images).
  */
 .logo-well {
-  --logo-base: 48px;
-  --logo-max: 56px;
-  background: var(--well-bg);
-  border: 0;
+  display: block;
+  position: relative;
+  overflow: hidden;
   border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 12px 16px;
+  background: var(--well-bg);
+  line-height: 0;
 }
 .logo-well img {
   display: block;
-  flex: none;
-  height: min(calc(var(--logo-base) * var(--logo-k, 1)), var(--logo-max));
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
-  /* a logo's own white background disappears on a light page; on a white well this changes nothing */
-  mix-blend-mode: multiply;
-}
-/* Institution and lab in one well: institution left, a hairline, lab right. */
-.logo-well__half {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-}
-.logo-well__rule {
-  flex: none;
-  align-self: stretch;
-  width: 1px;
-  background: var(--border);
+  width: 100%;
+  height: auto;
 }
 
 .chip {
@@ -410,6 +398,7 @@ figcaption time {
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--well);
+  filter: var(--fig-filter);
   margin: 1.5em 0;
 }
 .md figure.clip {
@@ -420,7 +409,9 @@ figcaption time {
   /* square sim clips would otherwise fill a whole screen; they letterbox instead */
   max-height: min(520px, 75vh);
   border-radius: var(--radius);
-  background: var(--surface);
+  /* letterbox bars take the page colour, so a clip never sits in a mismatched band */
+  background: var(--bg);
+  filter: var(--fig-filter);
 }
 .md ul,
 .md ol {

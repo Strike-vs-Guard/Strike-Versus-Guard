@@ -25,8 +25,7 @@ const D = {
   partners_in_display_order: data.partners_in_display_order,
   sponsor: data.sponsor,
 };
-const LOGO = data.logos;
-const LAB = data.labs;
+const PLATES = data.plates;
 const OPTS = opts;
 ---
 
@@ -48,7 +47,7 @@ const OPTS = opts;
     <div class="pc-cap" id="pc-cap" aria-live="polite"></div>
   </div>
 </figure>
-<script is:inline define:vars={{ D, LOGO, LAB, OPTS }}>
+<script is:inline define:vars={{ D, PLATES, OPTS }}>
 (function(){
   var root = (document.currentScript && document.currentScript.closest('section.pc')) || document.querySelector('section.pc');
   if (!root) return;
@@ -85,8 +84,10 @@ const OPTS = opts;
   $('[data-pc="intro"]').textContent = D.section.intro;
   $('[data-pc="fund"]').textContent = D.sponsor.note;
 
+  /* the partner's institution + lab plate (hairline drawn in) as one white tile, as in LogoPair.astro */
   var well = function(p){
-    return '<span class="pc-well"><img class="pc-li" src="' + LOGO[p.id] + '" alt="' + esc(p.institution) + ' logo"><span class="pc-rule" aria-hidden="true"></span><img class="pc-ll" src="' + LAB[p.id] + '" alt="' + esc(p.lab) + ' logo"></span>';
+    var pl = PLATES[p.id];
+    return '<span class="pc-well logo-well"><img src="' + pl.src + '" width="' + pl.width + '" height="' + pl.height + '" alt="' + esc(pl.alt) + ' logos" decoding="async"></span>';
   };
   var hint = '<span class="pc-hint" aria-hidden="true"><span class="pc-h-off">Select</span><span class="pc-h-on">Selected</span></span>';
 
@@ -329,11 +330,17 @@ const OPTS = opts;
 /* shared node/button look */
 .pc .pc-node{position:relative;transition:opacity .25s ease}
 .pc .pc-btn{all:unset;box-sizing:border-box;display:grid;width:100%;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 1px 0 var(--border);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background-color .18s ease;-webkit-tap-highlight-color:transparent}
-.pc .pc-btn:hover{transform:translateY(-2px);border-color:var(--muted);box-shadow:0 6px 16px -10px var(--text)}
+@media (hover:hover){.pc .pc-btn:hover{transform:translateY(-2px);border-color:var(--muted);box-shadow:0 6px 16px -10px var(--text)}}
 .pc .pc-btn:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 .pc .pc-btn[aria-pressed="true"]{border-color:var(--text);box-shadow:inset 0 0 0 1px var(--text);background:color-mix(in srgb,var(--text) 5%,var(--surface))}
-.pc .pc-node.pc-dim{opacity:.42}
-.pc .pc-node.pc-dim:hover,.pc .pc-node.pc-dim:focus-within{opacity:.8}
+/* Dimmed = muted label and a faded logo, never opacity (it turns the white plate into a grey slab where CSS
+   white is repainted). The filter fades colour towards white and keeps white exactly white:
+   contrast(1/3) maps white to 2/3, brightness(1.5) brings it back to 1; black ends at 50 % grey. */
+.pc .pc-node.pc-dim .pc-btn{color:var(--muted)}
+.pc .pc-node.pc-dim .pc-well img{filter:grayscale(1) contrast(.3333) brightness(1.51)}
+.pc .pc-node.pc-dim .pc-pname,.pc .pc-node.pc-dim .pc-ltitle{color:var(--muted)}
+@media (hover:hover){.pc .pc-node.pc-dim:hover .pc-well img{filter:none}}
+.pc .pc-node.pc-dim:focus-within .pc-well img{filter:none}
 /* echo ring when the annotated drone hands focus to a layer here */
 .pc .pc-btn.pc-echo{animation:pc-echo .7s cubic-bezier(.2,.7,.2,1)}
 .pc .pc-btn.pc-echo-static{box-shadow:inset 0 0 0 1px var(--text),0 0 0 4px color-mix(in srgb,var(--text) 18%,transparent)}
@@ -352,13 +359,9 @@ const OPTS = opts;
 .pc .pc-btn[aria-pressed="true"] .pc-hint .pc-h-on{display:inline}
 .pc .pc-btn[aria-pressed="true"] .pc-hint .pc-h-off{display:none}
 
-/* partner card */
+/* partner card; the logo tile is the global .logo-well (one 3:1 plate), sized by its column */
 .pc .pc-pbtn{grid-template-columns:196px minmax(0,1fr);gap:14px;padding:10px 12px 10px 10px;align-items:center}
-.pc .pc-well{background:var(--well);border:1px solid var(--well-border,var(--border));border-radius:calc(var(--radius) - 3px);display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;padding:8px 10px;height:64px}
-.pc .pc-well img{display:block;max-width:100%;height:auto;object-fit:contain;min-width:0}
-.pc .pc-well .pc-li{max-height:30px;max-width:116px}
-.pc .pc-well .pc-ll{max-height:40px;max-width:52px}
-.pc .pc-well .pc-rule{width:1px;height:28px;background:var(--grid);flex:none}
+.pc .pc-well{width:100%}
 .pc .pc-ptext{display:flex;flex-direction:column;min-width:0}
 .pc .pc-ptop{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 8px}
 .pc .pc-pname{font:700 20px/1.15 var(--font-display)}
@@ -410,10 +413,7 @@ const OPTS = opts;
 .pc .pc-reset:focus-visible{outline:2px solid var(--text);outline-offset:2px}
 .pc .pc-capgrid{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:20px 32px;align-items:start}
 .pc .pc-who{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
-.pc .pc-who .pc-well{flex-direction:row;min-height:0;padding:8px 10px;gap:10px}
-.pc .pc-who .pc-well .pc-li{max-height:24px;max-width:120px}
-.pc .pc-who .pc-well .pc-ll{max-height:24px;max-width:60px}
-.pc .pc-who .pc-well .pc-rule{width:1px;height:22px}
+.pc .pc-who .pc-well{width:150px}
 .pc .pc-capname{font:700 22px/1.15 var(--font-display);margin:0}
 .pc .pc-capsub{font-size:14px;color:var(--muted);line-height:1.4;margin:2px 0 0}
 .pc .pc-capdesc{font-size:15px;line-height:1.5;margin:10px 0 0;color:var(--text)}
@@ -439,9 +439,6 @@ const OPTS = opts;
 /* ---------- narrower desktop: smaller logo well, "See more" on its own line ---------- */
 @media (max-width:1000px) and (min-width:821px){
   .pc .pc-pbtn{grid-template-columns:150px minmax(0,1fr)}
-  .pc .pc-well{gap:8px;padding:8px}
-  .pc .pc-well .pc-li{max-width:84px}
-  .pc .pc-well .pc-ll{max-width:38px}
   .pc .pc-ptext{padding-bottom:24px}
   .pc .pc-prole{padding-right:0}
 }
@@ -455,10 +452,6 @@ const OPTS = opts;
   .pc .pc-partners{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .pc .pc-pbtn{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr;gap:8px;padding:8px 8px 40px;height:100%;align-items:stretch}
   .pc .pc-node.pc-pnode{height:100%}
-  .pc .pc-well{flex-direction:column;height:auto;min-height:84px;padding:8px 6px;gap:6px}
-  .pc .pc-well .pc-li{max-height:28px;max-width:100%}
-  .pc .pc-well .pc-ll{max-height:26px;max-width:100%}
-  .pc .pc-well .pc-rule{width:28px;height:1px}
   .pc .pc-ptext{padding:0 2px}
   .pc .pc-ptop{display:contents}
   .pc .pc-ptop .pc-hint{order:3;margin-top:8px}

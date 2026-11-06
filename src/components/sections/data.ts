@@ -1,5 +1,5 @@
 /**
- * Shared lookups for the v3 home page and the Research, Publications, Contribute and Updates pages.
+ * Shared lookups for the v3 home page and the Research, Publications and Updates pages.
  * Everything here reads content; nothing holds copy.
  */
 import { getCollection, getEntry, render } from 'astro:content';

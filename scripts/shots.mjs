@@ -7,6 +7,8 @@
  *   npm run shots -- /                 # home, light, 1280 wide
  *   npm run shots -- /partners/ --theme dark --width 390
  *   npm run shots -- /research/ --out /tmp/shots   # where the PNG goes (default: .shots/, git-ignored)
+ *   npm run shots -- / --theme dark --system --width 390   # phone in system dark mode, nothing stored
+ * Widths under 800 are emulated as a touch phone (so :hover behaves as on a phone).
  *
  * The page is served from dist/ under the site's base path, so links and assets resolve as on
  * GitHub Pages. Needs Chrome: Google Chrome on PATH, or set SVG_BROWSER=/path/to/chrome.
@@ -26,7 +28,9 @@ const page = args.find((a) => a.startsWith('/')) ?? '/';
 const theme = opt('theme', 'light');
 const width = Number(opt('width', '1280'));
 const out = opt('out', '.shots');
-const base = (process.env.BASE_PATH || '/Strike-Versus-Guard/').replace(/\/?$/, '/');
+/** --system: store nothing, so the page follows the emulated system setting (what a first-time phone visitor gets). */
+const system = args.includes('--system');
+const base = (process.env.BASE_PATH || '/').replace(/\/?$/, '/');
 const dist = new URL('../dist/', import.meta.url).pathname;
 if (!fs.existsSync(path.join(dist, 'index.html'))) {
   console.error('dist/ is missing or empty. Run `npm run check` first.');
@@ -53,8 +57,9 @@ const port = srv.address().port;
 
 const launch = process.env.SVG_BROWSER ? { executablePath: process.env.SVG_BROWSER } : { channel: 'chrome' };
 const browser = await chromium.launch({ ...launch, args: ['--no-sandbox'] });
-const ctx = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme });
-await ctx.addInitScript((t) => localStorage.setItem('theme', t), theme);
+const phone = width < 800;
+const ctx = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme, isMobile: phone, hasTouch: phone });
+if (!system) await ctx.addInitScript((t) => localStorage.setItem('theme', t), theme);
 const tab = await ctx.newPage();
 const errors = [];
 const failed = [];
@@ -80,7 +85,7 @@ const overflow = await tab.evaluate(() => document.documentElement.scrollWidth -
 const height = await tab.evaluate(() => document.documentElement.scrollHeight);
 fs.mkdirSync(out, { recursive: true });
 const name = page === '/' ? 'home' : page.replace(/^\/|\/$/g, '').replace(/\//g, '-');
-const file = path.join(out, `${name}-${theme}-${width}.png`);
+const file = path.join(out, `${name}-${theme}${system ? '-system' : ''}-${width}.png`);
 await tab.screenshot({ path: file, fullPage: true });
 await browser.close();
 srv.close();

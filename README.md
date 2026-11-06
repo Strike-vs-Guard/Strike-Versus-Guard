@@ -50,7 +50,7 @@ src/                         ← layout, styles, components (ST-owned)
   deploy.yml                   publishes main (live) and development (/preview/) together
 ```
 
-Pages: Home, Updates, Research (`/research/`; `/programme/` redirects), Partners (`/partners/`, also a header menu that lists every partner's page), Flights, Publications and Contribute.
+Pages: Home, Updates, Research (`/research/`; `/programme/` redirects), Partners (`/partners/`, also a header menu that lists every partner's page), Flights and Publications.
 Light theme by default, dark (navy-black) with a toggle in the header. Each partner edits its own Markdown file, including its `people:`, `publications:` and its own update folder `content/updates/<partner>/` (`author:`).
 
 Built with [Astro](https://astro.build) (static output, no server). Hosted on GitHub Pages, deployed by
@@ -62,7 +62,7 @@ GitHub Actions. The repository keeps only two branches: `main` (live) and `devel
 |---|---|
 | `npm ci` | Install (first time). Also installs the git hooks that refuse pushes to `main`, new branches and failing checks |
 | `npm run dev` | Live preview at http://localhost:4321/Strike-Versus-Guard/ |
-| `npm run check` | Build the whole site; check the schema, every internal link and the size budget (same as CI) |
+| `npm run check` | Build the whole site; check the schema, every internal link, the size budget and that no image is see-through (same as CI) |
 | `npm run shots -- /<page>/ [--theme dark] [--width 390]` | Screenshot one built page in Google Chrome (or `SVG_BROWSER=/path`); PNG in `.shots/`, must print `"ok": true` |
 | `npm run preview` | Serve the built site from `dist/` |
 

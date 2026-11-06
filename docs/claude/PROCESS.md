@@ -15,7 +15,7 @@ nothing to install beyond `npm ci`.
 | GitHub rulesets | Repository settings → Rules | `main` accepts only merged pull requests whose CI passed; no branch other than `development` and `main` can be created |
 | Skills | `.claude/skills/svg-*` | The steps for each kind of task (below) |
 | Agents | `.claude/agents/svg-*` | Panels and an implementer for design work (`AGENTS_AND_SKILLS.md`) |
-| Screenshots | `npm run shots -- /<page>/ [--theme dark] [--width 390]` | Real-browser check: overflow, console errors, failed requests, a PNG in `.shots/` |
+| Screenshots | `npm run shots -- /<page>/ [--theme dark] [--width 390] [--system]` (widths under 800 emulate a touch phone; `--system` stores no theme, like a first visit) | Real-browser check: overflow, console errors, failed requests, a PNG in `.shots/` |
 
 ## The skills
 

@@ -1,9 +1,7 @@
 ---
 import '../styles/global.css';
 import { getEntry, getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-import { logoSize } from '../lib/logo';
+import { widePlate } from '../lib/logo';
 import { url, isPreview, previewPr } from '../lib/url';
 import Wordmark from '../components/Wordmark.astro';
 import PartnersMenu from '../components/PartnersMenu.astro';
@@ -25,28 +23,35 @@ const navBefore = [
 const navAfter = [
   { href: url('flights/'), label: 'Flights' },
   { href: url('publications/'), label: 'Publications' },
-  { href: url('contribute/'), label: 'Contribute' },
 ];
 /* A page is current when its path starts with the nav link's path (anchors on the home page never are). */
 const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href);
 const funder = partners.find((p) => p.data.role === 'Funding sponsor');
 const logoPartners = partners.filter((p) => p !== funder);
 /* The partner's own file, e.g. content/partners/NUS.md, and its edit link on GitHub (development branch). */
-/* Footer logos: base 84 px, capped at the well's 64 px inner height (src/lib/logo.ts); the funder smaller. */
-const logo = (img: ImageMetadata) => logoSize(img, 84, 64);
-const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- Both themes are ours: stops phone browsers from force-darkening the light theme. -->
+    <meta name="color-scheme" content="light dark" />
+    <!-- Browser-bar colour: follows the system until a theme is stored, then follows the site (script below). -->
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1622" media="(prefers-color-scheme: dark)" />
     <!-- Apply the stored theme before first paint; with nothing stored the CSS follows the system. -->
     <script is:inline>
       (function () {
         try {
           var t = localStorage.getItem('theme');
-          if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-theme', t);
+            document.querySelectorAll('meta[name=theme-color]').forEach(function (m) {
+              m.removeAttribute('media');
+              m.content = t === 'dark' ? '#0b1622' : '#ffffff';
+            });
+          }
         } catch (e) {}
       })();
     </script>
@@ -55,6 +60,7 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
     <meta name="description" content={description} />
     {isPreview && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
     <link rel="canonical" href={new URL(path, Astro.site)} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
@@ -127,8 +133,8 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
             {
               logoPartners.map((p) => (
                 <li>
-                  <a href={p.data.page ? url(`partners/${p.id}/`) : p.data.website} title={p.data.institution} class="logo-well logo-strip__item">
-                    <Image src={p.data.logo} alt={p.data.logoAlt ?? p.data.institution} {...logo(p.data.logo)} densities={[1, 2]} />
+                  <a href={p.data.page ? url(`partners/${p.id}/`) : p.data.website} title={p.data.institution} class="logo-well">
+                    <img {...widePlate(p)} loading="lazy" decoding="async" />
                   </a>
                 </li>
               ))
@@ -139,7 +145,7 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
               <a class="logo-strip__funder" href={funder.data.website ?? url('partners/#funder')} title={funder.data.institution}>
                 <span>Funded by</span>
                 <span class="logo-well logo-strip__funder-well">
-                  <Image src={funder.data.logo} alt={funder.data.logoAlt ?? funder.data.institution} {...funderLogo(funder.data.logo)} densities={[1, 2]} />
+                  <img {...widePlate(funder)} loading="lazy" decoding="async" />
                 </span>
               </a>
             )
@@ -155,7 +161,6 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
               <li><a href={url('partners/')}>Partners</a></li>
               <li><a href={url('flights/')}>Flights</a></li>
               <li><a href={url('publications/')}>Publications</a></li>
-              <li><a href={url('contribute/')}>Contribute</a></li>
               <li><a href={site.repository}>Source on GitHub</a></li>
             </ul>
           </div>
@@ -176,6 +181,10 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
         btn.addEventListener('click', () => {
           const next = current() === 'dark' ? 'light' : 'dark';
           root.setAttribute('data-theme', next);
+          document.querySelectorAll<HTMLMetaElement>('meta[name=theme-color]').forEach((m) => {
+            m.removeAttribute('media');
+            m.content = next === 'dark' ? '#0b1622' : '#ffffff';
+          });
           try {
             localStorage.setItem('theme', next);
           } catch {
@@ -213,9 +222,9 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
     position: sticky;
     top: 0;
     z-index: 20;
-    background: color-mix(in srgb, var(--bg) 92%, transparent);
-    backdrop-filter: saturate(1.4) blur(10px);
-    -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    /* Solid, not translucent: the build keeps only the -webkit- form of backdrop-filter, which Chrome
+       ignores, so a see-through header let page text ghost through it on Android. */
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
   }
   .site-header__inner {
@@ -326,7 +335,7 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
 
   /*
    * Footer: a brand-blue band in both themes (--band tokens, global.css), so its tokens are set here. The band is dark, so
-   * logos keep the soft white well (no border) in both themes (ST, NUS, UPenn, CMU), then "Funded by" HTX, smaller and set apart.
+   * logos are white 2:1 plates (src/lib/logo.ts) in both themes (ST, NUS, UPenn, CMU), then "Funded by" HTX, smaller and set apart.
    */
   .site-footer {
     --text: var(--band-text);
@@ -353,14 +362,10 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* tiles 198 px wide at most (99 px tall), spread across the row */
+    grid-template-columns: repeat(4, minmax(0, 198px));
+    justify-content: space-between;
     gap: 12px;
-  }
-  .logo-strip__item {
-    --logo-base: 84px;
-    --logo-max: 64px;
-    height: 100px;
-    padding: 18px 20px;
   }
   .logo-strip__funder {
     flex: none;
@@ -378,11 +383,7 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
     color: var(--text);
   }
   .logo-strip__funder-well {
-    --logo-base: 56px;
-    --logo-max: 48px;
-    width: 84px;
-    height: 64px;
-    padding: 8px;
+    width: 132px;
   }
   @media (max-width: 900px) {
     .logo-strip {
@@ -391,7 +392,8 @@ const funderLogo = (img: ImageMetadata) => logoSize(img, 56, 48);
       gap: 16px;
     }
     .logo-strip__row {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 198px));
+      justify-content: start;
     }
     .logo-strip__funder {
       align-self: flex-start;
