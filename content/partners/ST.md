@@ -39,9 +39,8 @@ people:
     lead: true
     bio: >-
       William Teo founded and directs NEAR Lab at ST Engineering and leads
-      Strike vs Guard for the lab. He studies how teams of robots learn to coordinate,
-      and when that coordination holds or breaks, as a PhD researcher at the
-      MARMoT Lab, NUS.
+      Strike vs Guard for the lab. His research focuses on skills and strategy for
+      multi-robot systems, including how teams of robots learn to coordinate.
     link: https://nearlab.ai/#/people
   - name: Derek Tan Ming Siang
     role: Principal AI Engineer
