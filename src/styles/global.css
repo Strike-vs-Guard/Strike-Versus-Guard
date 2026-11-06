@@ -54,7 +54,10 @@
   --gutter: clamp(16px, 4vw, 64px);
   --max: 75rem; /* 1200 px at root 16, 1500 at root 20 */
   --section: clamp(96px, 10vw, 112px);
-  color-scheme: light;
+  --pop: var(--bg); /* menus and popovers; lifted to --surface in dark so they read as a layer */
+  --well-rule: #e3e6ea; /* divider inside a logo well; wells are light in both themes */
+  --fig-filter: none; /* white-background figures and plots: dimmed a little in dark so they do not glare */
+  color-scheme: only light; /* "only": phone browsers must not force-darken the light theme */
 }
 /* Dark: chosen with the toggle, or the system setting when nothing is stored. Keep the two lists equal. */
 :root[data-theme='dark'] {
@@ -72,7 +75,9 @@
   --well-bg: var(--well);
   --halo: rgb(0 0 0 / 0.7);
   --shadow-pop: 0 16px 40px rgb(0 0 0 / 0.55);
-  color-scheme: dark;
+  --pop: var(--surface);
+  --fig-filter: brightness(0.9);
+  color-scheme: only dark;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
@@ -90,7 +95,9 @@
     --well-bg: var(--well);
     --halo: rgb(0 0 0 / 0.7);
     --shadow-pop: 0 16px 40px rgb(0 0 0 / 0.55);
-    color-scheme: dark;
+    --pop: var(--surface);
+    --fig-filter: brightness(0.9);
+    color-scheme: only dark;
   }
 }
 
@@ -101,6 +108,7 @@
 }
 
 html {
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--text) 12%, transparent);
   /* Fluid root size: 16 px up to ~890 px wide, then 0.45 px per 100 px of viewport, capped at 20 px. */
   font-size: clamp(1rem, 0.75rem + 0.45vw, 1.25rem);
   -webkit-text-size-adjust: 100%;
@@ -340,7 +348,7 @@ p {
   flex: none;
   align-self: stretch;
   width: 1px;
-  background: var(--border);
+  background: var(--well-rule);
 }
 
 .chip {
@@ -410,6 +418,7 @@ figcaption time {
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--well);
+  filter: var(--fig-filter);
   margin: 1.5em 0;
 }
 .md figure.clip {
@@ -420,7 +429,9 @@ figcaption time {
   /* square sim clips would otherwise fill a whole screen; they letterbox instead */
   max-height: min(520px, 75vh);
   border-radius: var(--radius);
-  background: var(--surface);
+  /* letterbox bars take the page colour, so a clip never sits in a mismatched band */
+  background: var(--bg);
+  filter: var(--fig-filter);
 }
 .md ul,
 .md ol {

@@ -55,6 +55,13 @@ and docs commits. Jeremy agreed to William publishing it. "Automatically delete 
 Fixed the same day: the setting is off again, and a ruleset ("development: no deletion, no force push")
 now makes the branch undeletable.
 
+**6 Nov 2026, mobile colour audit + Contribute page removed + site moved to the organisation root:**
+three agents (theme CSS, dark screenshots, light screenshots with a forced-dark test) reviewed all
+pages at 390 px. Main cause of "wrong colours on phones": Android forced dark mode recolouring the
+light theme (fixed with `color-scheme: only light`); also a see-through sticky header, dimmed cards
+turning logo wells grey, logo boxes in light, white figure glare in dark. Rules: STANDARDS §3
+"Phones". The Contribute page is gone (`/contribute/` redirects home).
+
 **Round 2 (3 Nov 2026, after Jeremy saw the test site), on `development`, PR #6:**
 - A three-agent UX panel reviewed the site; Jeremy chose from a draft with switches (compact drone on
   home, no Benchmark nav item, clip in the hero). Spec: `docs/superpowers/specs/2026-11-03-home-redesign-design.md`.

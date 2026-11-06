@@ -127,7 +127,7 @@ const chip = (p: CollectionEntry<'partners'>) => {
     z-index: 30;
     width: min(440px, calc(100% - 2 * var(--gutter)));
     padding: 14px 10px 8px;
-    background: var(--bg);
+    background: var(--pop);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-pop);
@@ -168,7 +168,7 @@ const chip = (p: CollectionEntry<'partners'>) => {
   }
   .pm__row:hover,
   .pm__row:focus-visible {
-    background: var(--surface);
+    background: color-mix(in srgb, var(--text) 7%, var(--pop));
   }
   .pm__row[aria-current='page'] .pm__name {
     text-decoration: underline;
@@ -197,11 +197,13 @@ const chip = (p: CollectionEntry<'partners'>) => {
     width: 36px;
     height: 36px;
     padding: 4px;
-    background: var(--well);
-    border: 1px solid var(--well-border);
+    /* like every logo: no box in light, the white well in dark */
+    background: var(--well-bg);
+    border: 0;
     border-radius: var(--radius);
   }
   .pm__chip :global(img) {
+    mix-blend-mode: multiply;
     display: block;
     max-width: 100%;
     max-height: 100%;

@@ -87,6 +87,8 @@ npm run check                # astro build + scripts/check-links.mjs (links + si
 | `BLOCKED by scripts/claude/guard.mjs: …` | The Claude PreToolUse hook stopped a command that breaks §7 | Do what the message says. Never edit the guard to get past it. |
 | Home page unstyled for a few minutes after a deploy; a `_astro/*.css` request is 404 | The Pages CDN served the previous HTML with the new build's asset names (`cache-control: max-age=600`) | Wait up to 10 minutes, hard-refresh. Do not revert or redeploy. |
 | `development` and the test site vanish right after a pull request is merged into `main` | Settings → General → "Automatically delete head branches" was on; `development` is the head branch of the release PR | Keep the setting off (docs/admin-setup.md step 5). The ruleset "development: no deletion, no force push" now refuses the deletion. To restore: push the last `development` commit again. |
+| On an Android phone the light theme looks grey-black and the logos nearly vanish | The browser's forced dark mode ("Darken websites", Samsung Internet dark mode) recolours pages that declare plain `color-scheme: light` | `color-scheme: only light` / `only dark` in `global.css` plus `<meta name="color-scheme" content="light dark">` (done). Test: Chrome with `--enable-features=WebContentsForceDark --force-dark-mode`. |
+| Page text shows faintly through the sticky header on Android | The build drops the unprefixed `backdrop-filter`; Chrome ignores `-webkit-backdrop-filter` | Header background is solid `--bg` (done). Do not reintroduce a translucent header. |
 | `gh api … rulesets` returns 403 | Only repository admins can change rulesets | Ask an admin (docs/admin-setup.md). |
 
 ---

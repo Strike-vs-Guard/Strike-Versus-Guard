@@ -92,6 +92,25 @@ sets `data-theme` before first paint (no flash). If CMU's video overlay is kept,
 | `--guard` | #2D6FD0 | #6FA3F5 | **only** the Guard team inside game figures |
 | `--well` / `--well-bg` | #FFFFFF / none | #FFFFFF / `--well` | logos: no background or border in light; a soft white well (no border) in dark and on the footer band |
 | `--max` | 75rem | 75rem | content width, with the gutter: 1200 px at root 16 px, 1500 px at root 20 px |
+| `--pop` | `--bg` | `--surface` | menus and popovers, so they read as a layer above the page in dark |
+| `--well-rule` | #E3E6EA | #E3E6EA | divider inside a logo well (wells are light in both themes) |
+| `--fig-filter` | none | brightness(0.9) | white-background figures, plots and sim clips: softened in dark so they do not glare |
+
+**Phones (rules found by the mobile audit, 6 Nov 2026):**
+- `color-scheme` is `only light` / `only dark`, with `<meta name="color-scheme" content="light dark">`.
+  Plain `light` let Android Chrome and Samsung Internet force-darken the light theme into grey-black
+  and blend the logos away. Never drop the word `only`.
+- `<meta name="theme-color">` colours the browser bar: system-driven until a theme is stored, then set
+  by the inline head script and the toggle (#FFFFFF / #0B1622).
+- The sticky header is **solid** `--bg`. No `backdrop-filter`: the build keeps only the `-webkit-`
+  form, which Chrome ignores, so a translucent header let page text ghost through.
+- Logos never get a box in light, anywhere (cards, connection diagram, Partners menu): `--well-bg`,
+  no border, `mix-blend-mode: multiply` on the image.
+- "Dimmed" is a muted colour plus a greyed logo, never `opacity` on a card (it turns white wells grey).
+- `:hover` effects sit inside `@media (hover: hover)`; on touch, hover sticks after a tap.
+- Clip letterbox bars are `--media` (Clip component) or `--bg` (clips inside partner Markdown).
+- Check with `npm run shots -- /<page>/ --width 390 --theme dark --system` (phone, system dark,
+  nothing stored) as well as the stored themes.
 
 **Fluid scale:** the root font size is `clamp(1rem, 0.75rem + 0.45vw, 1.25rem)`: 16 px on phones,
 about 18 px at 1280 wide, 20 px from 1780 wide. Every type step and the content width are in rem, so

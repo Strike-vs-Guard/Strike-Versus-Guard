@@ -33,6 +33,7 @@ npm run check                                   # build + links + size budget; m
 npm run shots -- /<page>/                       # for any visible change: light 1280
 npm run shots -- /<page>/ --theme dark          # and dark
 npm run shots -- /<page>/ --width 390           # and a phone
+npm run shots -- /<page>/ --width 390 --theme dark --system   # phone in system dark, nothing stored
 ```
 Each `shots` call must print `"ok": true` (overflow 0, no console errors, no failed requests).
 Open the PNGs in `.shots/` and look at them. Fix what looks wrong, at most four rounds.

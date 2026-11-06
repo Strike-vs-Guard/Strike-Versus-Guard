@@ -126,7 +126,8 @@ const runs = videoAlt
 <style>
   .clip {
     position: relative;
-    background: var(--surface);
+    /* letterbox bars are the video backdrop (--media) in both themes, never a pale band */
+    background: var(--media);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
@@ -135,7 +136,7 @@ const runs = videoAlt
     display: block;
     width: 100%;
     object-fit: contain;
-    background: var(--surface);
+    background: var(--media);
   }
   .clip--media,
   .clip--media video {
@@ -201,9 +202,14 @@ const runs = videoAlt
   .is-playing .clip__icon {
     opacity: 0;
   }
-  .is-playing .clip__btn:hover .clip__icon,
   .is-playing .clip__btn:focus-visible .clip__icon {
     opacity: 1;
+  }
+  /* hover only where there is a real pointer: on touch, :hover sticks after a tap */
+  @media (hover: hover) {
+    .is-playing .clip__btn:hover .clip__icon {
+      opacity: 1;
+    }
   }
   /* Lit / Lights off: a two-button switch under the frame, then one mono line */
   .clip__runs {
