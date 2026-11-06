@@ -86,6 +86,7 @@ npm run check                # astro build + scripts/check-links.mjs (links + si
 | `pre-push: refusing to push to main` / `refusing to push branch` | The repo's git hooks (`.githooks/`, installed by `npm ci`) enforce STANDARDS §7 | Push to `development`. Publishing is a pull request (`svg-release` skill). Not a bug. |
 | `BLOCKED by scripts/claude/guard.mjs: …` | The Claude PreToolUse hook stopped a command that breaks §7 | Do what the message says. Never edit the guard to get past it. |
 | Home page unstyled for a few minutes after a deploy; a `_astro/*.css` request is 404 | The Pages CDN served the previous HTML with the new build's asset names (`cache-control: max-age=600`) | Wait up to 10 minutes, hard-refresh. Do not revert or redeploy. |
+| `development` and the test site vanish right after a pull request is merged into `main` | Settings → General → "Automatically delete head branches" was on; `development` is the head branch of the release PR | Keep the setting off (docs/admin-setup.md step 5). The ruleset "development: no deletion, no force push" now refuses the deletion. To restore: push the last `development` commit again. |
 | `gh api … rulesets` returns 403 | Only repository admins can change rulesets | Ask an admin (docs/admin-setup.md). |
 
 ---

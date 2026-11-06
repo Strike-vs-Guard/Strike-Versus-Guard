@@ -51,8 +51,9 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
 **ST page edits went live on 6 Nov 2026: PR #7 (`development` → `main`) merged as 442d168.** William's
 new "About the lab" text and bio, and `website:` now nearlab.ai; the merge also carried Jeremy's process
 and docs commits. Jeremy agreed to William publishing it. "Automatically delete head branches" removed
-`development` on merge and took the test site down; it was restored at aaabef2 about two minutes later
-(§5).
+`development` on merge and took the test site down; it was restored at aaabef2 about two minutes later.
+Fixed the same day: the setting is off again, and a ruleset ("development: no deletion, no force push")
+now makes the branch undeletable.
 
 **Round 2 (3 Nov 2026, after Jeremy saw the test site), on `development`, PR #6:**
 - A three-agent UX panel reviewed the site; Jeremy chose from a draft with switches (compact drone on
@@ -123,7 +124,6 @@ spelling. Root font size is fluid and `--max` is in rem, so the site scales with
 ## 5. Open items / waiting on people
 | Item | Who |
 |---|---|
-| "Automatically delete head branches" (`docs/admin-setup.md` §5) deletes `development` on every merge into `main`, which also removes the test site until it is restored. Turn the setting off, or add a restore step to `svg-release` | Jeremy |
 | Confirm your people, roles and photos (photos came from the labs' profile pictures) | Each partner |
 | Approve or rewrite your "About the lab" text and your lead's bio (`labBlurb:`, `bio:`, `link:`; drafted 4 Nov from marmotlab.org, xlab.upenn.edu, theairlab.org, nearlab.ai) | Each partner |
 | Supply the NUS workshop paper (not found publicly; NUS shows "None yet") | NUS |
