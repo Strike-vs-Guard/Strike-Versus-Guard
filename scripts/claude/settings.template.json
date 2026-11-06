@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "node scripts/claude/session.mjs" }] }
+    ],
+    "PreToolUse": [
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "node scripts/claude/guard.mjs" }] }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npm run check:*)",
+      "Bash(npm run shots:*)",
+      "Bash(npm ci)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push origin development)",
+      "Bash(git pull:*)",
+      "Bash(git fetch:*)",
+      "Bash(git switch development)"
+    ]
+  }
+}

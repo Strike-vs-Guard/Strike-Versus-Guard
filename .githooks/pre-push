@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Installed for everyone by `npm ci` (package.json "prepare" sets core.hooksPath=.githooks).
+# Refuses pushes that break STANDARDS §7: anything to main, any new branch, any branch deletion,
+# and any push that fails `npm run check`. Publishing to main happens through a pull request
+# on GitHub. To push main deliberately (site owner only): SVG_ALLOW_MAIN=1 git push origin main
+set -euo pipefail
+while read -r local_ref local_sha remote_ref remote_sha; do
+  branch="${remote_ref#refs/heads/}"
+  if [ "$branch" = "main" ] && [ "${SVG_ALLOW_MAIN:-}" != "1" ]; then
+    echo "pre-push: refusing to push to main. Push to development; main changes only via a pull request." >&2
+    exit 1
+  fi
+  if [ "$branch" != "main" ] && [ "$branch" != "development" ]; then
+    echo "pre-push: refusing to push branch '$branch'. Only development and main exist (STANDARDS §7)." >&2
+    exit 1
+  fi
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    echo "pre-push: refusing to delete branch '$branch'." >&2
+    exit 1
+  fi
+done
+if [ -f package.json ] && [ -d node_modules ]; then
+  echo "pre-push: running npm run check…" >&2
+  log="$(mktemp)"
+  if ! npm run check >"$log" 2>&1; then
+    tail -20 "$log" >&2
+    echo "pre-push: npm run check failed; not pushing." >&2
+    exit 1
+  fi
+fi

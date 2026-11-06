@@ -146,7 +146,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | "About the lab" on the partner page: `labBlurb:` (three sentences in "we" voice, 420 characters or fewer: who you are, what you work on, your part in the programme) and `bio:` on a person (two sentences, third person, 300 or fewer: title, lab, research, degree; no awards) with an optional profile `link:`. Facts come from the lab's own website; a partner approves its own text | `content/partners/<NAME>.md` | That partner (drafted by ST Engineering) |
 | Open problems: `open:` list and `openLabel:` ("What we haven't solved yet"), one line each | `localisation.md`, `simulation.md` | ST Engineering |
 | Page head overrides: `pageEyebrow:` / `pageTitle:` (when the section also heads its own page) | `overview.md`, `flights.md` | ST Engineering |
-| Clips: `video:` + `poster:` on an item; a hero `video:` on a section | `content/programme/*.md`, files in `public/media/` | ST Engineering; CMU for its clips |
+| Clips: `video:` + `poster:` on an item; a hero `video:` on a section; optional second take `videoAlt:` + `posterAlt:` with `altLabel:` (the toggle text, e.g. "Lights off") and a `credit:` line; `current: true` marks the active milestone | `content/programme/*.md`, files in `public/media/` | ST Engineering; CMU for its clips |
 | News, a dated log, **one folder per partner**; `author:` names who wrote it, `draft: true` hides it; optional `gallery:` (photos with `alt:` and `caption:`) and `link:` / `linkLabel:` (paper, poster, code) | `content/updates/<partner>/YYYY-MM-DD-slug.md` (`st`, `nus`, `upenn`, `cmu`), images in `content/updates/<partner>/images/` | That partner |
 | Site title, footer, programme `start:` / `end:` (June 2026 – June 2029, "Year 1 of 3") | `content/site.yml` | ST Engineering |
 
@@ -293,6 +293,10 @@ The page sections live as section components under `src/components/sections/`.
 - **Interactivity must look interactive.** Labels such as "Select", "Show partners ↓" and "See more →",
   a pressed state and a cursor. Hover-only discovery is not enough.
 - **No empty grids.** If a matrix would be mostly empty, choose another representation.
+- **Tooling in the repo:** `npm run check` (build, schema, links, size budget) and `npm run shots`
+  (`scripts/shots.mjs`: one page in real Chrome, reports overflow, console errors and failed
+  requests, PNG in `.shots/`). Claude sessions follow `docs/claude/PROCESS.md` and the
+  `.claude/skills/svg-*` skills.
 
 ---
 
@@ -310,20 +314,26 @@ The page sections live as section components under `src/components/sections/`.
   push to `main`, and also after CI passes on `development` (via `workflow_run`, because only the
   default branch may publish to Pages).
 - **GitHub Pages source must be "GitHub Actions"** (not "Deploy from a branch").
-- Before every push, `npm run check` must pass locally.
-- Claude may push to `development`. It should push to `main` only when the site owner says so.
+- Before every push, `npm run check` must pass locally. The git hooks in `.githooks/` (installed
+  by `npm ci`) run it and refuse pushes to `main`, to a new branch, or that delete a branch;
+  `push.default=current` so a plain `git push` goes to the branch you are on.
+- GitHub rulesets: `main` accepts only merged pull requests whose "Build and check" passed, with a
+  merge commit; no branch other than `development` and `main` can be created.
+- Claude may push to `development`. `main` changes only by merging the pull request, and only when
+  the site owner says so in that conversation (`svg-release` skill; the `SVG_ALLOW_MAIN=1` prefix is
+  the record of that approval).
 
 ---
 
 ## 8. Definition of done for any change
 
 - [ ] `npm run check` passes (schema, build, internal links, size budget).
-- [ ] Checked in a real browser (Playwright screenshots) at 1280px and 390px, in both themes:
-      no overflow, no console errors.
+- [ ] `npm run shots -- /<page>/` at 1280 light, 1280 dark and 390 wide, each `"ok": true`
+      (no overflow, no console errors, no failed requests), and the PNGs looked at.
 - [ ] Wording follows §2; colours and fonts follow §3 (checked in light **and** dark); the partner order is correct.
 - [ ] Interactive parts tested by mouse **and** keyboard.
 - [ ] Docs updated if the structure or workflow changed (`README.md`, `CONTRIBUTING.md`,
-      `docs/design-decisions.md`, this file).
+      `docs/design-decisions.md`, this file); decisions and open items in `docs/claude/HANDOFF.md`.
 - [ ] Pushed to `development`; the test site checked after the deploy finishes.
 
 ---

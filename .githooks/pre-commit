@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Refuses commits made directly on main (edits belong on development; STANDARDS §7).
+branch="$(git symbolic-ref --short HEAD 2>/dev/null || true)"
+if [ "$branch" = "main" ] && [ "${SVG_ALLOW_MAIN:-}" != "1" ]; then
+  echo "pre-commit: you are on main. Run: git switch development" >&2
+  exit 1
+fi

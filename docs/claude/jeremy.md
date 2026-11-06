@@ -332,7 +332,25 @@ text columns in rem, so the page scales with the monitor. Also fixed a duplicate
 in the positioning statement. Later the same day: the footer column "Each partner edits its own
 file:" with the four `content/partners/*.md` paths removed (Jeremy: visitors will see this); the
 Contribute page and each partner page's own Edit link still lead editors to the files. The home updates strip (three truncated titles under the
-logo row) was removed: the "Latest" rail beside "At a glance" already lists the posts.
+logo row) was removed: the "Latest" rail beside "At a glance" already lists the posts. A deploy
+briefly showed the home page unstyled: the Pages CDN served the previous HTML with the new CSS
+hashes for up to 10 minutes (`cache-control: max-age=600`). Not a code fault; it clears itself.
+Then Jeremy asked to publish: PR #6 merged into `main` (f6fad73).
+
+## 19. The Claude process, standardised (5 Nov 2026)
+> Make a Claude process so that when people from the other universities use Claude on this code it
+> follows the same standards; nobody pushes to main by accident; default push goes to the preview branch.
+
+**Built, all in the repo:** six skills (`svg-start`, `svg-change`, `svg-debug`, `svg-post`,
+`svg-panel`, `svg-release`); `scripts/claude/guard.mjs` (PreToolUse hook: blocks pushes to main,
+force pushes, branch creation/deletion, local merges into main, `gh pr merge` without
+`SVG_ALLOW_MAIN=1`, `playwright install`, `git reset --hard`); `scripts/claude/session.mjs`
+(SessionStart: branch, Node, hooks, which skill first); `.githooks/pre-commit` and `pre-push`
+installed by `npm ci` (`prepare` sets `core.hooksPath` and `push.default=current`); `npm run shots`
+(`scripts/shots.mjs`, playwright-core dev dependency, uses the machine's Chrome); GitHub rulesets
+"main: pull requests only" and "only development and main"; `docs/claude/PROCESS.md`.
+The session could not write `.claude/settings.json` itself (the tool refuses to edit Claude's own
+config); the content is in `scripts/claude/settings.template.json` for Jeremy to copy.
 
 ---
 

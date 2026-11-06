@@ -24,19 +24,22 @@ A push to `main`, or a push to `development` that passes the CI check, runs *Dep
    the Pages source is still set to "Deploy from a branch". Switch it to **GitHub Actions** (step 1).
 3. **Workflow permissions:** Settings → Actions → General → leave *Read repository contents* as the
    default; the workflows request what they need. If the organisation restricts actions, allow `actions/*`.
-4. **Auto-delete branches:** Settings → General → tick **Automatically delete head branches**, so that
-   any branch someone does create is removed when its pull request is merged.
-5. **Partner teams:** Organisation → Teams: `st-web`, `nus`, `upenn`, `cmu`. Add each partner's
+4. **Rulesets (done 5 Nov 2026, Settings → Rules → Rulesets):** "main: pull requests only"
+   (no deletion, no force push, pull request required with a merge commit, status check
+   "Build and check" required) and "only development and main" (branch creation blocked for every
+   other name). Re-create them from these descriptions if they are ever removed.
+5. **Auto-delete branches (done 5 Nov 2026):** Settings → General → **Automatically delete head
+   branches** is on, so any branch that does get created is removed when its pull request is merged.
+   The four leftover branches (`claude/…`, two `dependabot/…`, `gh-pages`) were deleted the same day.
+6. **Partner teams:** Organisation → Teams: `st-web`, `nus`, `upenn`, `cmu`. Add each partner's
    editors and give every team **Write** access. CODEOWNERS rules are ignored for teams without write
    access. Or replace the team names in [`.github/CODEOWNERS`](../.github/CODEOWNERS) with usernames.
-6. **Protect `main`:** Settings → Rules → Rulesets → New branch ruleset, targeting `main`:
-   - Require a pull request before merging, with 1 approval
-   - Require review from Code Owners (the owners of every partner file changed must approve)
-   - Require status check **Build and check** (from the CI workflow)
-   - Block force pushes and deletions
-7. **Protect `development` lightly:** a second ruleset targeting `development` that only blocks
+7. **Optional, later:** add "require 1 approval" and "require review from Code Owners" to the
+   `main` ruleset once the partner teams (step 6) exist; until then a merged pull request with a
+   green "Build and check" is the rule.
+8. **Protect `development` lightly (optional):** a second ruleset targeting `development` that only blocks
    force pushes and deletion, so partners can still commit to it directly.
-8. **Private repository?** GitHub Pages on a private repo needs a paid plan, and the published site,
+9. **Private repository?** GitHub Pages on a private repo needs a paid plan, and the published site,
    including the test site, is public either way.
 
 ## Going live

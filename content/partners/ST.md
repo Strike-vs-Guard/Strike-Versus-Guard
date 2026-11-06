@@ -8,11 +8,11 @@ institution: ST Engineering
 lab: AI.R.STC · NEAR Lab
 labFull: AI and Robotics Strategic Technology Centre, NEAR Lab
 labBlurb: >-
-  We are the Next-gen Edge AI and Robotics Lab, part of ST Engineering's AI and
-  Robotics Strategic Technology Centre in Singapore. We study how teams of robots
-  learn to coordinate, and build systems that carry from simulation to the field.
-  In Strike vs Guard we coordinate the partners, integrate every layer and run the
-  Singapore flight lab.
+  We are NEAR Lab, the Next-gen Edge AI and Robotics Lab, part of ST Engineering's
+  AI and Robotics Strategic Technology Centre in Singapore. We work towards teams
+  of different robots, from each robot's skills to the team's strategy, tested on
+  real hardware. In Strike vs Guard we coordinate the partners, integrate every
+  layer and run the Singapore flight lab.
 role: Lead partner
 contribution: Coordination, system integration and the Singapore flight lab
 summary: >-
@@ -29,9 +29,9 @@ logoMark: ./ST/mark.png
 labLogo: ./ST/near-lab.png
 logoAlt: ST Engineering
 lead: William Teo
-website: https://www.stengg.com
+website: https://nearlab.ai
 order: 2
-updated: 2026-11-05
+updated: 2026-11-06
 people:
   - name: William Teo
     role: Director and Founder of NEAR Lab
@@ -39,9 +39,9 @@ people:
     lead: true
     bio: >-
       William Teo founded and directs NEAR Lab at ST Engineering and leads
-      Strike vs Guard for the lab. He studies how teams of robots learn to coordinate,
-      and when that coordination holds or breaks, as a PhD researcher at the
-      MARMoT Lab, NUS, supervised by Guillaume Sartoretti.
+      Strike vs Guard for the lab. His research focuses on skills and strategy for
+      multi-robot systems, including how teams of robots learn to coordinate and to
+      respond to opponents and the unexpected.
     link: https://nearlab.ai/#/people
   - name: Derek Tan Ming Siang
     role: Principal AI Engineer

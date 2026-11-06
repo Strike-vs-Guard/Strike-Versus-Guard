@@ -46,7 +46,9 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
   `content/programme/localisation.md`.
 - Spec: `docs/superpowers/specs/2026-11-03-site-restructure-design.md`; plan beside it in `plans/`.
 
-**Round 2 (3 Nov 2026, after Jeremy saw the test site), on `development`, PR #6 open:**
+**Rounds 2 to 7 went live on 5 Nov 2026: PR #6 (`development` → `main`, 61 commits) merged as f6fad73.**
+
+**Round 2 (3 Nov 2026, after Jeremy saw the test site), on `development`, PR #6:**
 - A three-agent UX panel reviewed the site; Jeremy chose from a draft with switches (compact drone on
   home, no Benchmark nav item, clip in the hero). Spec: `docs/superpowers/specs/2026-11-03-home-redesign-design.md`.
 - Nav is now Programme · Partners ▾ · Flights · Updates; the Partners menu lists each partner's page.
@@ -115,7 +117,6 @@ spelling. Root font size is fluid and `--max` is in rem, so the site scales with
 ## 5. Open items / waiting on people
 | Item | Who |
 |---|---|
-| Check the test site (rounds 2 to 5: light/dark toggle, new home order, Research, Publications, Contribute, people rows, first-person pages), then merge PR #6 (open, `development` into `main`) | Jeremy |
 | Confirm your people, roles and photos (photos came from the labs' profile pictures) | Each partner |
 | Approve or rewrite your "About the lab" text and your lead's bio (`labBlurb:`, `bio:`, `link:`; drafted 4 Nov from marmotlab.org, xlab.upenn.edu, theairlab.org, nearlab.ai) | Each partner |
 | Supply the NUS workshop paper (not found publicly; NUS shows "None yet") | NUS |
@@ -127,7 +128,6 @@ spelling. Root font size is fluid and `--max` is in rem, so the site scales with
 | Review your partner page; the Partners menu and cards now lead visitors to it, and "Maintained by" sits in its "At a glance" box | Each partner |
 | Review the new Localisation line in your partner file (`work.localisation`, drafted for ST Engineering and CMU only) | Partners |
 | The home drone's click now lights locally and links to the Partners page; check it reads well on the test site | Jeremy |
-| Delete leftover branches `claude/brave-bell-onicwy`, `gh-pages`, `dependabot/github_actions/actions/checkout-7`, `dependabot/github_actions/actions/setup-node-7`; close PRs #1 and #2 (bot) | Jeremy (Claude's session can't delete branches) |
 | Two Word documents (`MR-Strike vs Guard-1.0-OCT29.docx`, `D3-Strike_vs_Guard-FR&PDR-1.2-29July26.docx`) were never received; too large with embedded videos. Asked for .txt/PDF exports | Jeremy |
 | UPenn's Drones line "Runs the formal-track strategy on the shared Starling 2 Max drones." is a placeholder | UPenn to confirm |
 | Partner pages were drafted from the deck. Each partner should review its page, people list and publications; lab website URLs need verifying | Each partner |
@@ -136,9 +136,11 @@ spelling. Root font size is fluid and `--max` is in rem, so the site scales with
 | NUS workshop paper | NUS |
 | Full A0 poster: decide whether to publish | Jeremy |
 | Confirm captions and the drone numbering behind "CORRECTING drone N" in CMU's clips | CMU |
-| Merge PR #6 | Jeremy |
 
 ## 6. How to continue (process that worked)
+0. **The process is now in the repo** (5 Nov 2026): skills `.claude/skills/svg-*`, hooks in
+   `.claude/settings.json` + `.githooks/`, `npm run shots`, GitHub rulesets on `main`. Read
+   `PROCESS.md`; run `svg-start`. The points below are the habits those skills encode.
 1. **Clarify, then explore in parallel.** For anything visual, brief 3–4 agents with different
    directions or lenses (see `.claude/agents/`). Show Jeremy a **clickable draft** (an Artifact page)
    **before** touching the site; he wants to see drafts first.
