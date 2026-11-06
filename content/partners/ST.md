@@ -29,9 +29,9 @@ logoMark: ./ST/mark.png
 labLogo: ./ST/near-lab.png
 logoAlt: ST Engineering
 lead: William Teo
-website: https://www.stengg.com
+website: https://nearlab.ai
 order: 2
-updated: 2026-11-05
+updated: 2026-11-06
 people:
   - name: William Teo
     role: Director and Founder of NEAR Lab
@@ -41,7 +41,7 @@ people:
       William Teo founded and directs NEAR Lab at ST Engineering and leads
       Strike vs Guard for the lab. He studies how teams of robots learn to coordinate,
       and when that coordination holds or breaks, as a PhD researcher at the
-      MARMoT Lab, NUS, supervised by Guillaume Sartoretti.
+      MARMoT Lab, NUS.
     link: https://nearlab.ai/#/people
   - name: Derek Tan Ming Siang
     role: Principal AI Engineer
