@@ -85,12 +85,14 @@ are tested.
   can test drone teams here as well as in CMU's cage.
 - **Simulation and localisation.** Flying the Starling 2 Max in the AirStack
   simulator, and starting camera-only localisation there.
+- **Flying by hand, safely.** A gamepad can fly one drone while the fence and the safety
+  filter still check every command.
 - **The game.** Running Strike vs Guard so the learning-based and formal
   approaches can be compared on the same hardware.
 
 ## The Singapore lab
 
-Two Starling 2 Max drones now fly together in the Singapore lab, with more drones on the way. On 12 November 2026 we sent one at the other, and the safety filter held them 1.5 m apart.
+Two Starling 2 Max drones now fly together in the Singapore lab, with more drones on the way. On 12 November 2026 we sent one at the other and the safety filter held them 1.5 m apart; on 13 November it held a hand-flown drone 1.76 m from a hovering one.
 
 ![Starling drones in the ST Engineering flight lab in Singapore](./ST/singapore-flight-lab.jpg)
 
@@ -121,6 +123,8 @@ Since that first flight:
 | Flights to points sent from the ground station, with nobody on the sticks | 11 November 2026 |
 | The geofence: sent beyond the edge, the drone brakes at the edge | 11 November 2026 |
 | Two drones together, with the safety filter on | 12 November 2026 |
+| One drone flown by hand with a gamepad: turning, the fence wall, letting go of the stick | 13 November 2026 |
+| A hand-flown drone sent at a hovering one, safety filter on: 1.76 m at the closest | 13 November 2026 |
 
 <figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-two-starlings.jpg" aria-label="Flight clip: the ground station's view of two Starlings in the Singapore lab"><source src="../../media/st-two-starlings.mp4" type="video/mp4"></video><figcaption>Two Starlings in the Singapore lab on 12 November 2026, as the ground station draws them. One holds its position and we send the other straight at it. Watch both rings turn from green to blue as the safety filter eases the drones apart. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 

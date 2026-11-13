@@ -14,6 +14,8 @@ items:
     title: The NUS team strategy runs on Starlings.
   - state: Done
     title: Two Starlings flew together in Singapore, November 2026.
+  - state: Done
+    title: The safety filter held a hand-flown Starling off a hovering one, November 2026.
   - state: In progress
     title: Camera-only localisation, in simulation.
   - state: In progress

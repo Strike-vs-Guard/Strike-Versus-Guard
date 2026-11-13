@@ -18,7 +18,7 @@ items:
     partners: [nus, cmu]
   - label: Step 3
     title: Singapore lab
-    text: Two Starlings now fly together at ST Engineering, with the safety filter on.
+    text: Two Starlings now fly together at ST Engineering; the safety filter holds even a hand-flown drone off.
     video: st-two-starlings-hangar.mp4
     poster: st-two-starlings-hangar.jpg
     partners: [st]
