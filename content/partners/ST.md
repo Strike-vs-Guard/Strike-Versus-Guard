@@ -129,21 +129,26 @@ be tried in an afternoon before it goes on a Starling.
 
 <figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-formation.jpg" aria-label="Flight clip: five Crazyflies fly formations in the Singapore lab"><source src="../../media/st-cf-formation.mp4" type="video/mp4"></video><figcaption>Five Crazyflies on 5 August 2026: a waypoint tour as one group, then a pentagon, a spin, a triangle with a tail and an orbit of the room centre. Watch the shape hold while the group moves. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
-On 6 November 2026 Nathan Ly, our SUTD intern, ran the first Strike vs Guard match in Singapore
-with a moving zone. The zone is a DJI flown by hand. Four Guard Crazyflies (blue lights) fly a ring
-around it; three Strike Crazyflies (red lights) try to reach it. The Guard side runs a role-based
-strategy developed at NEAR Lab (paper under review): each Guard drone takes a role, predicts where
-each Strike drone is heading over the next moment, and moves to put itself between that drone and
-the zone, while a local controller written in signal temporal logic keeps the Guard drones apart and
-clear of collisions. Nothing is planned in advance. OptiTrack tracks every drone and the DJI, every
-position is computed live, and so the ring goes wherever the DJI goes.
+Not everything we fly is a programme deliverable. We also use the Strike vs Guard setting to
+build NEAR Lab's own capabilities and to try the same ideas on other uses. One of those is an
+escort, where the zone moves.
 
-A Guard drone tags a Strike drone by closing within the tag radius; a Strike drone scores by
-reaching the zone. In this run the Guard team tagged all three. In another run the same afternoon a
-Strike drone got through. Also in place: minimum separations between drones, a geofence that keeps
-the DJI inside the flyable volume, automatic landing if tracking is lost, and a one-click stop.
+On 6 November 2026 Nathan Ly, our SUTD intern, ran the first match of that kind. The zone is a DJI
+flown by hand. Four Guard Crazyflies (blue lights) fly a ring around it and go wherever it goes;
+three Strike Crazyflies (red lights) try to reach it. A Guard drone tags a Strike drone by closing
+within the tag radius; a Strike drone scores by reaching the DJI.
 
-<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-game.jpg" aria-label="Flight clip: four Guard Crazyflies hold a ring around a hand-flown DJI while three Strike Crazyflies try to reach it"><source src="../../media/st-cf-game.mp4" type="video/mp4"></video><figcaption>The match on 6 November 2026 from the lab's camera, with the ground station's view inset. Watch the ring turn so that a blue light stays between each red light and the DJI. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+The Guard team runs a role-based strategy from NEAR Lab (paper under review). Each Guard drone is
+given a role, predicts where its Strike drone is heading, and moves to keep itself between that
+drone and the DJI; a local controller written in signal temporal logic keeps the Guard drones apart.
+Nothing is planned in advance: OptiTrack tracks every drone and the DJI, and every position is
+computed live.
+
+In this run the Guard team tagged all three Strike drones. In another run the same afternoon a
+Strike drone got through. Safety: minimum separations between drones, a geofence that keeps the DJI
+inside the flyable volume, automatic landing if tracking is lost, and a one-click stop.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-game.jpg" aria-label="Flight clip: four Guard Crazyflies hold a ring around a hand-flown DJI while three Strike Crazyflies try to reach it"><source src="../../media/st-cf-game.mp4" type="video/mp4"></video><figcaption>The match on 6 November 2026 from the lab's camera, each drone labelled, the ground station's view inset. Watch the ring turn so that a Guard drone stays between each Strike drone and the DJI. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
 ## In the simulator
 

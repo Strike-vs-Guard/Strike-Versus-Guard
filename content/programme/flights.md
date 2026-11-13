@@ -62,7 +62,7 @@ items:
     credit: "Video: NEAR Lab, ST Engineering."
   - label: Singapore lab
     title: A match on Crazyflies
-    text: "Four Guard Crazyflies (blue lights) hold a ring around a DJI flown by hand; three Strike Crazyflies (red lights) try to reach it. The Guard team tagged all three in this run. Watch a blue light stay between each red light and the DJI; the inset is the ground station."
+    text: "An escort, outside the programme's deliverables: four Guard Crazyflies hold a ring around a DJI flown by hand; three Strike Crazyflies try to reach it. The Guard team tagged all three in this run. Drones are labelled; the inset is the ground station."
     video: st-cf-game.mp4
     poster: st-cf-game.jpg
     partners: [st]
