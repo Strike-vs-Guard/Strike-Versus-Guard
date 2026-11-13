@@ -32,5 +32,7 @@ The next day we put a second Starling in the air beside it. One drone held its p
 the other straight at it. The safety filter stopped the moving drone short and eased the hovering
 one aside, holding the two 1.5 m apart.
 
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../../media/st-two-starlings-hangar.jpg" aria-label="Flight clip: two Starlings take off and return in the Singapore lab"><source src="../../../media/st-two-starlings-hangar.mp4" type="video/mp4"></video><figcaption>The two Starlings on 12 November 2026, from the lab's camera. The clip shows the take-off and, later in the same flight, the return to land. Watch both drones lift from the floor tiles together. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+
 These are the first team flights in Singapore. Next come both drones moving, then the formations
 and random goals already flown at CMU.
