@@ -31,7 +31,7 @@ logoAlt: ST Engineering
 lead: William Teo
 website: https://nearlab.ai
 order: 2
-updated: 2026-11-06
+updated: 2026-11-13
 people:
   - name: William Teo
     role: Director and Founder of NEAR Lab
@@ -90,8 +90,7 @@ are tested.
 
 ## The Singapore lab
 
-The first Starling 2 Max flights have taken place in the Singapore lab, with more
-drones on the way.
+Two Starling 2 Max drones now fly together in the Singapore lab, with more drones on the way. On 12 November 2026 we sent one at the other, and the safety filter held them 1.5 m apart.
 
 ![Starling drones in the ST Engineering flight lab in Singapore](./ST/singapore-flight-lab.jpg)
 
@@ -114,6 +113,16 @@ Bringing up the Starling takes six steps (status as of November 2026):
 | M4 | Tracking fused into the drone's estimate, propellers off | Done |
 | M5 | Hand-carry check through the flight volume | Done |
 | M6 | First flight: take-off, hover, landing | Done |
+
+Since that first flight:
+
+| What we flew | When |
+|---|---|
+| Flights to points sent from the ground station, with nobody on the sticks | 11 November 2026 |
+| The geofence: sent beyond the edge, the drone brakes at the edge | 11 November 2026 |
+| Two drones together, with the safety filter on | 12 November 2026 |
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-two-starlings.jpg" aria-label="Flight clip: the ground station's view of two Starlings in the Singapore lab"><source src="../../media/st-two-starlings.mp4" type="video/mp4"></video><figcaption>Two Starlings in the Singapore lab on 12 November 2026, as the ground station draws them. One holds its position and we send the other straight at it. Watch both rings turn from green to blue as the safety filter eases the drones apart. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
 ## In the simulator
 
