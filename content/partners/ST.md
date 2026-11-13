@@ -148,7 +148,7 @@ In this run the Guard team tagged all three Strike drones. In another run the sa
 Strike drone got through. Safety: minimum separations between drones, a geofence that keeps the DJI
 inside the flyable volume, automatic landing if tracking is lost, and a one-click stop.
 
-<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-game.jpg" aria-label="Flight clip: four Guard Crazyflies hold a ring around a hand-flown DJI while three Strike Crazyflies try to reach it"><source src="../../media/st-cf-game.mp4" type="video/mp4"></video><figcaption>The match on 6 November 2026 from the lab's camera, each drone labelled, the ground station's view inset. Watch the ring turn so that a Guard drone stays between each Strike drone and the DJI. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-game.jpg" aria-label="Flight clip: four Guard Crazyflies hold a ring around a hand-flown DJI while three Strike Crazyflies try to reach it"><source src="../../media/st-cf-game.mp4" type="video/mp4"></video><figcaption>The match on 6 November 2026 from the lab's camera: blue rings are the Guard escorts, red rings the Strike drones, the white brackets the DJI; the ground station's view is inset. Watch the ring turn so that a Guard escort stays between each Strike drone and the DJI. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
 ## In the simulator
 
