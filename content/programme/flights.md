@@ -6,7 +6,7 @@ pageTitle: Flights so far
 eyebrow: Flights
 title: A team that flies itself
 order: 5
-note: Formation and avoidance flights so far, not yet full Strike vs Guard games. Each CMU clip is one room camera with CMU's status card on top, which shows the safety filter's state and the mission clock.
+note: Formation and avoidance flights on Starlings, and a first Strike vs Guard match on Crazyflies. Each CMU clip is one room camera with CMU's status card on top, which shows the safety filter's state and the mission clock.
 items:
   - label: CMU flight cage
     title: Squeeze
@@ -58,6 +58,13 @@ items:
     text: "One of us flies drone_2 by hand at the hovering drone_1, three times. The filter does not steer the hand-flown drone; it holds it off and eases the hovering one aside. Closest 1.76 m. Labels drawn on afterwards."
     video: st-hand-flown-vs-filter.mp4
     poster: st-hand-flown-vs-filter.jpg
+    partners: [st]
+    credit: "Video: NEAR Lab, ST Engineering."
+  - label: Singapore lab
+    title: A match on Crazyflies
+    text: "Four Guard Crazyflies (blue lights) hold a ring around a DJI flown by hand; three Strike Crazyflies (red lights) try to reach it. The Guard team tagged all three in this run. Watch a blue light stay between each red light and the DJI; the inset is the ground station."
+    video: st-cf-game.mp4
+    poster: st-cf-game.jpg
     partners: [st]
     credit: "Video: NEAR Lab, ST Engineering."
 image: ./images/starlings-cage-floor.jpg

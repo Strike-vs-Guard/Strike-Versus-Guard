@@ -94,16 +94,10 @@ are tested.
 
 Two Starling 2 Max drones now fly together in the Singapore lab, with more drones on the way. On 12 November 2026 we sent one at the other and the safety filter held them 1.5 m apart; on 13 November it held a hand-flown drone 1.76 m from a hovering one.
 
-![Starling drones in the ST Engineering flight lab in Singapore](./ST/singapore-flight-lab.jpg)
+![Two Starling drones over the coloured floor tiles of the ST Engineering flight lab in Singapore, labelled drone_1 and drone_2](./ST/singapore-flight-lab.jpg)
 
 The lab is a netted flight volume in our hangar, tracked by OptiTrack cameras at up to 240 Hz, with
-a wired network for tracking and a separate Wi-Fi network for commands. We commissioned it on
-palm-sized Crazyflie 2.1 drones first, with a go/no-go preflight dashboard that we check before every
-flight.
-
-<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-crazyflie-preflight.jpg" aria-label="Flight clip: a Crazyflie in the Singapore lab with the preflight dashboard"><source src="../../media/st-crazyflie-preflight.mp4" type="video/mp4"></video><figcaption>Commissioning on a Crazyflie: the preflight dashboard (left), the tracked position (top right) and the flight (bottom right).</figcaption></figure>
-
-![The netted flight volume in the Singapore hangar, with OptiTrack cameras on stands and the floor axes marked](./ST/hangar-flight-volume.jpg)
+a wired network for tracking and a separate Wi-Fi network for commands.
 
 Bringing up the Starling takes six steps (status as of November 2026):
 
@@ -127,6 +121,29 @@ Since that first flight:
 | A hand-flown drone sent at a hovering one, safety filter on: 1.76 m at the closest | 13 November 2026 |
 
 <figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-two-starlings.jpg" aria-label="Flight clip: the ground station's view of two Starlings in the Singapore lab"><source src="../../media/st-two-starlings.mp4" type="video/mp4"></video><figcaption>Two Starlings in the Singapore lab on 12 November 2026, as the ground station draws them. One holds its position and we send the other straight at it. Watch both rings turn from green to blue as the safety filter eases the drones apart. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+
+## Strike vs Guard on Crazyflies
+
+Palm-sized Crazyflie 2.1 drones fly in the same lab, up to seven at a time, so a team strategy can
+be tried in an afternoon before it goes on a Starling.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-formation.jpg" aria-label="Flight clip: five Crazyflies fly formations in the Singapore lab"><source src="../../media/st-cf-formation.mp4" type="video/mp4"></video><figcaption>Five Crazyflies on 5 August 2026: a waypoint tour as one group, then a pentagon, a spin, a triangle with a tail and an orbit of the room centre. Watch the shape hold while the group moves. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+
+On 6 November 2026 Nathan Ly, our SUTD intern, ran the first Strike vs Guard match in Singapore
+with a moving zone. The zone is a DJI flown by hand. Four Guard Crazyflies (blue lights) fly a ring
+around it; three Strike Crazyflies (red lights) try to reach it. The Guard side runs a role-based
+strategy developed at NEAR Lab (paper under review): each Guard drone takes a role, predicts where
+each Strike drone is heading over the next moment, and moves to put itself between that drone and
+the zone, while a local controller written in signal temporal logic keeps the Guard drones apart and
+clear of collisions. Nothing is planned in advance. OptiTrack tracks every drone and the DJI, every
+position is computed live, and so the ring goes wherever the DJI goes.
+
+A Guard drone tags a Strike drone by closing within the tag radius; a Strike drone scores by
+reaching the zone. In this run the Guard team tagged all three. In another run the same afternoon a
+Strike drone got through. Also in place: minimum separations between drones, a geofence that keeps
+the DJI inside the flyable volume, automatic landing if tracking is lost, and a one-click stop.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-game.jpg" aria-label="Flight clip: four Guard Crazyflies hold a ring around a hand-flown DJI while three Strike Crazyflies try to reach it"><source src="../../media/st-cf-game.mp4" type="video/mp4"></video><figcaption>The match on 6 November 2026 from the lab's camera, with the ground station's view inset. Watch the ring turn so that a blue light stays between each red light and the DJI. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
 ## In the simulator
 
