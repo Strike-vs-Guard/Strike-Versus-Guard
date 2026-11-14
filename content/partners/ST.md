@@ -131,24 +131,24 @@ be tried in an afternoon before it goes on a Starling.
 
 Not everything we fly is a programme deliverable. We also use the Strike vs Guard setting to
 build NEAR Lab's own capabilities and to try the same ideas on other uses. One of those is an
-escort, where the zone moves.
+escort: a VIP drone that the Guard team keeps the Strike team from reaching.
 
-On 6 November 2026 Nathan Ly, our SUTD intern, ran the first match of that kind. The zone is a DJI
-flown by hand. Four Guard Crazyflies (blue lights) fly a ring around it and go wherever it goes;
-three Strike Crazyflies (red lights) try to reach it. A Guard drone tags a Strike drone by closing
-within the tag radius; a Strike drone scores by reaching the DJI.
+On 6 November 2026 Nathan Ly, our SUTD intern, ran the first match of that kind. The VIP drone is
+a DJI flown by hand. Four Guard Crazyflies (blue lights) fly a ring around it and go wherever it
+goes; three Strike Crazyflies (red lights) try to reach it. A Guard drone tags a Strike drone by
+closing within the tag radius; a Strike drone scores by reaching the VIP drone.
 
 The Guard team runs a role-based strategy from NEAR Lab (paper under review). Each Guard drone is
 given a role, predicts where its Strike drone is heading, and moves to keep itself between that
-drone and the DJI; a local controller written in signal temporal logic keeps the Guard drones apart.
+drone and the VIP drone; a local controller written in signal temporal logic keeps the Guard drones apart.
 Nothing is planned in advance: OptiTrack tracks every drone and the DJI, and every position is
 computed live.
 
 In this run the Guard team tagged all three Strike drones. In another run the same afternoon a
-Strike drone got through. Safety: minimum separations between drones, a geofence that keeps the DJI
-inside the flyable volume, automatic landing if tracking is lost, and a one-click stop.
+Strike drone got through. Safety: minimum separations between drones, a geofence that keeps the VIP
+drone inside the flyable volume, automatic landing if tracking is lost, and a one-click stop.
 
-<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-game.jpg" aria-label="Flight clip: four Guard Crazyflies hold a ring around a hand-flown DJI while three Strike Crazyflies try to reach it"><source src="../../media/st-cf-game.mp4" type="video/mp4"></video><figcaption>The match on 6 November 2026 from the lab's camera: blue rings are the Guard escorts, red rings the Strike drones, the white brackets the DJI; the ground station's view is inset. Watch the ring turn so that a Guard escort stays between each Strike drone and the DJI. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-game.jpg" aria-label="Flight clip: four Guard Crazyflies hold a ring around a hand-flown DJI while three Strike Crazyflies try to reach it"><source src="../../media/st-cf-game.mp4" type="video/mp4"></video><figcaption>The match on 6 November 2026 from the lab's camera: blue rings are the Guard escorts, red rings the Strike drones, the white brackets the VIP drone; the ground station's view is inset. Watch the ring turn so that a Guard escort stays between each Strike drone and the VIP drone. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
 ## In the simulator
 
