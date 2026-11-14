@@ -391,3 +391,27 @@ Applies to every clip in `public/media/`. `npm run check` enforces the caps.
   cropped]." CMU's site licence is CC BY-SA 4.0; derived files must say they were changed.
 - Hand-flown drones: never "striker", "intruder", "pilot" or "operator". Say "the filter does not
   steer the hand-flown drone".
+
+**Annotated clips** (labels that follow the drones; reference: `public/media/st-cf-game.mp4`, the
+Crazyflie match of 6 November 2026; tools and lessons in `tools/video/`; process: the `svg-clip` skill):
+
+- **Identity comes from the first frame.** Name and team of every drone in frame 1 are checked by the
+  owner before tracking; tracks carry the identity. Colour is never the identity: cameras render LED
+  colours unreliably.
+- **Tracking is proved, not assumed.** A trajectory plot and contact sheets every 2.5 s go with the
+  clip; every crossing is looked at by eye; the report names the frames checked and the faults left.
+- **Marks always, words only where free.** A ring with a dark halo on every seen drone (radius 17,
+  stroke 4, halo 8 at 1920 wide); corner brackets for a larger object; a word pill (28 px) on a leader
+  line only in a free spot, never over a drone; rings only during the fastest action. Numbers in
+  `tools/video/label-spec.md`.
+- **The frame explains itself.** Top bar: legend with the marks and a tally. Bottom bar: one stage
+  caption at a time, shrinking so it ends left of the inset. Events (a tag) get a half-second pop ring
+  and a two-second pill.
+- **Ground-station inset:** 832×468 bottom right, 24 px margins, a crop that follows the drones,
+  starting inside the panel below its header, dark 3 px frame with a shadow, a title strip that says
+  what the shapes are ("Ground station · Sphere = CBF Safety Assist Zone").
+- **Words on screen follow §2.** Guard, Strike, VIP drone, "flown by hand", tagged. Burned-in captions
+  in the source footage are repainted from the background, not shown. Event times come from the match
+  log or the source's own captions, never guessed.
+- **Delivery:** the §9 encoding, 1600 px wide, ≤ 8 MB, poster ≤ 100 KB; a copy of the clip and the
+  scripts kept outside the session scratch folder.

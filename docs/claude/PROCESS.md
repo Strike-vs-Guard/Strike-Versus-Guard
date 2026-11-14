@@ -27,6 +27,7 @@ nothing to install beyond `npm ci`.
 | "Post an update" | `svg-post` | A post in the partner's folder with `draft: true` until approved |
 | "What should this look like" | `svg-panel` | Three agents → reconciled → clickable draft → user picks → build |
 | "Publish" | `svg-release` | PR from `development`; merge only on the owner's say-so (`SVG_ALLOW_MAIN=1`); deploy verified |
+| "Make a clip of this flight" | `svg-clip` | First frame checked → tracking + graphics agents → labelled clip, legend, captions, inset → §9 checks |
 
 ## Rules the process enforces (STANDARDS has the full text)
 

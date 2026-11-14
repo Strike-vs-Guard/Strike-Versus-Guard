@@ -379,6 +379,28 @@ vanished. Samsung offers no reliable site-side switch, so the site now survives 
 see-through logo files have white baked in, `mix-blend-mode` is gone, wells are white in both themes,
 and `npm run check` refuses a see-through image. Verified on stand-ins only (measured repaint values
 from the screenshots; Chrome forced dark with the opt-out stripped); the real test is the phone.
+
+## 21. Flights of 13 November, the Crazyflie match clip, video standards (13–14 November 2026)
+> Suggest updates from the AirStack milestones; update the ST page; add the intern's escort demo;
+> label the drones so an untrained eye can follow; the CF game clip is a very good example: make it
+> the standard.
+
+**Posted:** the 13 November flights (ledger #36, #37) as a post, table rows, a Flights clip and the
+home glance. **ST page:** old mocap commissioning removed; Crazyflie formation flight (5 August) and the
+6 November escort match added, framed as capability work beside the deliverables; the Guard side runs
+a NEAR Lab role-based strategy (paper under review, not cited). Nathan Ly named. The hand-flown DJI is
+"the VIP drone" (owner's word, 14 Nov).
+
+**The match clip** went through five versions: colour-sorted blobs (wrong: the camera renders red LEDs
+pink-white, and all lights are blue before the match), then eight named tracks seeded from the first
+frame (shown to the owner first), then a two-agent panel: a tracking engineer (DJI detected as a dark
+flat blob, Hungarian assignment, a hovering escort no longer latching onto a lamp) and a motion-graphics
+designer (halo rings always, words only where free, brackets for the DJI, tag pop, legend bar). Tag
+times from the source's own captions. Result approved ("holy shit this is good"). The same designer set
+the ground-station inset for the 13 November Starling clip (832 px, crop follows the spheres).
+
+**Made standard:** STANDARDS §9 "Annotated clips", the `svg-clip` skill, agents
+`svg-video-panel-tracking` and `svg-video-panel-graphics`, scripts and lessons in `tools/video/`.
 The logos were then legible but sat as small light tiles inside dark-grey boxes. Jeremy wanted the
 whole tile big and white everywhere, so each logo is now drawn at build time onto a white canvas
 (a "plate", `src/lib/logo.ts` and `src/lib/plates.ts`) that fills the tile; no CSS colour shows
