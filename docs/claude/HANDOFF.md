@@ -125,6 +125,8 @@ Kxx7DfmQ51Hv3EoeFyBgFj). Spec: `docs/superpowers/specs/2026-11-03-v3-redesign-de
 spelling. Root font size is fluid and `--max` is in rem, so the site scales with the monitor
 (STANDARDS §3). Partners approve their own text (§5 below).
 
+**13 Nov 2026, ST milestones of 11 to 12 November added on `development`:** update post, glance, progress step 3, ST page table and clip, and two new clips `st-two-starlings*.mp4`. Not pushed; awaiting Jeremy's go for the preview.
+
 **Round 6 (4 Nov 2026), media replacement:** flight clips replaced from CMU's repo at commit 6167492
 (read-only clone; never edit or push there). Rules in STANDARDS §9; panel agents `svg-media-panel-*`.
 

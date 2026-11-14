@@ -31,7 +31,7 @@ logoAlt: ST Engineering
 lead: William Teo
 website: https://nearlab.ai
 order: 2
-updated: 2026-11-06
+updated: 2026-11-13
 people:
   - name: William Teo
     role: Director and Founder of NEAR Lab
@@ -85,24 +85,19 @@ are tested.
   can test drone teams here as well as in CMU's cage.
 - **Simulation and localisation.** Flying the Starling 2 Max in the AirStack
   simulator, and starting camera-only localisation there.
+- **Flying by hand, safely.** A gamepad can fly one drone while the fence and the safety
+  filter still check every command.
 - **The game.** Running Strike vs Guard so the learning-based and formal
   approaches can be compared on the same hardware.
 
 ## The Singapore lab
 
-The first Starling 2 Max flights have taken place in the Singapore lab, with more
-drones on the way.
+Two Starling 2 Max drones now fly together in the Singapore lab, with more drones on the way. On 12 November 2026 we sent one at the other and the safety filter held them 1.5 m apart; on 13 November it held a hand-flown drone 1.76 m from a hovering one.
 
-![Starling drones in the ST Engineering flight lab in Singapore](./ST/singapore-flight-lab.jpg)
+![Two Starling drones over the coloured floor tiles of the ST Engineering flight lab in Singapore, labelled drone_1 and drone_2](./ST/singapore-flight-lab.jpg)
 
 The lab is a netted flight volume in our hangar, tracked by OptiTrack cameras at up to 240 Hz, with
-a wired network for tracking and a separate Wi-Fi network for commands. We commissioned it on
-palm-sized Crazyflie 2.1 drones first, with a go/no-go preflight dashboard that we check before every
-flight.
-
-<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-crazyflie-preflight.jpg" aria-label="Flight clip: a Crazyflie in the Singapore lab with the preflight dashboard"><source src="../../media/st-crazyflie-preflight.mp4" type="video/mp4"></video><figcaption>Commissioning on a Crazyflie: the preflight dashboard (left), the tracked position (top right) and the flight (bottom right).</figcaption></figure>
-
-![The netted flight volume in the Singapore hangar, with OptiTrack cameras on stands and the floor axes marked](./ST/hangar-flight-volume.jpg)
+a wired network for tracking and a separate Wi-Fi network for commands.
 
 Bringing up the Starling takes six steps (status as of November 2026):
 
@@ -114,6 +109,46 @@ Bringing up the Starling takes six steps (status as of November 2026):
 | M4 | Tracking fused into the drone's estimate, propellers off | Done |
 | M5 | Hand-carry check through the flight volume | Done |
 | M6 | First flight: take-off, hover, landing | Done |
+
+Since that first flight:
+
+| What we flew | When |
+|---|---|
+| Flights to points sent from the ground station, with nobody on the sticks | 11 November 2026 |
+| The geofence: sent beyond the edge, the drone brakes at the edge | 11 November 2026 |
+| Two drones together, with the safety filter on | 12 November 2026 |
+| One drone flown by hand with a gamepad: turning, the fence wall, letting go of the stick | 13 November 2026 |
+| A hand-flown drone sent at a hovering one, safety filter on: 1.76 m at the closest | 13 November 2026 |
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-two-starlings.jpg" aria-label="Flight clip: the ground station's view of two Starlings in the Singapore lab"><source src="../../media/st-two-starlings.mp4" type="video/mp4"></video><figcaption>Two Starlings in the Singapore lab on 12 November 2026, as the ground station draws them. One holds its position and we send the other straight at it. Watch both rings turn from green to blue as the safety filter eases the drones apart. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+
+## Strike vs Guard on Crazyflies
+
+Palm-sized Crazyflie 2.1 drones fly in the same lab, up to seven at a time, so a team strategy can
+be tried in an afternoon before it goes on a Starling.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-formation.jpg" aria-label="Flight clip: five Crazyflies fly formations in the Singapore lab"><source src="../../media/st-cf-formation.mp4" type="video/mp4"></video><figcaption>Five Crazyflies on 5 August 2026: a waypoint tour as one group, then a pentagon, a spin, a triangle with a tail and an orbit of the room centre. Watch the shape hold while the group moves. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+
+We also use the Strike vs Guard setting to build NEAR Lab's own capabilities and to try the same
+ideas on other uses. One of those is an escort: a VIP drone that the Guard team keeps the Strike
+team from reaching.
+
+On 6 November 2026 Nathan Ly, our SUTD intern, ran the first match of that kind. The VIP drone is
+a DJI flown by hand. Four Guard Crazyflies (blue lights) fly a ring around it and go wherever it
+goes; three Strike Crazyflies (red lights) try to reach it. A Guard drone tags a Strike drone by
+closing within the tag radius; a Strike drone scores by reaching the VIP drone.
+
+The Guard team runs a role-based strategy from NEAR Lab (paper under review). Each Guard drone is
+given a role, predicts where its Strike drone is heading, and moves to keep itself between that
+drone and the VIP drone; a local controller written in signal temporal logic keeps the Guard drones apart.
+Nothing is planned in advance: OptiTrack tracks every drone and the DJI, and every position is
+computed live.
+
+In this run the Guard team tagged all three Strike drones. In another run the same afternoon a
+Strike drone got through. Safety: minimum separations between drones, a geofence that keeps the VIP
+drone inside the flyable volume, automatic landing if tracking is lost, and a one-click stop.
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-game.jpg" aria-label="Flight clip: four Guard Crazyflies hold a ring around a hand-flown DJI while three Strike Crazyflies try to reach it"><source src="../../media/st-cf-game.mp4" type="video/mp4"></video><figcaption>The match on 6 November 2026 from the lab's camera: blue rings are the Guard escorts, red rings the Strike drones, the white brackets the VIP drone; the ground station's view is inset. Watch the ring turn so that a Guard escort stays between each Strike drone and the VIP drone. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
 ## In the simulator
 
