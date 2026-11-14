@@ -120,7 +120,7 @@ Since that first flight:
 | One drone flown by hand with a gamepad: turning, the fence wall, letting go of the stick | 13 November 2026 |
 | A hand-flown drone sent at a hovering one, safety filter on: 1.76 m at the closest | 13 November 2026 |
 
-<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-two-starlings.jpg" aria-label="Flight clip: the ground station's view of two Starlings in the Singapore lab"><source src="../../media/st-two-starlings.mp4" type="video/mp4"></video><figcaption>Two Starlings in the Singapore lab on 12 November 2026, as the ground station draws them. One holds its position and we send the other straight at it. Watch both rings turn from green to blue as the safety filter eases the drones apart. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-hand-flown-vs-filter-inset.jpg" aria-label="Flight clip: a hand-flown Starling approaches a hovering one in the Singapore lab, with the ground station's view inset"><source src="../../media/st-hand-flown-vs-filter-inset.mp4" type="video/mp4"></video><figcaption>The Singapore lab on 13 November 2026, from the lab's camera: drone_1 hovers, drone_2 is flown by hand straight at it three times, and the safety filter holds them apart (closest 1.76 m). Inset: the ground station at the same moment; the two keep-out spheres meet where the filter takes over. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
 ## Strike vs Guard on Crazyflies
 
