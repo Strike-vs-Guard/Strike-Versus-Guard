@@ -5,7 +5,7 @@ Website for **Strike vs Guard**, a research programme on decentralised multi-dro
 
 **Process (same for every lab, every session):** run the `svg-start` skill first, then the skill for
 the task: `svg-change` (any edit), `svg-debug` (anything broken), `svg-post` (a news post), `svg-panel`
-(layout or look), `svg-release` (publish to the live site, owner's say-so only). Hooks in
+(layout or look), `svg-clip` (an annotated flight clip), `svg-release` (publish to the live site, owner's say-so only). Hooks in
 `.claude/settings.json` and `.githooks/` block pushes to `main`, new branches and failed checks.
 Full description: `docs/claude/PROCESS.md`.
 

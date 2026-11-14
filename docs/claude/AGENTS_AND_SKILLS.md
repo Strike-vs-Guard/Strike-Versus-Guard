@@ -18,6 +18,7 @@ Every Claude session, from any lab, runs the same steps. Full description: `PROC
 | `svg-post` | A partner's news post | Right folder, fields, wording, `draft: true` until approved |
 | `svg-panel` | Layout or look | Three agents → reconcile → clickable draft → user picks → build |
 | `svg-release` | Publish to the live site | PR from `development`; merge only on the owner's say-so with `SVG_ALLOW_MAIN=1`; deploy verified |
+| `svg-clip` | An annotated flight clip | First frame checked by the owner → tracking and graphics agents in parallel → integrate → STANDARDS §9 "Annotated clips" checks → push to `development` |
 
 Hooks (`.claude/settings.json`, `scripts/claude/guard.mjs`, `.githooks/`) and GitHub rulesets make
 the branch rules mechanical; see `PROCESS.md`.
@@ -62,6 +63,8 @@ Rejected along the way, so don't propose these again without a new reason:
 | `.claude/agents/svg-humanise-panel-outsider.md` | Humanising panel: robotics professor's cold-read impression test | Same round |
 | `.claude/agents/svg-redesign-panel-design-system.md` | Redesign panel: palette, light/dark, fonts, hero spec | Site-wide redesign (run with the other two redesign agents) |
 | `.claude/agents/svg-redesign-panel-content-architecture.md` | Redesign panel: site map, updates-first, publications, cuts | Same round |
+| `.claude/agents/svg-video-panel-tracking.md` | Video panel: per-drone tracks from a fixed camera, proved with plots and contact sheets | Any annotated clip (run with the graphics agent; `svg-clip`) |
+| `.claude/agents/svg-video-panel-graphics.md` | Video panel: labels, insets, banner and captions that never hide a drone | Same clip, in parallel |
 | `.claude/agents/svg-redesign-panel-drone-interaction.md` | Redesign panel: ranked drone effects, reduced-motion, HUD risk | Same round |
 | `.claude/agents/svg-media-panel-producer.md` | Media panel: shot list and ffmpeg commands | Replacing or adding video (run with the other two media agents) |
 | `.claude/agents/svg-media-panel-science-comms.md` | Media panel: what each clip proves, order, captions, credit | Same round |
