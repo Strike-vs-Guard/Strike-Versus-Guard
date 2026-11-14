@@ -129,9 +129,9 @@ be tried in an afternoon before it goes on a Starling.
 
 <figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-cf-formation.jpg" aria-label="Flight clip: five Crazyflies fly formations in the Singapore lab"><source src="../../media/st-cf-formation.mp4" type="video/mp4"></video><figcaption>Five Crazyflies on 5 August 2026: a waypoint tour as one group, then a pentagon, a spin, a triangle with a tail and an orbit of the room centre. Watch the shape hold while the group moves. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
-Not everything we fly is a programme deliverable. We also use the Strike vs Guard setting to
-build NEAR Lab's own capabilities and to try the same ideas on other uses. One of those is an
-escort: a VIP drone that the Guard team keeps the Strike team from reaching.
+We also use the Strike vs Guard setting to build NEAR Lab's own capabilities and to try the same
+ideas on other uses. One of those is an escort: a VIP drone that the Guard team keeps the Strike
+team from reaching.
 
 On 6 November 2026 Nathan Ly, our SUTD intern, ran the first match of that kind. The VIP drone is
 a DJI flown by hand. Four Guard Crazyflies (blue lights) fly a ring around it and go wherever it

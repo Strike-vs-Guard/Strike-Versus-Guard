@@ -62,7 +62,7 @@ items:
     credit: "Video: NEAR Lab, ST Engineering."
   - label: Singapore lab
     title: A match on Crazyflies
-    text: "An escort, outside the programme's deliverables: four Guard Crazyflies hold a ring around a VIP drone (a DJI flown by hand); three Strike Crazyflies try to reach it. The Guard team tagged all three in this run. Blue rings are the Guard escorts, red rings the Strike drones, white brackets the VIP drone; the inset is the ground station."
+    text: "An escort, one of the other uses we try the ideas on: four Guard Crazyflies hold a ring around a VIP drone (a DJI flown by hand); three Strike Crazyflies try to reach it. The Guard team tagged all three in this run. Blue rings are the Guard escorts, red rings the Strike drones, white brackets the VIP drone; the inset is the ground station."
     video: st-cf-game.mp4
     poster: st-cf-game.jpg
     partners: [st]
