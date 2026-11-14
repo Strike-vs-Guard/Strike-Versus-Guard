@@ -404,6 +404,12 @@ figcaption time {
 .md figure.clip {
   margin: 1.5em 0;
 }
+/* Full screen: a clip that is not the screen's shape gets black bars, never the page colour. */
+video:fullscreen,
+video:-webkit-full-screen {
+  background: #000;
+  filter: none;
+}
 .md figure.clip video {
   width: 100%;
   /* square sim clips would otherwise fill a whole screen; they letterbox instead */

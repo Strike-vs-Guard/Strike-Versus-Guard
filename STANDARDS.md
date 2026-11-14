@@ -409,7 +409,7 @@ Crazyflie match of 6 November 2026; tools and lessons in `tools/video/`; process
   and a two-second pill.
 - **Ground-station inset:** 832×468 bottom right, 24 px margins, a crop that follows the drones,
   starting inside the panel below its header, dark 3 px frame with a shadow, a title strip that says
-  what the shapes are ("Ground station · spheres = keep-out zones").
+  what the shapes are ("Ground station · Sphere = CBF Safety Assist Zone").
 - **Words on screen follow §2.** Guard, Strike, VIP drone, "flown by hand", tagged. Burned-in captions
   in the source footage are repainted from the background, not shown. Event times come from the match
   log or the source's own captions, never guessed.
