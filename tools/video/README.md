@@ -35,7 +35,9 @@ What differed from the Crazyflie match, and is now part of the method:
 - **Layout** (`render_layout_b.py`, final): footage in a left block, right column with the ground station
   over an always-on 2× close-up of the meeting point. The first version (`render_fig8.py`: inset in the
   middle of the floor, a 2× window popping up at each meeting) was judged distracting by the owner, a
-  broadcast-editor agent and a first-time-viewer agent. Five layouts were rendered as samples; the owner chose.
+  broadcast-editor agent and a first-time-viewer agent. Five layouts were rendered as samples; the owner chose
+  B, plus the half-speed replay from the editor's version (`integrate_layout_b.py`: 1.8 s of source at half
+  speed, a 1466 px crop of the 4K frame across the full width, inserted at the hold).
 - **Track smoothing** (`smooth_tracks.py`): a hovering drone with its lights off wobbled 20 px; smoothing by
   speed brought frame-to-frame wobble from 7.4 px to 0.1 px there without moving the marks off fast drones.
 - **Source 20 fps, output 30 fps:** show source frame ⌊t·20⌋ and put the marks on that frame's position; no

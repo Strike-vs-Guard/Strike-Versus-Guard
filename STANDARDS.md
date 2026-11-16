@@ -425,7 +425,9 @@ Crazyflie match of 6 November 2026; tools and lessons in `tools/video/`; process
 - **Panels beside the footage, not on it, and nothing pops.** Reviewers and the owner found a centred
   inset and a pop-up zoom window distracting (16 Nov 2026). Layout: footage in a left block (1344 px of
   1920), a right column with the ground station on top and an always-on 2× close-up of the meeting
-  point below. Review the finished layout with a broadcast-editor agent and a first-time-viewer agent
-  before publishing, and give the owner playable samples of the alternatives.
+  point below. One half-speed replay of the clearest meeting, full width, straight after the action
+  (tag "REPLAY · ½ speed"); the panels step aside for it. Review the finished layout with a
+  broadcast-editor agent and a first-time-viewer agent before publishing, and give the owner playable
+  samples of the alternatives.
 - **Delivery:** the §9 encoding, 1600 px wide, ≤ 8 MB, poster ≤ 100 KB; a copy of the clip and the
   scripts kept outside the session scratch folder.

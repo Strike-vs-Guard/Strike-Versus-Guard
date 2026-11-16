@@ -165,8 +165,10 @@ def draw_alt(L, src4k, pos, t, ev, gs_frame=None, gs_center=None, trails=None, s
         dr.text((x + 44, 28), txt, font=R.F_BAN, fill=(255, 255, 255, 255), anchor="lm"); x += w + 32
     if filt: dr.rounded_rectangle([x, 9, x + sw_, 47], radius=8, fill=(255, 255, 255, 255)); dr.text((x + 14, 28), stxt, font=R.F(26), fill=(14, 14, 14, 255), anchor="lm")
     else: dr.rounded_rectangle([x, 9, x + sw_, 47], radius=8, outline=(150, 150, 150, 255), width=2); dr.text((x + 14, 28), stxt, font=R.F(26), fill=(190, 190, 190, 255), anchor="lm")
+    if L.get("tag"):
+        tw_ = dr.textlength(L["tag"], font=R.F(30)); dr.rounded_rectangle([24, 76, 24 + tw_ + 36, 128], radius=8, fill=(255, 255, 255, 240)); dr.text((42, 102), L["tag"], font=R.F(30), fill=(14, 14, 14, 255), anchor="lm")
     dr.rectangle(R.CAP, fill=(20, 20, 20, 255))
-    cap, fs = caption(L, t, ev), 34
+    cap, fs = (L.get("cap") or caption(L, t, ev)), 34
     while fs > 26 and dr.textlength(cap, font=R.F(fs)) > 1920 - 88: fs -= 2
     dr.text((44, (R.CAP[1] + R.CAP[3]) / 2), cap, font=R.F(fs), fill=(255, 255, 255, 255), anchor="lm")
     im = Image.alpha_composite(im, ov)

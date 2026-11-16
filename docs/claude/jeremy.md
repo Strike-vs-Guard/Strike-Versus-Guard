@@ -423,6 +423,8 @@ layout"). Five layouts rendered as playable samples (A current, B side column, C
 panel, E the editor's version with a half-speed replay). Owner chose **B**, with two corrections: the
 white "filter acting" ring was wrong (it reads as the CBF zone and has a different radius) → replaced by
 a status pill; drone_2's mark shook while hovering with its lights off → tracks smoothed by speed.
+Then: "integrate the replay in E, I like that too" → one half-speed replay of the 27 s meeting, full
+width, after the hold. Final clip 48 s.
 The logos were then legible but sat as small light tiles inside dark-grey boxes. Jeremy wanted the
 whole tile big and white everywhere, so each logo is now drawn at build time onto a white canvas
 (a "plate", `src/lib/logo.ts` and `src/lib/plates.ts`) that fills the tile; no CSS colour shows
