@@ -401,6 +401,21 @@ the ground-station inset for the 13 November Starling clip (832 px, crop follows
 
 **Made standard:** STANDARDS §9 "Annotated clips", the `svg-clip` skill, agents
 `svg-video-panel-tracking` and `svg-video-panel-graphics`, scripts and lessons in `tools/video/`.
+
+## 22. The figure-eight clip (16 November 2026)
+> We ran the fig 8 CBF today, one in thermal cam and one in normal cam. See which is better, try the
+> contrast, ask reviewers. Label the drones with subtitles, merge the videos, like the Crazyflie clip.
+
+Two reviewers first: lights-on wins (the "thermal" file is the camera's infrared night mode; fast drones
+ghost in it), and no contrast edit makes the drones findable; zoom plus rings does. The two ground-station
+files were named the wrong way round (matched by their clocks, then by motion: offset 19.57 s). Owner:
+drone_1 left, drone_2 right at take-off; live 2× window at each meeting; faces do not matter; clip goes
+on the ST page, Flights and a post. Tracking agent: green-LED detection, no identity swap, five
+filter-correcting stretches read from the ground station. Graphics agent: 16:9 crop of the 4K frame,
+inset over the centre floor, crossing window over the right floor. No measured closest distance is
+published (the ledger has none yet). To fit the 60 MB media cap the older 13 November clip without the
+inset was retired (post and Flights now use the inset version) and the formation clip re-encoded from
+its source at CRF 31.
 The logos were then legible but sat as small light tiles inside dark-grey boxes. Jeremy wanted the
 whole tile big and white everywhere, so each logo is now drawn at build time onto a white canvas
 (a "plate", `src/lib/logo.ts` and `src/lib/plates.ts`) that fills the tile; no CSS colour shows

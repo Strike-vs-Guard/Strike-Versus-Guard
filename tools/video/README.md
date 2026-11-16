@@ -13,6 +13,30 @@ process is the `svg-clip` skill.
 | `inset_follow.py` | A picture-in-picture crop of a ground-station recording that follows the drones (colour centroids, centred moving average). |
 | `label-spec.md` | The graphics spec and the options that were rejected, with reasons. |
 
+## Second example: fast drones (`fig8/`)
+
+`public/media/st-fig8-two-starlings.mp4` (two Starlings on CMU's figure-eight at 2 m/s, 16 November 2026).
+What differed from the Crazyflie match, and is now part of the method:
+
+- **Review the footage before editing.** A broadcast-editor agent and a first-time-viewer agent compared
+  the lights-on and the infrared night recording. Lights-on won (night mode ghosts fast drones; people
+  walking). Contrast and gamma edits did not make the drones visible; a zoom and tracked rings did.
+- **4K source, 16:9 crop** (x 760–2960 of 3840): the drones are twice as large on screen with no upscaling.
+  The crop must hold every take-off and landing spot; check the track's extent before fixing it.
+- **Tracking fast drones** (`track_fig8.py`): at 20 fps and 2 m/s a drone moves far between frames. Detect by
+  the green LEDs (colour that is not in the background) as well as the dark body, gate = 45 px + 0.8 × speed
+  + 20 px per missed frame, Hungarian assignment, identity cross-checked against the ground station, whose
+  markers are named. Decode HEVC CCTV files from the start: input seeking returns grey frames.
+- **Sync to the ground station** by fitting one smooth map from its marker positions to the camera tracks
+  (`gs_fig8.py`); the clocks are only a first guess (here 0.34 s off).
+- **Safety-filter state from the ground station's status text**, not from sphere colour (colour follows the
+  mission stage). Shown as a white outer ring and a pill; never as a ring-colour change, colour is identity.
+- **Crossing window** (`render_fig8.py`): a 2× live view fixed on the meeting point, open 0.8 s either side of
+  the closest approach, rings and trails drawn inside it. Panels sit over empty floor; a script check
+  confirms no ring ever passes under a panel.
+- **Source 20 fps, output 30 fps:** show source frame ⌊t·20⌋ and put the marks on that frame's position; no
+  interpolation.
+
 ## Pipeline
 
 1. **Frames.** `ffmpeg -ss <start> -t <length> -i camera.mp4 -vf fps=30 -q:v 2 src/f%04d.jpg` (1920×1080).

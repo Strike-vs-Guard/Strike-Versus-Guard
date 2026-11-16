@@ -413,5 +413,12 @@ Crazyflie match of 6 November 2026; tools and lessons in `tools/video/`; process
 - **Words on screen follow §2.** Guard, Strike, VIP drone, "flown by hand", tagged. Burned-in captions
   in the source footage are repainted from the background, not shown. Event times come from the match
   log or the source's own captions, never guessed.
+- **Review the footage first.** When there is more than one recording, two reviewers (a broadcast editor
+  and a first-time viewer) compare them before any edit. Zoom and tracked marks make small drones
+  visible; contrast edits do not. Infrared night footage of fast drones is not published.
+- **Fast drones** (second reference: `st-fig8-two-starlings.mp4`): crop the 4K source, never upscale; a
+  1 s fading trail behind each drone; a 2× window fixed on each meeting point, open 0.8 s either side;
+  the safety filter's state from the ground station's status, shown as a white outer ring, never as a
+  ring-colour change. No measured distance on screen unless the ledger has one.
 - **Delivery:** the §9 encoding, 1600 px wide, ≤ 8 MB, poster ≤ 100 KB; a copy of the clip and the
   scripts kept outside the session scratch folder.
