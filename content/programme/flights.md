@@ -55,9 +55,16 @@ items:
     credit: "Video: AirLab, Carnegie Mellon University, CC BY-SA 4.0; re-encoded."
   - label: Singapore lab
     title: Hand-flown, filter on
-    text: "One of us flies drone_2 by hand at the hovering drone_1, three times. The filter does not steer the hand-flown drone; it holds it off and eases the hovering one aside. Closest 1.76 m. Labels drawn on afterwards."
-    video: st-hand-flown-vs-filter.mp4
-    poster: st-hand-flown-vs-filter.jpg
+    text: "One of us flies drone_2 by hand at the hovering drone_1, three times. The filter does not steer the hand-flown drone; it holds it off and eases the hovering one aside. Closest 1.76 m. Labels drawn on afterwards; the inset is the ground station."
+    video: st-hand-flown-vs-filter-inset.mp4
+    poster: st-hand-flown-vs-filter-inset.jpg
+    partners: [st]
+    credit: "Video: NEAR Lab, ST Engineering."
+  - label: Singapore lab
+    title: Figure eight in Singapore
+    text: "Two Starlings fly CMU's figure-eight in opposite directions at 2 m/s and meet head-on in the middle; nobody is on the sticks. Watch the 2× close-up of the meeting point, then the half-speed replay; the ground station's spheres are each drone's CBF Safety Assist Zone. Rings and labels drawn on afterwards."
+    video: st-fig8-two-starlings.mp4
+    poster: st-fig8-two-starlings.jpg
     partners: [st]
     credit: "Video: NEAR Lab, ST Engineering."
   - label: Singapore lab

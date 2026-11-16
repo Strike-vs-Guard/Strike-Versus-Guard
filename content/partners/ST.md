@@ -31,7 +31,7 @@ logoAlt: ST Engineering
 lead: William Teo
 website: https://nearlab.ai
 order: 2
-updated: 2026-11-13
+updated: 2026-11-16
 people:
   - name: William Teo
     role: Director and Founder of NEAR Lab
@@ -92,7 +92,7 @@ are tested.
 
 ## The Singapore lab
 
-Two Starling 2 Max drones now fly together in the Singapore lab, with more drones on the way. On 12 November 2026 we sent one at the other and the safety filter held them 1.5 m apart; on 13 November it held a hand-flown drone 1.76 m from a hovering one.
+Two Starling 2 Max drones now fly together in the Singapore lab, with more drones on the way. On 12 November 2026 we sent one at the other and the safety filter held them 1.5 m apart; on 13 November it held a hand-flown drone 1.76 m from a hovering one; on 16 November the two flew CMU's head-on figure-eight at 2 m/s.
 
 ![Two Starling drones over the coloured floor tiles of the ST Engineering flight lab in Singapore, labelled drone_1 and drone_2](./ST/singapore-flight-lab.jpg)
 
@@ -119,6 +119,9 @@ Since that first flight:
 | Two drones together, with the safety filter on | 12 November 2026 |
 | One drone flown by hand with a gamepad: turning, the fence wall, letting go of the stick | 13 November 2026 |
 | A hand-flown drone sent at a hovering one, safety filter on: 1.76 m at the closest | 13 November 2026 |
+| Two drones on CMU's head-on figure-eight at 2 m/s, with nobody on the sticks | 16 November 2026 |
+
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-fig8-two-starlings.jpg" aria-label="Flight clip: two Starlings fly a head-on figure-eight in the Singapore lab, beside the ground station's view and a 2x close-up of the meeting point"><source src="../../media/st-fig8-two-starlings.mp4" type="video/mp4"></video><figcaption>16 November 2026: two Starlings fly CMU's figure-eight in opposite directions at 2 m/s, nobody on the sticks. Blue ring: drone_1; orange ring: drone_2. Top right: the ground station, where each sphere is a drone's CBF Safety Assist Zone. Bottom right: a 2× close-up of the point where they meet. One meeting is replayed at half speed after the eight. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
 <figure class="clip"><video controls muted playsinline preload="none" poster="../../media/st-hand-flown-vs-filter-inset.jpg" aria-label="Flight clip: a hand-flown Starling approaches a hovering one in the Singapore lab, with the ground station's view inset"><source src="../../media/st-hand-flown-vs-filter-inset.mp4" type="video/mp4"></video><figcaption>The Singapore lab on 13 November 2026, from the lab's camera: drone_1 hovers, drone_2 is flown by hand straight at it three times, and the safety filter holds them apart (closest 1.76 m). Inset: the ground station at the same moment; the two keep-out spheres meet where the filter takes over. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 

@@ -28,7 +28,7 @@ hovering one three times. The closest the two came was 1.76 m, against a pass li
 filter does not steer the hand-flown drone; it holds it off and eases the hovering one aside, by up
 to 0.72 m. Both held their height within 6 cm.
 
-<figure class="clip"><video controls muted playsinline preload="none" poster="../../../media/st-hand-flown-vs-filter.jpg" aria-label="Flight clip: a hand-flown Starling approaches a hovering one in the Singapore lab"><source src="../../../media/st-hand-flown-vs-filter.mp4" type="video/mp4"></video><figcaption>The flight from the lab's camera, drones labelled. drone_2 is flown by hand at the hovering drone_1 three times; each time the filter holds them apart. Video: NEAR Lab, ST Engineering.</figcaption></figure>
+<figure class="clip"><video controls muted playsinline preload="none" poster="../../../media/st-hand-flown-vs-filter-inset.jpg" aria-label="Flight clip: a hand-flown Starling approaches a hovering one in the Singapore lab"><source src="../../../media/st-hand-flown-vs-filter-inset.mp4" type="video/mp4"></video><figcaption>The flight from the lab's camera, drones labelled, with the ground station's view inset. drone_2 is flown by hand at the hovering drone_1 three times; each time the filter holds them apart. Video: NEAR Lab, ST Engineering.</figcaption></figure>
 
 One flight each, from one direction. Next: approaches from other sides and heights, both drones
 moving, then the formations and random goals already flown at CMU.

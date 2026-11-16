@@ -413,5 +413,21 @@ Crazyflie match of 6 November 2026; tools and lessons in `tools/video/`; process
 - **Words on screen follow §2.** Guard, Strike, VIP drone, "flown by hand", tagged. Burned-in captions
   in the source footage are repainted from the background, not shown. Event times come from the match
   log or the source's own captions, never guessed.
+- **Review the footage first.** When there is more than one recording, two reviewers (a broadcast editor
+  and a first-time viewer) compare them before any edit. Zoom and tracked marks make small drones
+  visible; contrast edits do not. Infrared night footage of fast drones is not published.
+- **Fast drones** (second reference: `st-fig8-two-starlings.mp4`): crop the 4K source, never upscale; a
+  1 s fading trail behind each drone; smooth the tracks (strongly when slow, lightly when fast) so a
+  hovering drone's mark does not shake. No measured distance on screen unless the ledger has one.
+- **Never draw a ring that could be read as a safety zone.** The CBF zone has a real radius and is shown
+  only where the ground station draws it. The filter's state (from the ground station's status text)
+  is a status pill ("safety filter: on" / "correcting"), never a ring and never a ring-colour change.
+- **Panels beside the footage, not on it, and nothing pops.** Reviewers and the owner found a centred
+  inset and a pop-up zoom window distracting (16 Nov 2026). Layout: footage in a left block (1344 px of
+  1920), a right column with the ground station on top and an always-on 2× close-up of the meeting
+  point below. One half-speed replay of the clearest meeting, full width, straight after the action
+  (tag "REPLAY · ½ speed"); the panels step aside for it. Review the finished layout with a
+  broadcast-editor agent and a first-time-viewer agent before publishing, and give the owner playable
+  samples of the alternatives.
 - **Delivery:** the §9 encoding, 1600 px wide, ≤ 8 MB, poster ≤ 100 KB; a copy of the clip and the
   scripts kept outside the session scratch folder.
