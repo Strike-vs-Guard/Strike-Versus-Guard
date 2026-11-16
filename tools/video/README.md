@@ -30,10 +30,14 @@ What differed from the Crazyflie match, and is now part of the method:
 - **Sync to the ground station** by fitting one smooth map from its marker positions to the camera tracks
   (`gs_fig8.py`); the clocks are only a first guess (here 0.34 s off).
 - **Safety-filter state from the ground station's status text**, not from sphere colour (colour follows the
-  mission stage). Shown as a white outer ring and a pill; never as a ring-colour change, colour is identity.
-- **Crossing window** (`render_fig8.py`): a 2× live view fixed on the meeting point, open 0.8 s either side of
-  the closest approach, rings and trails drawn inside it. Panels sit over empty floor; a script check
-  confirms no ring ever passes under a panel.
+  mission stage). Shown as a status pill in the top bar and on the close-up panel. The first version drew a
+  white outer ring; the owner pointed out it reads as the CBF zone, whose radius it did not match. Removed.
+- **Layout** (`render_layout_b.py`, final): footage in a left block, right column with the ground station
+  over an always-on 2× close-up of the meeting point. The first version (`render_fig8.py`: inset in the
+  middle of the floor, a 2× window popping up at each meeting) was judged distracting by the owner, a
+  broadcast-editor agent and a first-time-viewer agent. Five layouts were rendered as samples; the owner chose.
+- **Track smoothing** (`smooth_tracks.py`): a hovering drone with its lights off wobbled 20 px; smoothing by
+  speed brought frame-to-frame wobble from 7.4 px to 0.1 px there without moving the marks off fast drones.
 - **Source 20 fps, output 30 fps:** show source frame ⌊t·20⌋ and put the marks on that frame's position; no
   interpolation.
 

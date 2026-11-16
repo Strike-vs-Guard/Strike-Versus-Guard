@@ -62,7 +62,7 @@ items:
     credit: "Video: NEAR Lab, ST Engineering."
   - label: Singapore lab
     title: Figure eight in Singapore
-    text: "Two Starlings fly CMU's figure-eight in opposite directions at 2 m/s and meet head-on in the middle; nobody is on the sticks. Watch the 2× window at each meeting, and the white outer ring while the safety filter is correcting. Rings and labels drawn on afterwards."
+    text: "Two Starlings fly CMU's figure-eight in opposite directions at 2 m/s and meet head-on in the middle; nobody is on the sticks. Watch the 2× close-up of the meeting point; the ground station's spheres are each drone's CBF Safety Assist Zone. Rings and labels drawn on afterwards."
     video: st-fig8-two-starlings.mp4
     poster: st-fig8-two-starlings.jpg
     partners: [st]
