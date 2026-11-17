@@ -17,6 +17,7 @@ Pick from `.claude/agents/` (or write a one-off brief in the same shape):
 | Does it read as human-made | `svg-humanise-panel-editor`, `-art-director`, `-outsider` |
 | Site-wide look, fonts, hero | `svg-redesign-panel-design-system`, `-content-architecture`, `-drone-interaction` |
 | Which clip or photo where | `svg-media-panel-producer`, `-science-comms`, `-web-performance` |
+| What goes on the NEAR Lab site | `svg-labsite-panel-editor`, `-visitor`, `-media` |
 | Several layouts to compare | 3–4 × `svg-proposal-designer`, one direction each |
 
 Every brief contains: the goal; what the user already rejected (HANDOFF §4, AGENTS_AND_SKILLS
