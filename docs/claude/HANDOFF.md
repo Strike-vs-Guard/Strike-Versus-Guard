@@ -50,8 +50,7 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
 - **Media caps are 10 MB per file and 80 MB in all** (`scripts/check-links.mjs`); the folder holds about 71 MB.
 - **Annotated clips** follow STANDARDS §9 and the `svg-clip` skill (references: `st-cf-game.mp4`,
   `st-fig8-two-starlings.mp4`; scripts in `tools/video/`).
-- **Live site:** PR #11 merged 16 Nov (figure-eight clip, post, ST page). The film hero is on
-  `development`; the owner merges the pull request when he wants it live.
+- **Live site:** PR #12 merged 18 Nov: the film hero is live.
 - **Address (18 Nov 2026):** the repository is `strike-vs-guard.github.io`, so the live site is
   https://strike-vs-guard.github.io/ and the test site https://strike-vs-guard.github.io/preview/ .
   Old `/Strike-Versus-Guard/…` links (the QR codes in the demo deck and on the film's end card) are
