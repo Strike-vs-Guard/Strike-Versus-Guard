@@ -26,8 +26,7 @@ const { Content } = await render(partner);
 const updates = (await allUpdates()).filter((u) => u.data.partner === partner.id);
 const site = (await getEntry('site', 'main'))!.data;
 const repo = site.repository.replace(/\/$/, '');
-const filePath = `content/partners/${fileName(partner)}`;
-const editUrl = `${repo}/edit/development/${filePath}`;
+const editUrl = `${repo}/edit/development/content/partners/${fileName(partner)}`;
 const pubs = [...d.publications].sort((a, b) => b.year - a.year);
 const people = d.people ?? [];
 /* "About the lab": the lab blurb and every person with a bio, lead first. */
@@ -55,14 +54,6 @@ const layerNames: Record<string, string> = {
 
 <Base title={`${d.short}${d.lab ? ' ' + d.lab : ''}`} description={d.summary}>
   <article class="partner-page">
-    <p class="pp-own">
-      <span class="wrap pp-own__in">
-        <span>
-          This is {d.short}'s own page and file: <code>{filePath}</code>
-        </span>
-        <a href={editUrl}>Edit<span class="visually-hidden"> {d.short}'s file</span></a>
-      </span>
-    </p>
     <header class="pp-head">
       <div class="wrap pp-head__grid">
         <div>
@@ -230,34 +221,6 @@ const layerNames: Record<string, string> = {
 </Base>
 
 <style>
-  .pp-own {
-    --muted: var(--band-muted); /* link underlines mix from --muted; the page's own is invisible on the band */
-    margin: 0;
-    background: var(--band);
-    color: var(--band-text);
-    font-size: var(--step-0);
-  }
-  .pp-own__in {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0 16px;
-    min-height: 44px;
-    padding-block: 4px;
-  }
-  .pp-own code {
-    font-family: var(--font-mono);
-    font-size: 0.875em;
-    overflow-wrap: anywhere;
-  }
-  .pp-own a {
-    color: #fff;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-  }
   .pp-head {
     padding-block: clamp(40px, 6vw, 72px);
     border-bottom: 1px solid var(--border);
