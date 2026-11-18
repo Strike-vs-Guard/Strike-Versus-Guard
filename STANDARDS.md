@@ -237,6 +237,7 @@ On phones the panel opens full width under the header.
 | # | Section | What it holds |
 |---|---|---|
 | 1 | Hero | Title, then the button row ("Watch the film" first, then Latest updates and Meet the partners), above a rounded 16:9 panel: a silent loop cut from the programme film, a pause button, and "Watch the film", which plays the film with sound in the same panel (Close button and Escape lead back). Poster: the film's title frame; reduced motion shows the poster. See §9 "Home hero" |
+| 1a | How it works | Two explainer films side by side, straight after the hero (§9 "Explainer films") |
 | 2 | Logo row | ST, NUS, UPenn, CMU, then "Funded by HTX" |
 | 3 | At a glance + Latest | Status lines from `glance.md` (grouped by `state:`) beside a rail of the 5 latest posts |
 | 4 | Partner cards | "Partner page →" and, when the partner has posted, "Latest update · <date>" |
@@ -390,6 +391,7 @@ Applies to every clip in `public/media/`. `npm run check` enforces the caps.
 | Poster | jpg | 100 KB or less |
 
 - Caps: 10 MB per file; 80 MB for all of `public/media` together (raised from 8 and 60 on 18 Nov 2026 for the programme film).
+- **Explainer films** (`content/programme/explainers.md`, `Explainers.astro`): two films of under a minute with sound, built in ST Engineering's demo project and trimmed for the web (title reveal and QR end card cut, so no wording exception is needed). Home page: both under the hero as "How it works". Research page: the strategy film opens the page, the safety film opens the safety section. Each plays in place with the browser's controls; nothing is fetched before the click; starting one pauses every other clip. Credits sit under each film.
 - **Home hero:** the panel plays a silent loop cut from the programme film (`video:`), with a "Watch the film" button in the panel and in the button row under the title; the button swaps the panel to the film (`film:`) with sound and the browser's controls, a "Close the film" button and Escape lead back, and nothing of the film is fetched before the click. On phones the film opens full screen. The poster (`image:`) is the film's title frame. The CMU overlay is blurred inside the film (the owner's exception). The line under the panel credits the footage to NEAR Lab and to AirLab, Carnegie Mellon University, without the licence wording (owner, 18 Nov 2026); the credit rule below still applies to CMU's own clips on Flights.
 - `preload`: hero `none` and started by JS; lead `metadata`; grid `none`. Pause a clip when it is
   off-screen. With reduced motion, show the poster only.

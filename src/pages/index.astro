@@ -9,6 +9,7 @@ import Base from '../layouts/Base.astro';
 import { url } from '../lib/url';
 import { section } from '../components/sections/content';
 import LogoRow from '../components/sections/LogoRow.astro';
+import Explainers from '../components/sections/Explainers.astro';
 import Glance from '../components/sections/Glance.astro';
 import PartnerCards from '../components/sections/PartnerCards.astro';
 import Themes from '../components/sections/Themes.astro';
@@ -108,6 +109,7 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
   <LogoRow />
 
   <div class="home">
+    <Explainers />
     <Glance />
     <PartnerCards heading="Partners" funderLine={false} />
     <Themes />

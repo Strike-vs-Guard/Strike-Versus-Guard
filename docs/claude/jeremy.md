@@ -464,6 +464,16 @@ site, with and without the trailing slash); after the rename and a manual "Deplo
 links were checked on the live site, with the film on the test site. The demo deck's QR code and the
 film's end card still show the old address; both forward. Docs, skills and `content/site.yml` now
 carry the new addresses.
+
+## 25. Two explainer films; hero caption (18 November 2026)
+> How can I use these other two videos as well? This will better help people to understand our
+> project. … OK this sounds like a sound plan. … Remove the caption "CC BY-SA 4.0, re-encoded and
+> cropped."
+
+The demo project's two shorter films (team strategy, from simulation to real drones; the safety
+layer) go on the home page under the hero as "How it works" and at the top of their sections on the
+Research page. Trimmed for the web: no title reveal, no QR end card; sound kept; credits under each
+film. The hero's caption now names NEAR Lab and CMU's AirLab without the licence wording (owner).
 The logos were then legible but sat as small light tiles inside dark-grey boxes. Jeremy wanted the
 whole tile big and white everywhere, so each logo is now drawn at build time onto a white canvas
 (a "plate", `src/lib/logo.ts` and `src/lib/plates.ts`) that fills the tile; no CSS colour shows

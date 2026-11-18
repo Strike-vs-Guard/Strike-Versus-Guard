@@ -51,6 +51,10 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
 - **Annotated clips** follow STANDARDS §9 and the `svg-clip` skill (references: `st-cf-game.mp4`,
   `st-fig8-two-starlings.mp4`; scripts in `tools/video/`).
 - **Live site:** PR #12 merged 18 Nov: the film hero is live.
+- **Explainer films** (18 Nov): `public/media/explainer-team-strategy.mp4` and
+  `explainer-safety-layer.mp4`, cut from `~/SvG_Demo/video/fallback_escort.mp4` (4.19–52.70 s) and
+  `fallback_fig8.mp4` (4.48–46.92 s) at 720p CRF 28 with AAC 96 kb/s. Shown on the home page under the
+  hero and on the Research page (`content/programme/explainers.md`).
 - **Address (18 Nov 2026):** the repository is `strike-vs-guard.github.io`, so the live site is
   https://strike-vs-guard.github.io/ and the test site https://strike-vs-guard.github.io/preview/ .
   Old `/Strike-Versus-Guard/…` links (the QR codes in the demo deck and on the film's end card) are
