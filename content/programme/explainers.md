@@ -14,7 +14,7 @@ items:
     poster: explainer-team-strategy.jpg
     alt: "Film: the team strategy, from the NUS and UPenn simulations to palm-sized drones and the escort match in Singapore"
     credit: "Simulation: NUS MARMoT Lab; UPenn xLab. Video: NUS MARMoT Lab; NEAR Lab, ST Engineering."
-    when: "0:49"
+    when: "0:53"
     partners: [st, nus, upenn]
   - icon: safety
     label: Safety layer
@@ -24,7 +24,7 @@ items:
     poster: explainer-safety-layer.jpg
     alt: "Film: the safety layer, from CMU's simulation to two Starlings on a figure-eight in Singapore"
     credit: "Simulation: AirLab, Carnegie Mellon University. Video: NEAR Lab, ST Engineering."
-    when: "0:42"
+    when: "0:47"
     partners: [st, upenn, cmu]
 ---
 
