@@ -1,0 +1,126 @@
+---
+/**
+ * The explainer films (content/programme/explainers.md): each is a poster that plays in place with
+ * sound and the browser's controls; nothing is fetched before the click, and starting one pauses
+ * every other clip on the page (src/lib/clip-player.ts).
+ * Home page: both, side by side, under a section heading. Research page: `only="strategy"` or
+ * `only="safety"` gives one film without the section heading, to open that section.
+ */
+import PartnerChips from '../PartnerChips.astro';
+import { mediaUrl } from '../../lib/media';
+import { optionalSection } from './data';
+
+interface Props {
+  only?: 'strategy' | 'safety';
+}
+const { only } = Astro.props;
+const d = await optionalSection('explainers');
+const films = (d?.items ?? []).filter((f) => f.video && (!only || f.icon === only));
+---
+
+{
+  d && films.length > 0 && (
+    <section id={only ? undefined : 'how-it-works'} class:list={['section', 'xp', { 'xp--one': !!only }]}>
+      <div class="wrap">
+        {!only && (
+          <header class="section__head">
+            <p class="eyebrow">{d.eyebrow}</p>
+            <h2>{d.title}</h2>
+            {d.hasBody && (
+              <div class="prose">
+                <d.Content />
+              </div>
+            )}
+          </header>
+        )}
+        <div class="xp__grid">
+          {films.map((f) => (
+            <figure class="xp__film">
+              <video
+                class="xp__video"
+                controls
+                playsinline
+                preload="none"
+                poster={f.poster ? mediaUrl(f.poster) : undefined}
+                aria-label={f.alt ?? f.title}
+                data-explainer
+              >
+                <source src={mediaUrl(f.video)} type="video/mp4" />
+              </video>
+              <figcaption>
+                <p class="xp__label">
+                  {f.label}
+                  {f.when && <span class="xp__time"> · {f.when}</span>}
+                </p>
+                <h3 class="xp__title">{f.title}</h3>
+                {f.text && <p class="xp__text">{f.text}</p>}
+                {f.credit && <p class="xp__credit">{f.credit}</p>}
+                {f.partners.length > 0 && <PartnerChips ids={f.partners} />}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import { exclusive } from '../../lib/clip-player';
+  for (const v of document.querySelectorAll<HTMLVideoElement>('video[data-explainer]')) exclusive(v);
+</script>
+
+<style>
+  .xp__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(20px, 3vw, 40px);
+  }
+  .xp--one .xp__grid {
+    grid-template-columns: minmax(0, 44rem);
+  }
+  /* one film opening a Research section: tighter than a full section */
+  .xp--one {
+    padding-block: clamp(28px, 4vw, 48px) 0;
+  }
+  .xp__film {
+    margin: 0;
+  }
+  .xp__video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    background: var(--media);
+    object-fit: contain;
+  }
+  .xp__film figcaption {
+    margin-top: 14px;
+  }
+  .xp__label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .xp__title {
+    margin: 4px 0 0;
+    font-size: var(--step-2);
+  }
+  .xp__text {
+    margin: 8px 0 0;
+    max-width: 44ch;
+  }
+  .xp__credit {
+    margin: 8px 0 10px;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  @media (max-width: 800px) {
+    .xp__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

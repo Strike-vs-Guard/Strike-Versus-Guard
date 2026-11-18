@@ -13,11 +13,11 @@ decisions:
   - When to change the team's plan, because the other side has changed theirs or a teammate has dropped out.
   - How the rest cover for a drone that is lost.
   - A safety layer checks every command before it reaches a drone.
-caption: "From the programme film. Footage: NEAR Lab, ST Engineering; AirLab, Carnegie Mellon University, CC BY-SA 4.0, re-encoded and cropped."
+caption: "From the programme film. Footage: NEAR Lab, ST Engineering; AirLab, Carnegie Mellon University."
 video: hero-film-teaser.mp4
 videoLabel: "Teaser from the programme film: three drones at CMU, two Starlings on a figure-eight in Singapore, and the Crazyflie escort"
 film: svg-film.mp4
-filmLabel: "Watch the film · 1:41"
+filmLabel: "Watch the film · 1:43"
 gameNote: "Strike vs Guard is the game we test with: the Guard team holds a zone, the Strike team tries to reach it."
 ---
 

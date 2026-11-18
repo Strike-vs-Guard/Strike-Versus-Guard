@@ -50,8 +50,14 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
 - **Media caps are 10 MB per file and 80 MB in all** (`scripts/check-links.mjs`); the folder holds about 71 MB.
 - **Annotated clips** follow STANDARDS §9 and the `svg-clip` skill (references: `st-cf-game.mp4`,
   `st-fig8-two-starlings.mp4`; scripts in `tools/video/`).
-- **Live site:** PR #11 merged 16 Nov (figure-eight clip, post, ST page). The film hero is on
-  `development`; the owner merges the pull request when he wants it live.
+- **Live site:** PR #12 merged 18 Nov: the film hero is live.
+- **Explainer films** (18 Nov): `public/media/explainer-team-strategy.mp4` and
+  `explainer-safety-layer.mp4`, cut from `~/SvG_Demo/video/fallback_escort.mp4` (0–52.70 s) and
+  `fallback_fig8.mp4` (0–46.92 s: from the first frame to where the QR end card starts) at 720p CRF 28
+  with AAC 96 kb/s. The film and its teaser were re-exported the same day from the 102.9 s build
+  (teaser: 60.79–63.92, 63.92–69.15, 73.33–77.50 s). If the demo project rebuilds a video, re-export
+  from the finished file and check its shot times in the `_beats.csv` / `_shots.csv` beside it. Shown on the home page under the
+  hero and on the Research page (`content/programme/explainers.md`).
 - **Address (18 Nov 2026):** the repository is `strike-vs-guard.github.io`, so the live site is
   https://strike-vs-guard.github.io/ and the test site https://strike-vs-guard.github.io/preview/ .
   Old `/Strike-Versus-Guard/…` links (the QR codes in the demo deck and on the film's end card) are

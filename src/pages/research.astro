@@ -14,6 +14,7 @@ import Simulation from '../components/sections/Simulation.astro';
 import Localisation from '../components/sections/Localisation.astro';
 import Directions from '../components/sections/Directions.astro';
 import Clip from '../components/Clip.astro';
+import Explainers from '../components/sections/Explainers.astro';
 import { optionalSection } from '../components/sections/data';
 
 const site = (await getEntry('site', 'main'))!.data;
@@ -27,8 +28,10 @@ const safety = themes?.items.find((t) => t.icon === 'safety' && t.video);
     {themes?.hasBody && <themes.Content />}
   </PageHead>
   <div class="research">
+    <Explainers only="strategy" />
     <Tracks />
     <div id="safety" class="research__anchor">
+      <Explainers only="safety" />
       <CommandPath>
         {
           safety?.video && (
