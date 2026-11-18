@@ -11,7 +11,7 @@ Before coding, read `STANDARDS.md` and `docs/claude/DEBUGGING.md`.
 Rules:
 - Keep content in `content/`, with no copy in templates. Extend `src/content.config.ts` before using a
   new field.
-- Use `url()` / `BASE_URL` for paths; never hard-code `/Strike-Versus-Guard/`.
+- Use `url()` / `BASE_URL` for paths; never hard-code a base path.
 - Components must support multiple instances (root via `currentScript.closest`, per-instance ids).
 - Don't touch `.github/`, `package.json` or git. Don't commit or push.
 

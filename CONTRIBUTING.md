@@ -6,8 +6,8 @@ live site. You never edit `main`.
 
 | Branch | Site | Address |
 |---|---|---|
-| `development` | Test site (yellow "Test site" banner, hidden from search engines) | https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/ |
-| `main` | Live site | https://strike-vs-guard.github.io/Strike-Versus-Guard/ |
+| `development` | Test site (yellow "Test site" banner, hidden from search engines) | https://strike-vs-guard.github.io/preview/ |
+| `main` | Live site | https://strike-vs-guard.github.io/ |
 
 ## 0. Quick start
 
@@ -24,15 +24,15 @@ live site. You never edit `main`.
 [Node.js 24 LTS](https://nodejs.org/) (22.23.4 or newer also works; check with `node -v`).
 
 ```bash
-git clone https://github.com/Strike-vs-Guard/Strike-Versus-Guard.git
-cd Strike-Versus-Guard
+git clone https://github.com/Strike-vs-Guard/strike-vs-guard.github.io.git
+cd strike-vs-guard.github.io
 npm ci
 git switch development
 npm run dev
 ```
 
 `npm ci` installs the site and the git hooks (section 6). `npm run dev` serves the site at
-http://localhost:4321/Strike-Versus-Guard/ and reloads it each time you save. No Node.js? On GitHub,
+http://localhost:4321/ and reloads it each time you save. No Node.js? On GitHub,
 click **Code → Codespaces → Create codespace** for an editor in the browser with everything installed.
 
 When you are done:
@@ -264,7 +264,7 @@ caption. Keep the `../../media/` start: it works on the live site, the test site
 
 **Test site.** Each commit to `development` starts two runs in the **Actions** tab: *CI* (job
 "Build and check") and then *Deploy site*. Green ticks on both mean the test site at
-https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/ shows your change, a few minutes
+https://strike-vs-guard.github.io/preview/ shows your change, a few minutes
 after the commit. A red cross: click it, read the message, fix the file on `development`
 (section 9). While the build is red, the test site keeps the last version that built. The live site
 is never affected.
@@ -345,7 +345,7 @@ Use plain present tense, short sentences and British spelling (behaviour, decent
 |---|---|
 | `content/updates/upenn/…md: the post is in the "upenn" folder but says partner: nus. Make them match.` | Set `partner:` to the folder name |
 | `Nested mappings are not allowed in compact mappings` (or another YAML error with a line number) | A value contains `: `. Wrap the value in quotes |
-| `broken link "/Strike-Versus-Guard/…"` | A link points at a page that does not exist. Copy addresses within the site from the live site |
+| `broken link "/…"` | A link points at a page that does not exist. Copy addresses within the site from the live site |
 | `… is 11.2 MB (limit 10 MB). Please compress it.` | Re-encode the clip or shrink the image (section 4) |
 | The test site did not change | *Deploy site* in the Actions tab is red or still running. Open it |
 | GitHub offers only "Create a new branch" when you commit | You lack write access. Ask ST Engineering to add you to your lab's team |

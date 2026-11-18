@@ -11,7 +11,7 @@ Stay on your lens; the other two reviewers cover the rest. You are read-only: do
 
 **Read first**
 - `STANDARDS.md` (positioning, wording §2, tokens §3, media §9). Never propose anything that breaks it.
-- The test site: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+- The test site: https://strike-vs-guard.github.io/preview/
 - `src/content.config.ts`, `content/`, STANDARDS §4 and §5, `CONTRIBUTING.md`.
 
 **Compare with** (fetch with WebFetch; pick the pages that matter for your lens)

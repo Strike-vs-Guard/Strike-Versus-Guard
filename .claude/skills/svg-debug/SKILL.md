@@ -17,7 +17,7 @@ failures seen so far are in its table. This skill is the checklist.
 ## 2. Reproduce locally
 ```bash
 node -v && npm ci && npm run check
-BASE_PATH=/Strike-Versus-Guard/preview/ PREVIEW=1 npm run check     # the test-site build
+BASE_PATH=/preview/ PREVIEW=1 npm run check     # the test-site build
 npm run shots -- /<page>/ [--theme dark] [--width 390]              # visual or interaction bugs
 ```
 Passes locally but fails in CI → compare Node version, base path, env vars, branch, before code.

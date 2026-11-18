@@ -316,7 +316,7 @@ The page sections live as section components under `src/components/sections/`.
 
 - **Stack:** Astro 7.4.4 (static), Node **24 LTS** (`.nvmrc`; Astro needs Node 22.23.4 or newer).
   Vanilla JS only; no UI frameworks.
-- **Base path:** never hard-code `/Strike-Versus-Guard/`. Use `url()` from `src/lib/url.ts` in
+- **Base path:** never hard-code a base path (the site is at the root, the test site under `/preview/`). Use `url()` from `src/lib/url.ts` in
   templates and `import.meta.env.BASE_URL` elsewhere. The same build serves `/`, `/preview/` and local dev.
 - Component CSS is scoped, or global with a unique prefix (`.pd-*`, `.pc-*`). Component JS must
   support more than one instance per page (find the root via `document.currentScript.closest(...)`;
@@ -342,8 +342,8 @@ The page sections live as section components under `src/components/sections/`.
 
 | Branch | Purpose | Published at |
 |---|---|---|
-| `development` | All edits happen here | Test site: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/ |
-| `main` | Live site; changes arrive only via a pull request from `development` | https://strike-vs-guard.github.io/Strike-Versus-Guard/ |
+| `development` | All edits happen here | Test site: https://strike-vs-guard.github.io/preview/ |
+| `main` | Live site; changes arrive only via a pull request from `development` | https://strike-vs-guard.github.io/ |
 
 - **Only these two branches exist.** Do not create feature branches. Do not add Dependabot or any
   per-PR preview tooling, because they create branches.

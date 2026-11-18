@@ -23,7 +23,7 @@ UPenn, CMU; HTX is the funder.
 
 ## 3. Edit
 - Paths: `url('…')` in templates, `./FOLDER/file.jpg` relative paths in content. Never hard-code
-  `/Strike-Versus-Guard/`.
+  a base path.
 - Keep unrelated changes out. One commit per concern.
 - Logos and figures: opaque PNG with a white background (STANDARDS §3 "Phones"; the check refuses see-through).
 - Photos: 400 px square JPG, 80 KB or less. Clips: STANDARDS §9 ladder, 10 MB per file.
@@ -55,7 +55,7 @@ git commit -m "<area>: <what changed in one line>
 git push origin development
 ```
 The git hooks run `npm run check` again and refuse pushes to `main` or to a new branch. The test
-site rebuilds in about two minutes: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+site rebuilds in about two minutes: https://strike-vs-guard.github.io/preview/
 For up to ten minutes after a deploy the CDN may serve the old page with new asset names (looks
 unstyled); hard-refresh, do not revert.
 

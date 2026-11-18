@@ -4,15 +4,15 @@
 > whose `CLAUDE.md` links here) to continue the work with full context. Last updated **3 Nov 2026** (rounds 3 to 5).
 
 ## 1. One-paragraph summary
-This repo (`Strike-vs-Guard/Strike-Versus-Guard`) is the website of **Strike vs Guard**, a research
+This repo (`Strike-vs-Guard/strike-vs-guard.github.io`, named `Strike-Versus-Guard` until 18 Nov 2026) is the website of **Strike vs Guard**, a research
 programme on **decentralised multi-drone autonomy** funded by **HTX** and carried out by **ST Engineering**
 (lead partner) with **NUS**, **UPenn** and **CMU**. It is an **Astro 7** static site on **GitHub Pages**.
 Each partner edits one Markdown file. All edits go to the `development` branch, which publishes a
 **test site**. A pull request from `development` into `main` publishes the **live site**. The
 site owner driving the work is Jeremy (ST Engineering); the ST lead is William Teo.
 
-- Live: https://strike-vs-guard.github.io/Strike-Versus-Guard/
-- Test: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+- Live: https://strike-vs-guard.github.io/
+- Test: https://strike-vs-guard.github.io/preview/
 
 ## 2. Read these first
 | File | Why |
@@ -52,8 +52,12 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
   `st-fig8-two-starlings.mp4`; scripts in `tools/video/`).
 - **Live site:** PR #11 merged 16 Nov (figure-eight clip, post, ST page). The film hero is on
   `development`; the owner merges the pull request when he wants it live.
-- **Still open:** the repository rename for the root URL; a measured closest distance for the
-  figure-eight flight.
+- **Address (18 Nov 2026):** the repository is `strike-vs-guard.github.io`, so the live site is
+  https://strike-vs-guard.github.io/ and the test site https://strike-vs-guard.github.io/preview/ .
+  Old `/Strike-Versus-Guard/…` links (the QR codes in the demo deck and on the film's end card) are
+  forwarded by the 404 page (`src/pages/404.astro`); do not remove that script. GitHub redirects the
+  old repository address, so existing clones keep working.
+- **Still open:** a measured closest distance for the figure-eight flight.
 
 **Earlier (as of 3 Nov 2026):**
 **Restructured on `development` (test site), not yet merged to `main`:**

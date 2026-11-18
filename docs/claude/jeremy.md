@@ -452,6 +452,18 @@ the film only (STANDARDS §2). The owner decides when the pull request to `main`
 music; media caps raised to 10 MB per file and 80 MB in all (STANDARDS §9); the film button is the
 first, solid button and "Latest updates" the second; the teaser keeps the film's captions and
 chapter tag. The old hero loop and its still were retired.
+
+## 24. The site moves to the root address (18 November 2026)
+> Can we change the webpage URL to just https://strike-vs-guard.github.io
+
+GitHub serves an organisation's root address only from a repository named `<org>.github.io`, so the
+repository was renamed from `Strike-Versus-Guard` to `strike-vs-guard.github.io` (the build has
+worked out its own base path since 6 Nov). Before renaming, the 404 page's forwarding of old
+`/Strike-Versus-Guard/…` links was tested in a browser on a root build (home, pages, posts, the test
+site, with and without the trailing slash); after the rename and a manual "Deploy site" run the same
+links were checked on the live site, with the film on the test site. The demo deck's QR code and the
+film's end card still show the old address; both forward. Docs, skills and `content/site.yml` now
+carry the new addresses.
 The logos were then legible but sat as small light tiles inside dark-grey boxes. Jeremy wanted the
 whole tile big and white everywhere, so each logo is now drawn at build time onto a white canvas
 (a "plate", `src/lib/logo.ts` and `src/lib/plates.ts`) that fills the tile; no CSS colour shows

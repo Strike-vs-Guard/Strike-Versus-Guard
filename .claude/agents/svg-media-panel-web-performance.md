@@ -11,7 +11,7 @@ Stay on your lens; the other two reviewers cover the rest. You are read-only: do
 
 **Read first**
 - `STANDARDS.md` (positioning, wording §2, tokens §3, media §9). Never propose anything that breaks it.
-- The test site: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+- The test site: https://strike-vs-guard.github.io/preview/
 - `scripts/` size check, `public/media/`, the video components in `src/`, STANDARDS §6 and §9.
 
 **Compare with** (fetch with WebFetch; pick the pages that matter for your lens)
