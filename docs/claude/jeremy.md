@@ -446,9 +446,12 @@ the poster (the owner asked for the title frame).
 
 **Owner's rulings (18 Nov):** the cut with the news cases and the "Intercept · Future capability"
 step is the one to use; its wording, "swarm intelligence" included, is allowed as an exception for
-the film only (STANDARDS §2); it plays with its music. Media caps raised to 10 MB per file and 80 MB
-in all (STANDARDS §9). Not asked of the partners or HTX before publishing; the owner decides when
-the pull request to `main` is merged. The old hero loop and its still were retired.
+the film only (STANDARDS §2). The owner decides when the pull request to `main` is merged.
+
+**Defaults Claude took after "stop asking" (each is a one-line change):** the film plays with its
+music; media caps raised to 10 MB per file and 80 MB in all (STANDARDS §9); the film button is the
+first, solid button and "Latest updates" the second; the teaser keeps the film's captions and
+chapter tag. The old hero loop and its still were retired.
 The logos were then legible but sat as small light tiles inside dark-grey boxes. Jeremy wanted the
 whole tile big and white everywhere, so each logo is now drawn at build time onto a white canvas
 (a "plate", `src/lib/logo.ts` and `src/lib/plates.ts`) that fills the tile; no CSS colour shows

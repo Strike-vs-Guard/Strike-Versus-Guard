@@ -236,7 +236,7 @@ On phones the panel opens full width under the header.
 
 | # | Section | What it holds |
 |---|---|---|
-| 1 | Hero | Title above a rounded 2:1 clip panel (best CMU clip, full resolution, poster still, pause button; reduced motion shows the still) |
+| 1 | Hero | Title, then the button row ("Watch the film" first, then Latest updates and Meet the partners), above a rounded 16:9 panel: a silent loop cut from the programme film, a pause button, and "Watch the film", which plays the film with sound in the same panel (Close button and Escape lead back). Poster: the film's title frame; reduced motion shows the poster. See §9 "Home hero" |
 | 2 | Logo row | ST, NUS, UPenn, CMU, then "Funded by HTX" |
 | 3 | At a glance + Latest | Status lines from `glance.md` (grouped by `state:`) beside a rail of the 5 latest posts |
 | 4 | Partner cards | "Partner page →" and, when the partner has posted, "Latest update · <date>" |

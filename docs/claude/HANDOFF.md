@@ -53,7 +53,7 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
 - **Live site:** PR #11 merged 16 Nov (figure-eight clip, post, ST page). The film hero is on
   `development`; the owner merges the pull request when he wants it live.
 - **Still open:** the repository rename for the root URL; a measured closest distance for the
-  figure-eight flight; partners have not seen the film.
+  figure-eight flight.
 
 **Earlier (as of 3 Nov 2026):**
 **Restructured on `development` (test site), not yet merged to `main`:**
