@@ -1,5 +1,28 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { url } from './url';
+
+const versions = new Map<string, string>();
+
+/**
+ * Address of a file in public/media with a version taken from its contents, e.g.
+ * `/media/svg-film.mp4?v=3fa9c1d2`. A clip that is re-encoded under the same name gets a new address,
+ * so no browser or CDN can keep playing the old file (browsers hold on to video for a long time).
+ * A missing file gets no version; the link check reports it.
+ */
+export function mediaUrl(name: string): string {
+  let v = versions.get(name);
+  if (v === undefined) {
+    try {
+      v = createHash('sha1').update(readFileSync(join(process.cwd(), 'public', 'media', name))).digest('hex').slice(0, 8);
+    } catch {
+      v = '';
+    }
+    versions.set(name, v);
+  }
+  return url(`media/${name}`) + (v ? `?v=${v}` : '');
+}
 
 const cache = new Map<string, { width: number; height: number } | null>();
 

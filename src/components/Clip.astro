@@ -12,8 +12,7 @@
  * frame ("Lit" / `altLabel`) swap the source and poster; a clip that was playing keeps playing from the start.
  * Starting any clip pauses the others (src/lib/clip-player.ts).
  */
-import { url } from '../lib/url';
-import { videoSize } from '../lib/media';
+import { mediaUrl, videoSize } from '../lib/media';
 interface Props {
   video: string;
   poster?: string;
@@ -49,8 +48,8 @@ const frame = size ? `${size.width} / ${size.height}` : aspect;
 const button = variant === 'button';
 const runs = videoAlt
   ? [
-      { label: 'Lit', src: url(`media/${video}`), poster: poster ? url(`media/${poster}`) : '' },
-      { label: altLabel, src: url(`media/${videoAlt}`), poster: posterAlt ? url(`media/${posterAlt}`) : '' },
+      { label: 'Lit', src: mediaUrl(video), poster: poster ? mediaUrl(poster) : '' },
+      { label: altLabel, src: mediaUrl(videoAlt), poster: posterAlt ? mediaUrl(posterAlt) : '' },
     ]
   : [];
 ---
@@ -60,8 +59,8 @@ const runs = videoAlt
   class:list={['clip', `clip--${variant}`, { 'clip--natural': natural, 'clip--flight': flight, 'clip--media': media }]}
   style={button ? `aspect-ratio: ${frame}` : undefined}>
   <video
-    src={url(`media/${video}`)}
-    poster={poster ? url(`media/${poster}`) : undefined}
+    src={mediaUrl(video)}
+    poster={poster ? mediaUrl(poster) : undefined}
     preload="none"
     muted
     loop

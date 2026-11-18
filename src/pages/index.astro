@@ -9,6 +9,7 @@ import Base from '../layouts/Base.astro';
 import { url } from '../lib/url';
 import { section } from '../components/sections/content';
 import LogoRow from '../components/sections/LogoRow.astro';
+import { mediaUrl } from '../lib/media';
 import Explainers from '../components/sections/Explainers.astro';
 import Glance from '../components/sections/Glance.astro';
 import PartnerCards from '../components/sections/PartnerCards.astro';
@@ -51,15 +52,15 @@ const clipTitle = flights.items.find((c) => c.video === overview.video)?.title ?
             {overview.video && (
               <video
                 class="hero__video"
-                src={url(`media/${overview.video}`)}
+                src={mediaUrl(overview.video)}
                 poster={still?.src}
                 muted
                 loop
                 playsinline
                 preload="none"
                 aria-label={overview.videoLabel ?? `Flight clip: ${clipTitle}`}
-                data-teaser={url(`media/${overview.video}`)}
-                data-film={overview.film ? url(`media/${overview.film}`) : undefined}
+                data-teaser={mediaUrl(overview.video)}
+                data-film={overview.film ? mediaUrl(overview.film) : undefined}
               />
             )}
             {still && (

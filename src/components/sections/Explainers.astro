@@ -7,7 +7,7 @@
  * `only="safety"` gives one film without the section heading, to open that section.
  */
 import PartnerChips from '../PartnerChips.astro';
-import { url } from '../../lib/url';
+import { mediaUrl } from '../../lib/media';
 import { optionalSection } from './data';
 
 interface Props {
@@ -41,11 +41,11 @@ const films = (d?.items ?? []).filter((f) => f.video && (!only || f.icon === onl
                 controls
                 playsinline
                 preload="none"
-                poster={f.poster ? url(`media/${f.poster}`) : undefined}
+                poster={f.poster ? mediaUrl(f.poster) : undefined}
                 aria-label={f.alt ?? f.title}
                 data-explainer
               >
-                <source src={url(`media/${f.video}`)} type="video/mp4" />
+                <source src={mediaUrl(f.video)} type="video/mp4" />
               </video>
               <figcaption>
                 <p class="xp__label">
