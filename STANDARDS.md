@@ -259,6 +259,8 @@ as 3 lines. Each theme has an anchor (`#learning`, `#formal`, `#safety`, `#local
 `#simulation`). The 0.081 m figure appears only in Localisation and the October post. Type is larger
 and standardised (h2 step-4, body step-1).
 
+- **No repository paths on public pages.** A partner page carries no "this is X's file" band and no file path (removed 18 Nov 2026 at the owner's request; the footer's file list went on 4 Nov). The only editing hint is the line "Maintained by … · Edit this page" in the page's details box.
+
 **Partners (`/partners/`, h1 "Who does what"):** "Each partner writes and maintains its own page.";
 fully clickable partner cards; the HTX card (`id="funder"`); **"Principal investigators"**: one entry per
 partner from the person marked `lead: true` with a `bio:` (photo, name linked to the partner page,
