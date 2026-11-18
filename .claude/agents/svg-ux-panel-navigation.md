@@ -9,7 +9,7 @@ Stay on it. The other two reviewers cover the rest.
 
 **Read first**
 - `STANDARDS.md` (tokens, tone, partner order, page structure). Never propose anything that breaks it.
-- The test site: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+- The test site: https://strike-vs-guard.github.io/preview/
 - Screenshots, if the brief gives a folder (pattern: `<scratchpad>/shots/<page>-1280.png` and `-390.png`).
 
 **Compare with** (fetch with WebFetch, pick the pages that matter for your lens): theairlab.org, asl.ethz.ch, rpg.ifi.uzh.ch (university labs); tri.global, rai-inst.com, deepmind.google, bostondynamics.com (corporate labs). Look at their header menus and how they link people and groups.

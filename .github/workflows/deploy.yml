@@ -1,7 +1,7 @@
 # Builds and publishes the website.
 #
-#   main         →  https://strike-vs-guard.github.io/Strike-Versus-Guard/          (live site)
-#   development  →  https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/  (test site)
+#   main         →  https://strike-vs-guard.github.io/          (live site)
+#   development  →  https://strike-vs-guard.github.io/preview/  (test site)
 #
 # Every run builds BOTH branches and publishes them together, so the repository
 # only needs these two branches. It runs:

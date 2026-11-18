@@ -4,8 +4,8 @@ Source for the website of **Strike vs Guard**, a research programme funded by HT
 ST Engineering with the National University of Singapore, the University of Pennsylvania and
 Carnegie Mellon University, working toward decentralised multi-drone autonomy.
 
-- **Live site** (branch `main`): https://strike-vs-guard.github.io/Strike-Versus-Guard/
-- **Test site** (branch `development`): https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+- **Live site** (branch `main`): https://strike-vs-guard.github.io/
+- **Test site** (branch `development`): https://strike-vs-guard.github.io/preview/
 - **Editing your lab's page, posting an update or adding a publication:** read
   [CONTRIBUTING.md](CONTRIBUTING.md). It covers the browser editor (no install) and a local clone.
   Field rules: [`src/content.config.ts`](src/content.config.ts); starting file: [docs/partner-template.md](docs/partner-template.md).
@@ -21,7 +21,7 @@ Carnegie Mellon University, working toward decentralised multi-drone autonomy.
 2. Edit the front matter (people, bios, publications, your `labBlurb`) or the body text. Field limits
    are in the tables in [CONTRIBUTING.md §2](CONTRIBUTING.md#2-the-partner-file).
 3. Commit directly to `development`. The test site updates in a few minutes:
-   https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+   https://strike-vs-guard.github.io/preview/
 4. A news post is one file in `content/updates/<nus|upenn|cmu|st>/YYYY-MM-DD-slug.md`
    ([CONTRIBUTING.md §3](CONTRIBUTING.md#3-posts)).
 5. Tell ST Engineering when it looks right; they merge `development` into `main` (the live site).
@@ -42,7 +42,7 @@ content/                     ← everything people edit (Markdown + images)
   programme/*.md               shared page sections (ST-owned), incl. glance.md, themes.md, localisation.md
   updates/<partner>/*.md       news posts, one folder per partner (st, nus, upenn, cmu) + images/
   site.yml                     site title, footer
-public/media/                ← flight clips (MP4) and their poster frames (8 MB per file, 60 MB total; STANDARDS §9)
+public/media/                ← flight clips (MP4) and their poster frames (10 MB per file, 80 MB total; STANDARDS §9)
 src/                         ← layout, styles, components (ST-owned)
   content.config.ts            the rules every content file is checked against
 .github/workflows/
@@ -61,7 +61,7 @@ GitHub Actions. The repository keeps only two branches: `main` (live) and `devel
 | Command | What it does |
 |---|---|
 | `npm ci` | Install (first time). Also installs the git hooks that refuse pushes to `main`, new branches and failing checks |
-| `npm run dev` | Live preview at http://localhost:4321/Strike-Versus-Guard/ |
+| `npm run dev` | Live preview at http://localhost:4321/ |
 | `npm run check` | Build the whole site; check the schema, every internal link, the size budget and that no image is see-through (same as CI) |
 | `npm run shots -- /<page>/ [--theme dark] [--width 390]` | Screenshot one built page in Google Chrome (or `SVG_BROWSER=/path`); PNG in `.shots/`, must print `"ok": true` |
 | `npm run preview` | Serve the built site from `dist/` |

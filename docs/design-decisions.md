@@ -114,7 +114,7 @@ served at https://strike-vs-guard.github.io/svg-website/. It is the technical pr
 documentation for the SVG ground-control software in AirStack. It is built with React and Vite, and its docs
 are synced from AirStack with Zensical. The two sites have different jobs:
 
-| | This site (`Strike-Versus-Guard`) | CMU's `svg-website` |
+| | This site (`strike-vs-guard.github.io`) | CMU's `svg-website` |
 |---|---|---|
 | Audience | Sponsors, visitors, researchers, all partners | Developers and operators of the ground controller |
 | Content | Programme, both strategy tracks, benchmark, partners, news | CBF filter, geofence, scenarios, experiments C1–C5, setup docs |

@@ -8,8 +8,8 @@ The repository keeps exactly two branches:
 
 | Branch | Purpose | Published at |
 |---|---|---|
-| `main` | Live site | https://strike-vs-guard.github.io/Strike-Versus-Guard/ |
-| `development` | Where all edits happen; test site | https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/ |
+| `main` | Live site | https://strike-vs-guard.github.io/ |
+| `development` | Where all edits happen; test site | https://strike-vs-guard.github.io/preview/ |
 
 A push to `main`, or a push to `development` that passes the CI check, runs *Deploy site*
 (`.github/workflows/deploy.yml`). It builds **both** branches and publishes them together. No
@@ -52,8 +52,8 @@ request open while you collect changes if you like: it updates itself as `develo
 
 ## Custom domain later
 
-Add the domain under Settings → Pages, then change the default in `astro.config.mjs` from
-`'/Strike-Versus-Guard/'` to `'/'`, and `REPO_PATH` in `deploy.yml` to `/`.
+Add the domain under Settings → Pages. Nothing in the build changes: the site is already served at
+the root (the repository is `strike-vs-guard.github.io`) and `deploy.yml` works out the base path.
 
 ## Housekeeping
 

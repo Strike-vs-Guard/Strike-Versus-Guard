@@ -34,6 +34,13 @@ Precedence: the site owner's explicit instruction, then this file, then personal
 - It is a lab website: plain present tense and short sentences. No marketing language, and no
   mission or defence framing.
 - **Never frame it as counter-UAS, counter-drone or defence.**
+- **One exception, by the site owner (18 Nov 2026): the programme film** behind "Watch the film" on the
+  home page (`public/media/svg-film.mp4`, built in ST Engineering's demo project as `hero_v3_cuav.mp4`).
+  It opens with news cases of drones closing airports and pausing a stadium game, says "swarm
+  intelligence", and shows an "Intercept" step marked "Future capability". The owner approved it as
+  the programme's general-purpose film and allowed its wording. The exception covers the film's own
+  pixels and sound only: every page, caption, post and other clip still follows this section. Do not
+  "fix" the film, and do not copy its wording into page text.
 - British spelling: behaviour, decentralised, programme.
 - **Voice rules** (from the humanising panel, round 4; see `docs/claude/AGENTS_AND_SKILLS.md`):
 
@@ -165,7 +172,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
 | Home "At a glance" status lines: `items:` with `state:` (Done, In progress, Not yet) and the "as of" `note:` | `content/programme/glance.md` | ST Engineering |
 | Home "Research themes" (five rows: `icon:` is the theme id, `state:`, `partners:`) | `content/programme/themes.md` | ST Engineering |
 | Publications of a partner: `publications:` (`title`, `authors`, `venue`, `year`, `status` = published / accepted / preprint / workshop, optional `link`, `pdf`, `image`) | `content/partners/<NAME>.md` | That partner |
-| Top of the home page, incl. the `decisions:` list ("What they decide"), the hero `video:`, the one-line `gameNote:` and the Research page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` | ST Engineering |
+| Top of the home page, incl. the `decisions:` list ("What they decide"), the hero `video:` (silent loop), `film:` + `filmLabel:` (the programme film behind the button) and `videoLabel:`, the one-line `gameNote:` and the Research page head (`pageEyebrow:`, `pageTitle:`) | `content/programme/overview.md` | ST Engineering |
 | Home "Proof so far" section head and its `note:`; the Flights page head is `pageEyebrow:`/`pageTitle:` in `flights.md` | `content/programme/proof.md` | ST Engineering |
 | Research "In simulation" section: one short paragraph and 2–4 clips (`video:`/`poster:` in `public/media/`, `partners:`) | `content/programme/simulation.md` | ST Engineering (+ partners for their clips) |
 | Research "How a command travels" strip: one box per item, `passes:` labels the arrow after it | `content/programme/command.md` | ST Engineering (+ CMU) |
@@ -206,7 +213,7 @@ Everything editable is Markdown or YAML under `content/`. **Templates never hold
   workshop paper was not found publicly, so NUS shows "None yet" until it supplies it. "Derek" (ST) is
   listed without surname or role until he confirms them.
 - Images must be referenced **relative to the content file** (`./NUS/photo.jpg`), never as `/images/...`.
-- **Size limits:** images 5 MB or less and clips 8 MB or less (H.264 MP4, muted, with a `.jpg`
+- **Size limits:** images 5 MB or less and clips 10 MB or less (H.264 MP4, muted, with a `.jpg`
   poster). Both are enforced by `npm run check`.
 
 ---
@@ -229,7 +236,7 @@ On phones the panel opens full width under the header.
 
 | # | Section | What it holds |
 |---|---|---|
-| 1 | Hero | Title above a rounded 2:1 clip panel (best CMU clip, full resolution, poster still, pause button; reduced motion shows the still) |
+| 1 | Hero | Title, then the button row ("Watch the film" first, then Latest updates and Meet the partners), above a rounded 16:9 panel: a silent loop cut from the programme film, a pause button, and "Watch the film", which plays the film with sound in the same panel (Close button and Escape lead back). Poster: the film's title frame; reduced motion shows the poster. See §9 "Home hero" |
 | 2 | Logo row | ST, NUS, UPenn, CMU, then "Funded by HTX" |
 | 3 | At a glance + Latest | Status lines from `glance.md` (grouped by `state:`) beside a rail of the 5 latest posts |
 | 4 | Partner cards | "Partner page →" and, when the partner has posted, "Latest update · <date>" |
@@ -309,7 +316,7 @@ The page sections live as section components under `src/components/sections/`.
 
 - **Stack:** Astro 7.4.4 (static), Node **24 LTS** (`.nvmrc`; Astro needs Node 22.23.4 or newer).
   Vanilla JS only; no UI frameworks.
-- **Base path:** never hard-code `/Strike-Versus-Guard/`. Use `url()` from `src/lib/url.ts` in
+- **Base path:** never hard-code a base path (the site is at the root, the test site under `/preview/`). Use `url()` from `src/lib/url.ts` in
   templates and `import.meta.env.BASE_URL` elsewhere. The same build serves `/`, `/preview/` and local dev.
 - Component CSS is scoped, or global with a unique prefix (`.pd-*`, `.pc-*`). Component JS must
   support more than one instance per page (find the root via `document.currentScript.closest(...)`;
@@ -335,8 +342,8 @@ The page sections live as section components under `src/components/sections/`.
 
 | Branch | Purpose | Published at |
 |---|---|---|
-| `development` | All edits happen here | Test site: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/ |
-| `main` | Live site; changes arrive only via a pull request from `development` | https://strike-vs-guard.github.io/Strike-Versus-Guard/ |
+| `development` | All edits happen here | Test site: https://strike-vs-guard.github.io/preview/ |
+| `main` | Live site; changes arrive only via a pull request from `development` | https://strike-vs-guard.github.io/ |
 
 - **Only these two branches exist.** Do not create feature branches. Do not add Dependabot or any
   per-PR preview tooling, because they create branches.
@@ -376,12 +383,14 @@ Applies to every clip in `public/media/`. `npm run check` enforces the caps.
 | Class | Encoding | Limit |
 |---|---|---|
 | All | H.264 High, yuv420p, 30 fps, `-g 60`, `-movflags +faststart`, no audio | none |
-| Hero loop | cropped, CRF 23 | 15 s or less, 1 MB or less |
-| Lead clip | 1080p, CRF 26 | 8 MB or less |
-| Grid clip | 720p, CRF 28 to 30 | 8 MB or less |
+| Hero loop | 16:9, 720p, CRF 27, silent | 15 s or less, 1.5 MB or less |
+| Programme film | 720p, CRF 28, AAC 96 kb/s (the one clip with sound) | 10 MB or less |
+| Lead clip | 1080p, CRF 26 | 10 MB or less |
+| Grid clip | 720p, CRF 28 to 30 | 10 MB or less |
 | Poster | jpg | 100 KB or less |
 
-- Caps: 8 MB per file; 60 MB for all of `public/media` together.
+- Caps: 10 MB per file; 80 MB for all of `public/media` together (raised from 8 and 60 on 18 Nov 2026 for the programme film).
+- **Home hero:** the panel plays a silent loop cut from the programme film (`video:`), with a "Watch the film" button in the panel and in the button row under the title; the button swaps the panel to the film (`film:`) with sound and the browser's controls, a "Close the film" button and Escape lead back, and nothing of the film is fetched before the click. On phones the film opens full screen. The poster (`image:`) is the film's title frame. The CMU overlay is blurred inside the film (the owner's exception; the credit line under the panel still names CMU's licence).
 - `preload`: hero `none` and started by JS; lead `metadata`; grid `none`. Pause a clip when it is
   off-screen. With reduced motion, show the poster only.
 - Keep CMU's on-video overlay (status card, "CORRECTING drone N") in every clip except the cropped
@@ -429,5 +438,5 @@ Crazyflie match of 6 November 2026; tools and lessons in `tools/video/`; process
   (tag "REPLAY · ½ speed"); the panels step aside for it. Review the finished layout with a
   broadcast-editor agent and a first-time-viewer agent before publishing, and give the owner playable
   samples of the alternatives.
-- **Delivery:** the §9 encoding, 1600 px wide, ≤ 8 MB, poster ≤ 100 KB; a copy of the clip and the
+- **Delivery:** the §9 encoding, 1600 px wide, ≤ 10 MB, poster ≤ 100 KB; a copy of the clip and the
   scripts kept outside the session scratch folder.

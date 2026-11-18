@@ -32,7 +32,7 @@ target, pilot, operator, swarm. The banner names the teams and the colours; the 
 what is happening now; nothing claims more than the ledger does.
 
 ## 5. Encode and check
-- STANDARDS §9 encoding; 1600 px wide; ≤ 8 MB; poster ≤ 100 KB; `public/media` total ≤ 60 MB.
+- STANDARDS §9 encoding; 1600 px wide; ≤ 10 MB; poster ≤ 100 KB; `public/media` total ≤ 80 MB.
 - Contact sheet every 2.5 s: right number of marks per team in every tile; no label on a drone; no
   banned word anywhere on screen (check the inset too).
 - Full-resolution frames at the start, the closest moment and the end.

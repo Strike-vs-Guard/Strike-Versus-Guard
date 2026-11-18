@@ -29,7 +29,7 @@ npm ci
 npm run check                # astro build + scripts/check-links.mjs (links + size budget)
 ```
 - For a test-site build, also run:
-  `BASE_PATH=/Strike-Versus-Guard/preview/ PREVIEW=1 npm run check`
+  `BASE_PATH=/preview/ PREVIEW=1 npm run check`
 - If it passes locally but fails in CI, compare **environments** before code: Node version, base
   path, environment variables and which branch was checked out.
 

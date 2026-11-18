@@ -11,7 +11,7 @@ Stay on your lens; the other two reviewers cover the rest. You are read-only: do
 
 **Read first**
 - `STANDARDS.md` (positioning, wording §2, tokens §3, media §9). Never propose anything that breaks it.
-- The test site: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+- The test site: https://strike-vs-guard.github.io/preview/
 - Every page's copy in `content/` and the components in `src/` that hold text.
 - Voice rules in STANDARDS §2 (British spelling, plain present tense, no defence or counter-UAS wording, partners are equals).
 

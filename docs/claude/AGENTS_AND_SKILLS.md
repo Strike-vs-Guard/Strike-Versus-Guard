@@ -70,6 +70,9 @@ Rejected along the way, so don't propose these again without a new reason:
 | `.claude/agents/svg-media-panel-science-comms.md` | Media panel: what each clip proves, order, captions, credit | Same round |
 | `.claude/agents/svg-media-panel-web-performance.md` | Media panel: encoding ladder, budgets, licence; runs test encodes | Same round |
 | `.claude/agents/svg-implementer.md` | Implements an agreed spec in the Astro repo and verifies it with Playwright; doesn't commit | After a design decision is made |
+| `.claude/agents/svg-labsite-panel-editor.md` | Lab-site panel: which programme content fits which NEAR Lab site slot (news, blog, papers, link only) | Bringing content onto nearlab.ai (run with the other two lab-site agents) |
+| `.claude/agents/svg-labsite-panel-visitor.md` | Lab-site panel: cold read as a prospective student, industry partner and visiting researcher | Same round |
+| `.claude/agents/svg-labsite-panel-media.md` | Lab-site panel: which photos and clips to reuse, format, size, credit | Same round |
 
 ## UX panel (added 3 Nov 2026)
 
@@ -145,6 +148,18 @@ Use Python or a replacer function for the inlining: JS `String.replace` mangles 
 Three saved agents (`svg-media-panel-producer`, `-science-comms`, `-web-performance`) planned the
 replacement of the flight videos with CMU's clips (commit 6167492). Rules that came out of it are in
 STANDARDS §9.
+
+## Lab-site panel (17 Nov 2026)
+
+Three saved agents (`svg-labsite-panel-editor`, `-visitor`, `-media`) propose what Strike vs Guard
+content to bring onto the NEAR Lab website (nearlab.ai, repo AI-DA-STC/nearlab, owned by William Teo).
+They read the programme content on `origin/main` only and the lab site from source (it is a
+JavaScript app). The lab site has its own test copy: its `development` branch publishes to
+https://nearlab.ai/preview/, and William approves everything that goes live there.
+
+How to run: start all three in one message; give each the paths of both local clones and what the
+lab site already has about the programme; ask for the ranked list the agent files define. Findings
+two agents share come first; conflicts go to Jeremy as a choice.
 
 ## How a panel round runs
 

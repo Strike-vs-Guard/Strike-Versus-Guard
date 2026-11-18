@@ -10,4 +10,4 @@ summary: >-
 
 We put this site up so each lab can post its own results without going through us. If you're on a
 partner team, the guide is
-[here](https://github.com/Strike-vs-Guard/Strike-Versus-Guard/blob/main/CONTRIBUTING.md).
+[here](https://github.com/Strike-vs-Guard/strike-vs-guard.github.io/blob/main/CONTRIBUTING.md).

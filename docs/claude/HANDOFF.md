@@ -4,15 +4,15 @@
 > whose `CLAUDE.md` links here) to continue the work with full context. Last updated **3 Nov 2026** (rounds 3 to 5).
 
 ## 1. One-paragraph summary
-This repo (`Strike-vs-Guard/Strike-Versus-Guard`) is the website of **Strike vs Guard**, a research
+This repo (`Strike-vs-Guard/strike-vs-guard.github.io`, named `Strike-Versus-Guard` until 18 Nov 2026) is the website of **Strike vs Guard**, a research
 programme on **decentralised multi-drone autonomy** funded by **HTX** and carried out by **ST Engineering**
 (lead partner) with **NUS**, **UPenn** and **CMU**. It is an **Astro 7** static site on **GitHub Pages**.
 Each partner edits one Markdown file. All edits go to the `development` branch, which publishes a
 **test site**. A pull request from `development` into `main` publishes the **live site**. The
 site owner driving the work is Jeremy (ST Engineering); the ST lead is William Teo.
 
-- Live: https://strike-vs-guard.github.io/Strike-Versus-Guard/
-- Test: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+- Live: https://strike-vs-guard.github.io/
+- Test: https://strike-vs-guard.github.io/preview/
 
 ## 2. Read these first
 | File | Why |
@@ -36,7 +36,30 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
 5. **Prove it before pushing:** `npm run check`, plus Playwright screenshots (1280 and 390px) for
    anything visual.
 
-## 4. Current state (as of 3 Nov 2026)
+## 4. Current state
+
+**As of 18 Nov 2026 (newest first; the older notes below are history):**
+- **Home hero = the programme film.** Silent teaser loop + "Watch the film · 1:41" (film with sound in
+  the same panel). Files `public/media/hero-film-teaser.mp4`, `svg-film.mp4`, poster
+  `content/programme/images/hero-film-title.jpg`; fields `video:`, `film:`, `filmLabel:`,
+  `videoLabel:` in `content/programme/overview.md`; code in `src/pages/index.astro`. The film comes
+  from `~/SvG_Demo/video/hero_v3_cuav.mp4` (never edited here). To update it: re-encode at 720p CRF 28
+  with AAC 96 kb/s, re-cut the teaser from the same shots, re-take the title frame.
+- **The film is the one exception to the positioning and wording rules** (owner, 18 Nov; STANDARDS §2).
+  Page text still follows them.
+- **Media caps are 10 MB per file and 80 MB in all** (`scripts/check-links.mjs`); the folder holds about 71 MB.
+- **Annotated clips** follow STANDARDS §9 and the `svg-clip` skill (references: `st-cf-game.mp4`,
+  `st-fig8-two-starlings.mp4`; scripts in `tools/video/`).
+- **Live site:** PR #11 merged 16 Nov (figure-eight clip, post, ST page). The film hero is on
+  `development`; the owner merges the pull request when he wants it live.
+- **Address (18 Nov 2026):** the repository is `strike-vs-guard.github.io`, so the live site is
+  https://strike-vs-guard.github.io/ and the test site https://strike-vs-guard.github.io/preview/ .
+  Old `/Strike-Versus-Guard/…` links (the QR codes in the demo deck and on the film's end card) are
+  forwarded by the 404 page (`src/pages/404.astro`); do not remove that script. GitHub redirects the
+  old repository address, so existing clones keep working.
+- **Still open:** a measured closest distance for the figure-eight flight.
+
+**Earlier (as of 3 Nov 2026):**
 **Restructured on `development` (test site), not yet merged to `main`:**
 - Four pages plus Updates: Home, Programme, Partners, Flights (see STANDARDS §5). (Superseded by round 5 below.)
 - Five layers (Strategy, Safety, Flight, Localisation, Drones, plus Integration). `work:` accepts

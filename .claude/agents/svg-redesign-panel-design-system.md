@@ -11,7 +11,7 @@ Stay on your lens; the other two reviewers cover the rest. You are read-only: do
 
 **Read first**
 - `STANDARDS.md` (positioning, wording §2, tokens §3, media §9). Never propose anything that breaks it.
-- The test site: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+- The test site: https://strike-vs-guard.github.io/preview/
 - `src/styles/global.css` and STANDARDS §3.
 - The four logos in `src/assets/` or `public/` and their dominant colours.
 

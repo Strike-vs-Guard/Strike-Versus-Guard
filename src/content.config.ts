@@ -239,6 +239,12 @@ const programme = defineCollection({
         droneHint: z.string().optional(),
         /** Optional hero clip in public/media (muted loop); `image` is its poster. */
         video: z.string().regex(/^[\w.-]+\.mp4$/).optional(),
+        /** What the hero clip shows, for screen readers (defaults to the matching Flights title or `imageAlt`). */
+        videoLabel: z.string().optional(),
+        /** Optional full film in public/media: the hero gets a button that plays it, with sound and controls, in the same panel. */
+        film: z.string().regex(/^[\w.-]+\.mp4$/).optional(),
+        /** Text on that button, e.g. "Watch the film · 1:32". */
+        filmLabel: z.string().optional(),
       })
       .strict(),
 });

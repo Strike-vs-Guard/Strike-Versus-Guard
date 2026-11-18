@@ -14,7 +14,7 @@ git switch development && git pull --ff-only
 npm run check
 gh run list --branch development --limit 3        # latest CI run: success
 ```
-Check the test site by eye once more: https://strike-vs-guard.github.io/Strike-Versus-Guard/preview/
+Check the test site by eye once more: https://strike-vs-guard.github.io/preview/
 `docs/claude/HANDOFF.md` §4 says what this release contains; add a line if it does not.
 
 ## 2. Pull request (anyone may do this)
@@ -34,7 +34,7 @@ command without it. Never push to `main` directly, never force-push, never delet
 ## 4. Verify the live site
 ```bash
 gh run list --branch main --workflow "Deploy site" --limit 1      # completed success
-curl -s "https://strike-vs-guard.github.io/Strike-Versus-Guard/?v=$(date +%s)" | grep -c "<something unique to this release>"
+curl -s "https://strike-vs-guard.github.io/?v=$(date +%s)" | grep -c "<something unique to this release>"
 ```
 For up to ten minutes the CDN may serve the previous HTML with the new asset names (page looks
 unstyled). That clears itself; do not revert, do not redeploy.

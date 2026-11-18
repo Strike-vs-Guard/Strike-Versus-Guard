@@ -48,8 +48,8 @@ is refused by the server whoever runs it.
 ## Setting it up on a new machine
 
 ```bash
-git clone https://github.com/Strike-vs-Guard/Strike-Versus-Guard.git
-cd Strike-Versus-Guard
+git clone https://github.com/Strike-vs-Guard/strike-vs-guard.github.io.git
+cd strike-vs-guard.github.io
 npm ci                      # installs deps and the git hooks
 git switch development
 claude                      # the session hook prints the state; say "run svg-start"

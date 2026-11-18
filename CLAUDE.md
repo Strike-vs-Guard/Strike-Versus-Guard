@@ -19,7 +19,8 @@ Full description: `docs/claude/PROCESS.md`.
 
 **Key rules (short version):**
 - **Positioning:** never frame the site as counter-UAS or defence. *Strike vs Guard* is the
-  benchmark game.
+  benchmark game. One exception by the owner (18 Nov 2026): the programme film behind "Watch the
+  film" on the home page keeps its own wording (STANDARDS §2); leave it, and never copy it into page text.
 - **Partners:** equals, in the order ST Engineering, NUS, UPenn, CMU. HTX is the funder.
 - **Branches:** only `development` (edits; test site at `/preview/`) and `main` (live, via a PR from
   `development`). Never create other branches.
