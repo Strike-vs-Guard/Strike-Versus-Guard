@@ -50,7 +50,7 @@ for (const file of walk(dist)) {
 const root = new URL('../', import.meta.url).pathname;
 const budgets = [
   { dir: 'content', max: 5 * 1024 * 1024, what: 'image' },
-  { dir: 'public/media', max: 8 * 1024 * 1024, what: 'media file', total: 60 * 1024 * 1024 },
+  { dir: 'public/media', max: 10 * 1024 * 1024, what: 'media file', total: 80 * 1024 * 1024 },
 ];
 for (const { dir, max, what, total } of budgets) {
   let sum = 0;

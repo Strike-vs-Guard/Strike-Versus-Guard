@@ -36,7 +36,26 @@ site owner driving the work is Jeremy (ST Engineering); the ST lead is William T
 5. **Prove it before pushing:** `npm run check`, plus Playwright screenshots (1280 and 390px) for
    anything visual.
 
-## 4. Current state (as of 3 Nov 2026)
+## 4. Current state
+
+**As of 18 Nov 2026 (newest first; the older notes below are history):**
+- **Home hero = the programme film.** Silent teaser loop + "Watch the film · 1:41" (film with sound in
+  the same panel). Files `public/media/hero-film-teaser.mp4`, `svg-film.mp4`, poster
+  `content/programme/images/hero-film-title.jpg`; fields `video:`, `film:`, `filmLabel:`,
+  `videoLabel:` in `content/programme/overview.md`; code in `src/pages/index.astro`. The film comes
+  from `~/SvG_Demo/video/hero_v3_cuav.mp4` (never edited here). To update it: re-encode at 720p CRF 28
+  with AAC 96 kb/s, re-cut the teaser from the same shots, re-take the title frame.
+- **The film is the one exception to the positioning and wording rules** (owner, 18 Nov; STANDARDS §2).
+  Page text still follows them.
+- **Media caps are 10 MB per file and 80 MB in all** (`scripts/check-links.mjs`); the folder holds about 71 MB.
+- **Annotated clips** follow STANDARDS §9 and the `svg-clip` skill (references: `st-cf-game.mp4`,
+  `st-fig8-two-starlings.mp4`; scripts in `tools/video/`).
+- **Live site:** PR #11 merged 16 Nov (figure-eight clip, post, ST page). The film hero is on
+  `development`; the owner merges the pull request when he wants it live.
+- **Still open:** the repository rename for the root URL; a measured closest distance for the
+  figure-eight flight; partners have not seen the film.
+
+**Earlier (as of 3 Nov 2026):**
 **Restructured on `development` (test site), not yet merged to `main`:**
 - Four pages plus Updates: Home, Programme, Partners, Flights (see STANDARDS §5). (Superseded by round 5 below.)
 - Five layers (Strategy, Safety, Flight, Localisation, Drones, plus Integration). `work:` accepts

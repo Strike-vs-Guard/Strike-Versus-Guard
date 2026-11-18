@@ -425,6 +425,30 @@ white "filter acting" ring was wrong (it reads as the CBF zone and has a differe
 a status pill; drone_2's mark shook while hovering with its lights off → tracks smoothed by speed.
 Then: "integrate the replay in E, I like that too" → one half-speed replay of the 27 s meeting, full
 width, after the hold. Final clip 48 s.
+
+## 23. The programme film as the home hero (18 November 2026)
+> Use this video as the hero video for the webpage. Discuss with me first. … Go with A. For the
+> thumbnail use the first Strike vs Guard title frame. … Use hero_v3_cuav.mp4 instead. … Just allow
+> it. Just use the video and stop asking other questions.
+
+The film is built in ST Engineering's demo project (`~/SvG_Demo`, `video/hero_v3_cuav.mp4`, 100.8 s,
+music). Three shapes were offered; the owner chose **A**: the hero panel (now 16:9) loops a silent
+12.5 s teaser cut from the film (CMU random goals, the Singapore figure-eight and its replay, the
+Crazyflie escort), and a "Watch the film · 1:41" button, in the panel and first in the button row,
+plays the film with sound in the same panel. Poster: the film's title frame.
+
+A local draft (`npx astro preview`, nothing pushed) went to a first-screen UX agent and a
+first-time-visitor agent. Fixed from their reports: a "Close the film" button and Escape, focus back
+to the opener, no resuming with sound after scrolling away, the in-panel button hidden on phones
+(it sat on the captions), full screen on phones, the panel landing below the sticky header. Not
+taken up: re-cutting the teaser without the film's captions and chapter tag, and a flight frame as
+the poster (the owner asked for the title frame).
+
+**Owner's rulings (18 Nov):** the cut with the news cases and the "Intercept · Future capability"
+step is the one to use; its wording, "swarm intelligence" included, is allowed as an exception for
+the film only (STANDARDS §2); it plays with its music. Media caps raised to 10 MB per file and 80 MB
+in all (STANDARDS §9). Not asked of the partners or HTX before publishing; the owner decides when
+the pull request to `main` is merged. The old hero loop and its still were retired.
 The logos were then legible but sat as small light tiles inside dark-grey boxes. Jeremy wanted the
 whole tile big and white everywhere, so each logo is now drawn at build time onto a white canvas
 (a "plate", `src/lib/logo.ts` and `src/lib/plates.ts`) that fills the tile; no CSS colour shows

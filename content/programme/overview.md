@@ -5,16 +5,19 @@ pageEyebrow: Programme
 pageTitle: How the programme works
 title: Teams of drones that coordinate, adapt and decide on their own
 order: 1
-image: ./images/hero-goal-tracking.jpg
-imageAlt: Three Starling drones flying in formation in the CMU flight cage
+image: ./images/hero-film-title.jpg
+imageAlt: "Title card of the programme film: Strike vs Guard, with the logos of ST Engineering, NUS, UPenn, Carnegie Mellon University and HTX"
 decisionsLabel: What they decide
 decisions:
   - Which drone goes where.
   - When to change the team's plan, because the other side has changed theirs or a teammate has dropped out.
   - How the rest cover for a drone that is lost.
   - A safety layer checks every command before it reaches a drone.
-caption: "Three drones change formation; where paths cross, the safety filter eases them apart. Video: AirLab, Carnegie Mellon University, CC BY-SA 4.0; re-encoded and cropped."
-video: hero-goal-tracking.mp4
+caption: "From the programme film. Footage: NEAR Lab, ST Engineering; AirLab, Carnegie Mellon University, CC BY-SA 4.0, re-encoded and cropped."
+video: hero-film-teaser.mp4
+videoLabel: "Teaser from the programme film: three drones at CMU, two Starlings on a figure-eight in Singapore, and the Crazyflie escort"
+film: svg-film.mp4
+filmLabel: "Watch the film · 1:41"
 gameNote: "Strike vs Guard is the game we test with: the Guard team holds a zone, the Strike team tries to reach it."
 ---
 

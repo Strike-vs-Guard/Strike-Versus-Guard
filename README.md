@@ -42,7 +42,7 @@ content/                     ← everything people edit (Markdown + images)
   programme/*.md               shared page sections (ST-owned), incl. glance.md, themes.md, localisation.md
   updates/<partner>/*.md       news posts, one folder per partner (st, nus, upenn, cmu) + images/
   site.yml                     site title, footer
-public/media/                ← flight clips (MP4) and their poster frames (8 MB per file, 60 MB total; STANDARDS §9)
+public/media/                ← flight clips (MP4) and their poster frames (10 MB per file, 80 MB total; STANDARDS §9)
 src/                         ← layout, styles, components (ST-owned)
   content.config.ts            the rules every content file is checked against
 .github/workflows/

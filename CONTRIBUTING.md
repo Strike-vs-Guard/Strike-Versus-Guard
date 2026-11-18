@@ -239,7 +239,7 @@ names, dates and numbers, and end with what is still open.
 | Rule | Value |
 |---|---|
 | Format | MP4, H.264 High, yuv420p, 30 fps, keyframe every 60 frames, `+faststart`, no audio |
-| Size | 8 MB or less per file; `public/media/` 60 MB or less in total |
+| Size | 10 MB or less per file; `public/media/` 80 MB or less in total |
 | Poster | JPG, 100 KB or less, same name as the clip |
 | Name | `sim-<partner>-<slug>.mp4`, in `public/media/` |
 | Caption | Says what to look at ("Watch the gaps between the drones…"), two sentences at most, ends with the credit, for example "Video: AirLab, Carnegie Mellon University, CC BY-SA 4.0; re-encoded." |
@@ -346,7 +346,7 @@ Use plain present tense, short sentences and British spelling (behaviour, decent
 | `content/updates/upenn/…md: the post is in the "upenn" folder but says partner: nus. Make them match.` | Set `partner:` to the folder name |
 | `Nested mappings are not allowed in compact mappings` (or another YAML error with a line number) | A value contains `: `. Wrap the value in quotes |
 | `broken link "/Strike-Versus-Guard/…"` | A link points at a page that does not exist. Copy addresses within the site from the live site |
-| `… is 9.1 MB (limit 8 MB). Please compress it.` | Re-encode the clip or shrink the image (section 4) |
+| `… is 11.2 MB (limit 10 MB). Please compress it.` | Re-encode the clip or shrink the image (section 4) |
 | The test site did not change | *Deploy site* in the Actions tab is red or still running. Open it |
 | GitHub offers only "Create a new branch" when you commit | You lack write access. Ask ST Engineering to add you to your lab's team |
 
